@@ -1,0 +1,2 @@
+c:\users\eddy\documents\visual studio 2015\Projects\Tiger\Tiger\bin\Debug\Tiger.exe.config
+D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\bin\Debug\Tiger.exe.config
