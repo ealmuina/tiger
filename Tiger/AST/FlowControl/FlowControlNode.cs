@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Tiger.AST
 {
-    abstract class ProgramNode : Node
+    abstract class FlowControlNode : ExpressionNode
     {
-        public ProgramNode(ParserRuleContext context) : base(context) { }
-
-        public ExpressionNode Expression { get; protected set; }
+        public FlowControlNode(ParserRuleContext context) : base(context) { }
     }
 }

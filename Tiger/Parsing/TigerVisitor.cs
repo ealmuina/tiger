@@ -52,20 +52,6 @@ public interface ITigerVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitParenExprs([NotNull] TigerParser.ParenExprsContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>MulDiv</c>
-	/// labeled alternative in <see cref="TigerParser.expr"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMulDiv([NotNull] TigerParser.MulDivContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>AddSub</c>
-	/// labeled alternative in <see cref="TigerParser.expr"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitAddSub([NotNull] TigerParser.AddSubContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>For</c>
 	/// labeled alternative in <see cref="TigerParser.expr"/>.
 	/// </summary>
@@ -108,13 +94,6 @@ public interface ITigerVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitWhile([NotNull] TigerParser.WhileContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Comp</c>
-	/// labeled alternative in <see cref="TigerParser.expr"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitComp([NotNull] TigerParser.CompContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>Integer</c>
 	/// labeled alternative in <see cref="TigerParser.expr"/>.
 	/// </summary>
@@ -135,6 +114,13 @@ public interface ITigerVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitArray([NotNull] TigerParser.ArrayContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Comparison</c>
+	/// labeled alternative in <see cref="TigerParser.expr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitComparison([NotNull] TigerParser.ComparisonContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Assign</c>
 	/// labeled alternative in <see cref="TigerParser.expr"/>.
@@ -171,23 +157,12 @@ public interface ITigerVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitIf([NotNull] TigerParser.IfContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="TigerParser.expr_seq"/>.
+	/// Visit a parse tree produced by the <c>Arithmetic</c>
+	/// labeled alternative in <see cref="TigerParser.expr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitExpr_seq([NotNull] TigerParser.Expr_seqContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="TigerParser.expr_list"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitExpr_list([NotNull] TigerParser.Expr_listContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="TigerParser.field_list"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitField_list([NotNull] TigerParser.Field_listContext context);
+	Result VisitArithmetic([NotNull] TigerParser.ArithmeticContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>IndexLValue</c>
 	/// labeled alternative in <see cref="TigerParser.lvalue"/>.

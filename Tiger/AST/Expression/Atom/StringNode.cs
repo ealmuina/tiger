@@ -10,28 +10,23 @@ using Tiger.CodeGen;
 
 namespace Tiger.AST
 {
-    class IdNode : LValueNode
+    class StringNode : AtomNode
     {
-        public IdNode(ParserRuleContext context, string name) : base(context)
+        public StringNode(ParserRuleContext context, string text) : base(context)
         {
-            Name = name;
+            Text = text;
         }
 
-        public IdNode(int line, int column, string name) : base(line, column)
-        {
-            Name = name;
-        }
-
-        public string Name { get; protected set; }
+        public string Text { get; protected set; }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            // pass
+            throw new NotImplementedException();
         }
 
         public override void Generate(CodeGenerator generator)
         {
-            // pass
+            throw new NotImplementedException();
         }
     }
 }

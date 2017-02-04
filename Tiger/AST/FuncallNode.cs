@@ -4,12 +4,16 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using Antlr4.Runtime;
 using Tiger.Semantics;
+using Tiger.CodeGen;
 
 namespace Tiger.AST
 {
     class FuncallNode : ExpressionNode
     {
+        public FuncallNode(ParserRuleContext context) : base(context) { }
+
         public string FunctionName
         {
             get { return Children[0].Text; }
@@ -52,7 +56,7 @@ namespace Tiger.AST
             SymbolInfo = fInfo;
         }
 
-        public override void Generate(ILGenerator generator)
+        public override void Generate(CodeGenerator generator)
         {
             foreach (var arg in Arguments)
                 arg.Generate(generator);

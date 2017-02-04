@@ -12,34 +12,26 @@ expr
 	:	STRING															# String
 	|	INTEGER															# Integer
 	|	'nil'															# Nil
-	|	lvalue															# LValue
+	|	lvalue															# LValue	
+
 	|	'-' expr														# UnaryMinus
-	|	e1=expr op=('*' | '/') e2=expr									# MulDiv
-	|	e1=expr op=('+' | '-') e2=expr									# AddSub
-	|	e1=expr op=('<>' | '=' | '>=' | '<=' | '>' | '<') e2=expr		# Comp
+	|	e1=expr op=('*' | '/') e2=expr									# Arithmetic
+	|	e1=expr op=('+' | '-') e2=expr									# Arithmetic
+	|	e1=expr op=('<>' | '=' | '>=' | '<=' | '>' | '<') e2=expr		# Comparison
 	|	e1=expr op=('&' | '|') e2=expr									# Logical
+	
 	|	lvalue ':=' expr												# Assign
-	|	ID '(' expr_list? ')'											# Call
-	|	'(' expr_seq? ')'												# ParenExprs
-	|	ID	'{' field_list? '}'											# Record
+	|	ID '(' (expr (',' expr)*)? ')'									# Call
+	|	'(' (expr (';' expr)*)? ')'										# ParenExprs
+	|	typeID=ID	'{' (ID '=' expr (',' ID '=' expr)*)? '}'			# Record
 	|	ID '[' e1=expr ']' 'of' e2=expr									# Array	
+
 	|	'if' e1=expr 'then' e2=expr ('else' e3=expr)?					# If
 	|	'while' e1=expr 'do' e2=expr									# While	
-	|	'for' ID ':=' e1=expr 'to' e2=expr 'to' e3=expr					# For			
+	|	'for' ID ':=' e1=expr 'to' e2=expr 'do' e3=expr					# For			
 	|	'break'															# Break
-	|	'let' decl* 'in' expr_seq? 'end'								# Let
-	;
-
-expr_seq
-	:	expr (';' expr)*
-	;
-
-expr_list
-	:	expr (',' expr)*
-	;
-
-field_list
-	:	ID '=' expr (',' ID '=' expr)*
+	
+	|	'let' decl* 'in' (expr (';' expr)*)? 'end'						# Let
 	;
 
 lvalue

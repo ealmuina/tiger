@@ -4,30 +4,29 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using Antlr4.Runtime;
 using Tiger.Semantics;
+using Tiger.CodeGen;
 
 namespace Tiger.AST
 {
     class IntegerNode : ExpressionNode
     {
-        public int? Value
+        public IntegerNode(ParserRuleContext context, string text) : base(context)
         {
-            get
-            {
-                int value;
-                return int.TryParse(Text, out value) ? (int?)value : null;
-            }
+            Value = int.Parse(text);
         }
+
+        public int Value { get; protected set; }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            if (Value == null)
-                errors.Add(SemanticError.InvalidNumber(Text, this));
+            throw new NotImplementedException();
         }
 
-        public override void Generate(ILGenerator generator)
+        public override void Generate(CodeGenerator generator)
         {
-            generator.Emit(OpCodes.Ldc_I4, (int)Value);
+            throw new NotImplementedException();
         }
     }
 }
