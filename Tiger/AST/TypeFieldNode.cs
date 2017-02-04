@@ -1,32 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
-using Tiger.Semantics;
 using Tiger.CodeGen;
+using Tiger.Semantics;
 
 namespace Tiger.AST
 {
-    class AssignNode : ExpressionNode
+    class TypeFieldNode : Node
     {
-        public AssignNode(ParserRuleContext context) : base(context) { }
-
-        public AssignNode(int line, int column): base(line, column) { }
-
-        public LValueNode LValue
+        public TypeFieldNode(ParserRuleContext context) : base(context)
         {
-            get { return Children[0] as LValueNode; }
         }
 
-        public ExpressionNode Expression
+        public TypeFieldNode(int line, int column) : base(line, column)
         {
-            get { return Children[1] as ExpressionNode; }
         }
-
-        public VariableInfo SymbolInfo { get; private set; }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

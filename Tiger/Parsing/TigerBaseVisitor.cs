@@ -341,7 +341,8 @@ public partial class TigerBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitArrayType([NotNull] TigerParser.ArrayTypeContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="TigerParser.type_fields"/>.
+	/// Visit a parse tree produced by the <c>TypeFields</c>
+	/// labeled alternative in <see cref="TigerParser.type_fields"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -349,5 +350,5 @@ public partial class TigerBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitType_fields([NotNull] TigerParser.Type_fieldsContext context) { return VisitChildren(context); }
+	public virtual Result VisitTypeFields([NotNull] TigerParser.TypeFieldsContext context) { return VisitChildren(context); }
 }

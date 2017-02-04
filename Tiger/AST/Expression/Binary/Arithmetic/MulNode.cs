@@ -17,4 +17,5 @@ namespace Tiger.AST
         {
             get { return OpCodes.Mul; }
         }
+    }
 }

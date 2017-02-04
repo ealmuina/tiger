@@ -4,6 +4,7 @@ using System.Linq;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Tiger.AST;
+using Antlr4.Runtime;
 
 namespace Tiger.Parsing
 {
@@ -161,7 +162,7 @@ namespace Tiger.Parsing
                     ids[i].Symbol.Line,
                     ids[i].Symbol.Column,
                     ids[i].GetText());
-                        
+
                 var fieldExpr = Visit(exprs[i]);
 
                 var field = new FieldNode(fieldId.Line, fieldId.Column);
@@ -208,7 +209,7 @@ namespace Tiger.Parsing
             var node = new ForNode(context);
 
             ITerminalNode id = context.ID();
-            var init = new VarNode(id.Symbol.Line, id.Symbol.Column);
+            var init = new VarDeclNode(id.Symbol.Line, id.Symbol.Column);
             init.Children.Add(new IdNode(id.Symbol.Line, id.Symbol.Column, id.GetText()));
             init.Children.Add(Visit(context.e1));
 
@@ -235,6 +236,142 @@ namespace Tiger.Parsing
 
             node.Children.Add(declarations);
             node.Children.AddRange(from expr in context.expr() select Visit(expr));
+
+            return node;
+        }
+
+        #region Lvalue
+        public override Node VisitIdLValue([NotNull] TigerParser.IdLValueContext context)
+        {
+            return new IdNode(context, context.ID().GetText());
+        }
+
+        public override Node VisitFieldLValue([NotNull] TigerParser.FieldLValueContext context)
+        {
+            var node = new FieldAccessNode(context);
+            node.Children.Add(Visit(context.lvalue()));
+
+            ITerminalNode id = context.ID();
+            node.Children.Add(
+                new IdNode(
+                id.Symbol.Line,
+                id.Symbol.Column,
+                id.GetText()));
+
+            return node;
+        }
+
+        public override Node VisitIndexLValue([NotNull] TigerParser.IndexLValueContext context)
+        {
+            var node = new IndexNode(context);
+            node.Children.Add(Visit(context.lvalue()));
+            node.Children.Add(Visit(context.expr()));
+            return node;
+        }
+        #endregion
+
+        #region Declaration
+        public override Node VisitTypeDecl([NotNull] TigerParser.TypeDeclContext context)
+        {
+            var node = new TypeDeclNode(context);
+
+            ITerminalNode id = context.ID();
+            node.Children.Add(
+                new IdNode(
+                    id.Symbol.Line,
+                    id.Symbol.Column,
+                    id.GetText()));
+            node.Children.Add(Visit(context.type()));
+
+            return node;
+        }
+
+        public override Node VisitVarDecl([NotNull] TigerParser.VarDeclContext context)
+        {
+            var node = new VarDeclNode(context);
+
+            IToken id = context.id;
+            node.Children.Add(
+                new IdNode(
+                    id.Line,
+                    id.Column,
+                    id.Text));
+
+            IToken typeId = context.typeId;
+            node.Children.Add(typeId == null ? null :
+                new IdNode(
+                    typeId.Line,
+                    typeId.Column,
+                    typeId.Text));
+
+            node.Children.Add(Visit(context.expr()));
+            return node;
+        }
+
+        public override Node VisitFuncDecl([NotNull] TigerParser.FuncDeclContext context)
+        {
+            var node = new FuncDeclNode(context);
+
+            IToken id = context.id;
+            node.Children.Add(
+                new IdNode(id.Line, id.Column, id.Text));
+            node.Children.Add(Visit(context.type_fields()));
+
+            IToken typeId = context.typeId;
+            node.Children.Add(typeId == null ? null :
+                new IdNode(
+                    typeId.Line,
+                    typeId.Column,
+                    typeId.Text));
+            node.Children.Add(Visit(context.expr()));
+
+            return node;
+        }
+        #endregion
+
+        #region Type
+        public override Node VisitIdType([NotNull] TigerParser.IdTypeContext context)
+        {
+            return new IdNode(context, context.ID().GetText());
+        }
+
+        public override Node VisitRecordType([NotNull] TigerParser.RecordTypeContext context)
+        {
+            return Visit(context.type_fields());
+        }
+
+        public override Node VisitArrayType([NotNull] TigerParser.ArrayTypeContext context)
+        {
+            var node = new ArrayType(context);
+            ITerminalNode id = context.ID();
+            node.Children.Add(
+                new IdNode(
+                    id.Symbol.Line,
+                    id.Symbol.Column,
+                    id.GetText()));
+            return node;
+        }
+        #endregion
+
+        public override Node VisitTypeFields([NotNull] TigerParser.TypeFieldsContext context)
+        {
+            var node = new TypeFieldsNode(context);
+            ITerminalNode[] ids = context.ID();
+
+            for (int i = 0; i < ids.Length - 1; i+=2)
+            {
+                var name = new IdNode(
+                    ids[i].Symbol.Line,
+                    ids[i].Symbol.Column,
+                    ids[i].GetText());
+                var type = new IdNode(
+                    ids[i + 1].Symbol.Line,
+                    ids[i + 1].Symbol.Column,
+                    ids[i + 1].GetText());
+
+                var field = new TypeFieldNode(ids[i].Symbol.Line, ids[i].Symbol.Column);
+                node.Children.Add(field);
+            }
 
             return node;
         }

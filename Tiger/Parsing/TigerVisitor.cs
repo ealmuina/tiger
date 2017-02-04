@@ -227,9 +227,10 @@ public interface ITigerVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitArrayType([NotNull] TigerParser.ArrayTypeContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="TigerParser.type_fields"/>.
+	/// Visit a parse tree produced by the <c>TypeFields</c>
+	/// labeled alternative in <see cref="TigerParser.type_fields"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitType_fields([NotNull] TigerParser.Type_fieldsContext context);
+	Result VisitTypeFields([NotNull] TigerParser.TypeFieldsContext context);
 }

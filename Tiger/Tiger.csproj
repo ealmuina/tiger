@@ -48,11 +48,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AST\ArrayNode.cs" />
+    <Compile Include="AST\ArrayType.cs" />
     <Compile Include="AST\AssignNode.cs" />
     <Compile Include="AST\Auxiliary\AuxiliaryNode.cs" />
     <Compile Include="AST\Auxiliary\NilNode.cs" />
     <Compile Include="AST\Declaration\DeclarationListNode.cs" />
     <Compile Include="AST\Declaration\DeclarationNode.cs" />
+    <Compile Include="AST\Declaration\FuncDeclNode.cs" />
+    <Compile Include="AST\Declaration\TypeDeclNode.cs" />
     <Compile Include="AST\Expression\Atom\AtomNode.cs" />
     <Compile Include="AST\Expression\Atom\StringNode.cs" />
     <Compile Include="AST\Expression\Binary\Arithmetic\ArithmeticNode.cs" />
@@ -69,6 +72,7 @@
     <Compile Include="AST\Expression\Binary\Logical\LogicalNode.cs" />
     <Compile Include="AST\Expression\Binary\Logical\OrNode.cs" />
     <Compile Include="AST\Expression\ExpressionNode.cs" />
+    <Compile Include="AST\FieldAccessNode.cs" />
     <Compile Include="AST\FieldNode.cs" />
     <Compile Include="AST\FlowControl\BreakNode.cs" />
     <Compile Include="AST\FlowControl\FlowControlNode.cs" />
@@ -78,6 +82,7 @@
     <Compile Include="AST\FuncallNode.cs" />
     <Compile Include="AST\IdNode.cs" />
     <Compile Include="AST\Expression\Atom\IntegerNode.cs" />
+    <Compile Include="AST\IndexNode.cs" />
     <Compile Include="AST\LetNode.cs" />
     <Compile Include="AST\LValue\LValueNode.cs" />
     <Compile Include="AST\Expression\Binary\Arithmetic\MinusNode.cs" />
@@ -88,7 +93,9 @@
     <Compile Include="AST\ProgramNode.cs" />
     <Compile Include="AST\Expression\Unary\UnaryNode.cs" />
     <Compile Include="AST\RecordNode.cs" />
-    <Compile Include="AST\Declaration\VarNode.cs" />
+    <Compile Include="AST\Declaration\VarDeclNode.cs" />
+    <Compile Include="AST\TypeFieldNode.cs" />
+    <Compile Include="AST\TypeFieldsNode.cs" />
     <Compile Include="CodeGen\CodeGenerator.cs" />
     <Compile Include="Parsing\ASTBuilder.cs" />
     <Compile Include="Parsing\ErrorListener.cs" />

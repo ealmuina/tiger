@@ -9,11 +9,9 @@ using Tiger.Semantics;
 
 namespace Tiger.AST
 {
-    class VarNode : DeclarationNode
+    class TypeFieldsNode : Node
     {
-        public VarNode(ParserRuleContext context) : base(context) { }
-
-        public VarNode(int line, int column) : base(line, column) { }
+        public TypeFieldsNode(ParserRuleContext context) : base(context) { }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
