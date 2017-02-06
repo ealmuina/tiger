@@ -56,6 +56,7 @@
     <Compile Include="AST\Declaration\DeclarationNode.cs" />
     <Compile Include="AST\Declaration\FuncDeclNode.cs" />
     <Compile Include="AST\Declaration\TypeDeclNode.cs" />
+    <Compile Include="AST\Expression\ExpressionSeqNode.cs" />
     <Compile Include="AST\Expression\Atom\AtomNode.cs" />
     <Compile Include="AST\Expression\Atom\StringNode.cs" />
     <Compile Include="AST\Expression\Binary\Arithmetic\ArithmeticNode.cs" />
@@ -90,7 +91,6 @@
     <Compile Include="AST\Expression\Unary\NegativeNode.cs" />
     <Compile Include="AST\Node.cs" />
     <Compile Include="AST\Expression\Binary\Arithmetic\PlusNode.cs" />
-    <Compile Include="AST\ProgramNode.cs" />
     <Compile Include="AST\Expression\Unary\UnaryNode.cs" />
     <Compile Include="AST\RecordNode.cs" />
     <Compile Include="AST\Declaration\VarDeclNode.cs" />

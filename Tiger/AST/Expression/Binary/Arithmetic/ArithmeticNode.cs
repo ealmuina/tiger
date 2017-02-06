@@ -19,7 +19,7 @@ namespace Tiger.AST
         {
             LeftOperand.Generate(generator);
             RightOperand.Generate(generator);
-            generator.Emit(OperatorOpCode);
+            //generator.Emit(OperatorOpCode);
         }
     }
 }

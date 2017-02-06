@@ -16,7 +16,7 @@ namespace Tiger.AST
 
         public string FunctionName
         {
-            get { return Children[0].Text; }
+            get { return (Children[0] as IdNode).Name; }
         }
 
         public IEnumerable<ExpressionNode> Arguments
@@ -60,7 +60,7 @@ namespace Tiger.AST
         {
             foreach (var arg in Arguments)
                 arg.Generate(generator);
-            generator.Emit(OpCodes.Call, SymbolInfo.Method);
+            //generator.Emit(OpCodes.Call, SymbolInfo.Method);
         }
     }
 }

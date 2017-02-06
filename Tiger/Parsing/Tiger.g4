@@ -5,7 +5,7 @@ grammar Tiger;
  */
 
 compileUnit
-	:	expr EOF
+	:	expr
 	;
 
 expr

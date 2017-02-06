@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Tiger.CodeGen;
 using Tiger.Parsing;
 using Tiger.Semantics;
 using Tiger.AST;
@@ -54,7 +55,7 @@ namespace Tiger
         static void ProcessFile(string inputPath, string outputPath)
         {
             Console.WriteLine("Building: {0}", Path.GetFullPath(inputPath));
-            ProgramNode root = ParseInput(inputPath);
+            Node root = ParseInput(inputPath);
             if (root == null)
             {
                 Environment.ExitCode = (int)ErrorCodes.SyntaxError;
@@ -73,9 +74,9 @@ namespace Tiger
             Console.WriteLine("Success");
         }
 
-        static ProgramNode ParseInput(string inputPath)
+        static Node ParseInput(string inputPath)
         {
-            try
+            //try
             {
                 var input = new AntlrFileStream(inputPath);
                 var lexer = new TigerLexer(input);
@@ -88,15 +89,15 @@ namespace Tiger
                 IParseTree tree = parser.compileUnit();
                 var astBuilder = new ASTBuilder();
                 var ast = astBuilder.Visit(tree);
-                return ast as ProgramNode;
+                return ast as Node;
             }
-            catch (Exception)
-            {
-                return null;
-            }
+            //catch (Exception)
+            //{
+            //    return null;
+            //}
         }
 
-        static bool CheckSemantics(ProgramNode root)
+        static bool CheckSemantics(Node root)
         {
             List<SemanticError> errors = new List<SemanticError>();
             root.CheckSemantics(new Scope(), errors);
@@ -107,25 +108,24 @@ namespace Tiger
             return false;
         }
 
-        static void GenerateCode(ProgramNode root, string outputPath)
+        static void GenerateCode(Node root, string outputPath)
         {
+            var generator = new CodeGenerator(outputPath);
+
             string name = Path.GetFileNameWithoutExtension(outputPath);
             string filename = Path.GetFileName(outputPath);
             AssemblyName assemblyName = new AssemblyName(name);
-            AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName,
-                                                                                     AssemblyBuilderAccess.RunAndSave,
-                                                                                     Path.GetDirectoryName(outputPath));
-            ModuleBuilder moduleBuilder = assembly.DefineDynamicModule(name, filename);
-            TypeBuilder programType = moduleBuilder.DefineType("Program");
-            MethodBuilder mainMethod = programType.DefineMethod("Main", MethodAttributes.Static, typeof(void), System.Type.EmptyTypes);
-            assembly.SetEntryPoint(mainMethod);
-            ILGenerator generator = mainMethod.GetILGenerator();
-
+            generator.Assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave, Path.GetDirectoryName(outputPath));
+            generator.Module = generator.Assembly.DefineDynamicModule(name, filename);
+            generator.Type = generator.Module.DefineType("Program");
+            MethodBuilder mainMethod = generator.Type.DefineMethod("Main", MethodAttributes.Static, typeof(void), System.Type.EmptyTypes);
+            generator.Assembly.SetEntryPoint(mainMethod);
+            generator.Generator = mainMethod.GetILGenerator();
             root.Generate(generator);
 
-            programType.CreateType();
-            moduleBuilder.CreateGlobalFunctions();
-            assembly.Save(filename);
+            generator.Type.CreateType();
+            generator.Module.CreateGlobalFunctions();
+            generator.Assembly.Save(filename);
         }
     }
 }

@@ -132,18 +132,15 @@ namespace Tiger.Parsing
             var node = new FuncallNode(context);
             var id = new IdNode(context, context.ID().GetText());
             node.Children.Add(id);
-
-            var args = from arg
-                       in context.expr()
-                       select Visit(arg);
-            node.Children.AddRange(args);
-
+            node.Children.AddRange(from e in context.expr() select Visit(e));
             return node;
         }
 
         public override Node VisitParenExprs([NotNull] TigerParser.ParenExprsContext context)
         {
-            return base.VisitParenExprs(context);   // TODO Implement
+            var node = new ExpressionSeqNode(context);
+            node.Children.AddRange(from e in context.expr() select Visit(e));
+            return node;
         }
 
         public override Node VisitRecord([NotNull] TigerParser.RecordContext context)
@@ -156,14 +153,14 @@ namespace Tiger.Parsing
             ITerminalNode[] ids = context.ID();
             TigerParser.ExprContext[] exprs = context.expr();
 
-            for (int i = 0; i < ids.Length; i++)
+            for (int i = 1; i < ids.Length; i++)
             {
                 var fieldId = new IdNode(
                     ids[i].Symbol.Line,
                     ids[i].Symbol.Column,
                     ids[i].GetText());
 
-                var fieldExpr = Visit(exprs[i]);
+                var fieldExpr = Visit(exprs[i - 1]);
 
                 var field = new FieldNode(fieldId.Line, fieldId.Column);
                 field.Children.Add(fieldId);
@@ -192,7 +189,7 @@ namespace Tiger.Parsing
             var node = new IfNode(context);
             node.Children.Add(Visit(context.e1)); //If condition
             node.Children.Add(Visit(context.e2)); //Then expression
-            node.Children.Add(Visit(context.e3)); //Else expression if any, oterwise null
+            node.Children.Add(context.e3 == null ? null : Visit(context.e3)); //Else expression if any, oterwise null
             return node;
         }
 
@@ -315,7 +312,10 @@ namespace Tiger.Parsing
             IToken id = context.id;
             node.Children.Add(
                 new IdNode(id.Line, id.Column, id.Text));
-            node.Children.Add(Visit(context.type_fields()));
+            node.Children.Add(
+                context.type_fields() == null ?
+                null :
+                Visit(context.type_fields()));
 
             IToken typeId = context.typeId;
             node.Children.Add(typeId == null ? null :
@@ -358,7 +358,7 @@ namespace Tiger.Parsing
             var node = new TypeFieldsNode(context);
             ITerminalNode[] ids = context.ID();
 
-            for (int i = 0; i < ids.Length - 1; i+=2)
+            for (int i = 0; i < ids.Length - 1; i += 2)
             {
                 var name = new IdNode(
                     ids[i].Symbol.Line,

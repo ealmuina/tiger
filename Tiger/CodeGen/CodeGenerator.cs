@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.Emit;
 using System.IO;
+using System.Reflection;
 
 namespace Tiger.CodeGen
 {
