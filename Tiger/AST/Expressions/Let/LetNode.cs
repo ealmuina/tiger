@@ -1,19 +1,19 @@
-﻿using Antlr4.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Antlr4.Runtime;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
 
 namespace Tiger.AST
 {
-    class NilNode : AuxiliaryNode
+    class LetNode : ExpressionNode
     {
-        public NilNode() : base(-1, -1) { }
+        public LetNode(ParserRuleContext context) : base(context) { }
 
-        public NilNode(ParserRuleContext context) : base(context) { }
+        public LetNode(int line, int column) : base(line, column) { }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

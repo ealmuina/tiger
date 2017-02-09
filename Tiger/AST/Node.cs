@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection.Emit;
 using Antlr4.Runtime;
 using Tiger.Semantics;
-using Tiger.CodeGen;
+using Tiger.CodeGeneration;
 
 namespace Tiger.AST
 {

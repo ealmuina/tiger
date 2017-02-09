@@ -9,11 +9,9 @@ using Tiger.Semantics;
 
 namespace Tiger.AST
 {
-    class NilNode : AuxiliaryNode
+    class IfNode : FlowControlNode
     {
-        public NilNode() : base(-1, -1) { }
-
-        public NilNode(ParserRuleContext context) : base(context) { }
+        public IfNode(ParserRuleContext context) : base(context) { }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

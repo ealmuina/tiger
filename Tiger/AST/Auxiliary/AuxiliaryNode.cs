@@ -10,5 +10,7 @@ namespace Tiger.AST
     abstract class AuxiliaryNode : Node
     {
         public AuxiliaryNode(ParserRuleContext context) : base(context) { }
+
+        public AuxiliaryNode(int line, int column) : base(line, column) { }
     }
 }

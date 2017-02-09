@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Tiger.CodeGen;
+using Tiger.CodeGeneration;
 using Tiger.Parsing;
 using Tiger.Semantics;
 using Tiger.AST;
