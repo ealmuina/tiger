@@ -121,6 +121,7 @@ namespace Tiger
             MethodBuilder mainMethod = generator.Type.DefineMethod("Main", MethodAttributes.Static, typeof(void), System.Type.EmptyTypes);
             generator.Assembly.SetEntryPoint(mainMethod);
             generator.Generator = mainMethod.GetILGenerator();
+
             root.Generate(generator);
 
             generator.Type.CreateType();

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\Parsing\Tiger.g4 by ANTLR 4.6
+// Generated from D:\EDDY - Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\Parsing\Tiger.g4 by ANTLR 4.6
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -32,11 +32,12 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface ITigerVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="TigerParser.compileUnit"/>.
+	/// Visit a parse tree produced by the <c>Program</c>
+	/// labeled alternative in <see cref="TigerParser.compileUnit"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitCompileUnit([NotNull] TigerParser.CompileUnitContext context);
+	Result VisitProgram([NotNull] TigerParser.ProgramContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Call</c>
 	/// labeled alternative in <see cref="TigerParser.expr"/>.

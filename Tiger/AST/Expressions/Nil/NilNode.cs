@@ -9,7 +9,7 @@ using Tiger.Semantics;
 
 namespace Tiger.AST
 {
-    class NilNode : AuxiliaryNode
+    class NilNode : ExpressionNode
     {
         public NilNode() : base(-1, -1) { }
 
@@ -17,12 +17,12 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            throw new NotImplementedException();
+            //pass
         }
 
         public override void Generate(CodeGenerator generator)
         {
-            throw new NotImplementedException();
+            //pass
         }
     }
 }

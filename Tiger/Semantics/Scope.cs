@@ -18,19 +18,29 @@ namespace Tiger.Semantics
 
         void SetFunctions()
         {
-            //TODO Ahora mismo print y printi pinchan pa cualquiera. Arreglar
-            symbols["print"] = new FunctionInfo("print", typeof(Console).GetMethod("Write"));
-            symbols["printi"] = new FunctionInfo("printi", typeof(Console).GetMethod("Write"));
+            symbols["print"] = new FunctionInfo(
+                "print",
+                new Action<string>(s => Console.Write(s)).Method);
+
+            symbols["printi"] = new FunctionInfo(
+                "printi",
+                new Action<int>(s => Console.Write(s)).Method);
 
             symbols["getline"] = new FunctionInfo("getline", typeof(Console).GetMethod("ReadLine"));
-            symbols["printline"] = new FunctionInfo("printline", typeof(Console).GetMethod("WriteLine"));
-            symbols["printiline"] = new FunctionInfo("printiline", typeof(Console).GetMethod("WriteLine"));
+
+            symbols["printline"] = new FunctionInfo(
+                "printline",
+                new Action<string>(s => Console.WriteLine(s)).Method);
+
+            symbols["printiline"] = new FunctionInfo(
+                "printiline",
+                new Action<int>(s => Console.WriteLine(s)).Method);
 
             //TODO symbols["ord"]
             //TODO symbols["chr"]
 
             symbols["size"] = new FunctionInfo(
-                "size", 
+                "size",
                 new Func<string, int>(s => s.Length).Method);
 
             symbols["substring"] = new FunctionInfo(
@@ -47,7 +57,7 @@ namespace Tiger.Semantics
 
             symbols["exit"] = new FunctionInfo(
                 "exit",
-                new Action<int>(i => Environment.Exit(i)).Method); 
+                new Action<int>(i => Environment.Exit(i)).Method);
         }
 
         public bool IsDefined(string name)

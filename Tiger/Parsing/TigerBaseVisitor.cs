@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\Parsing\Tiger.g4 by ANTLR 4.6
+// Generated from D:\EDDY - Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\Parsing\Tiger.g4 by ANTLR 4.6
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -34,7 +34,8 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 [System.CLSCompliant(false)]
 public partial class TigerBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, ITigerVisitor<Result> {
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="TigerParser.compileUnit"/>.
+	/// Visit a parse tree produced by the <c>Program</c>
+	/// labeled alternative in <see cref="TigerParser.compileUnit"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -42,7 +43,7 @@ public partial class TigerBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitCompileUnit([NotNull] TigerParser.CompileUnitContext context) { return VisitChildren(context); }
+	public virtual Result VisitProgram([NotNull] TigerParser.ProgramContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>Call</c>
 	/// labeled alternative in <see cref="TigerParser.expr"/>.

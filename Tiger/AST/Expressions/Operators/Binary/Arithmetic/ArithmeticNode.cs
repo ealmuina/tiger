@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection.Emit;
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
+using Tiger.Semantics;
 
 namespace Tiger.AST
 {
@@ -19,7 +20,7 @@ namespace Tiger.AST
         {
             LeftOperand.Generate(generator);
             RightOperand.Generate(generator);
-            //generator.Emit(OperatorOpCode);
+            generator.Generator.Emit(OperatorOpCode);
         }
     }
 }

@@ -50,8 +50,7 @@
     <Compile Include="AST\Expressions\Containers\ArrayNode.cs" />
     <Compile Include="AST\Declarations\Types\ArrayType.cs" />
     <Compile Include="AST\Expressions\Operators\Binary\AssignNode.cs" />
-    <Compile Include="AST\Auxiliary\AuxiliaryNode.cs" />
-    <Compile Include="AST\Auxiliary\NilNode.cs" />
+    <Compile Include="AST\Expressions\Nil\NilNode.cs" />
     <Compile Include="AST\Declarations\DeclarationListNode.cs" />
     <Compile Include="AST\Declarations\DeclarationNode.cs" />
     <Compile Include="AST\Declarations\Functions\FuncDeclNode.cs" />
@@ -96,6 +95,7 @@
     <Compile Include="AST\Declarations\Variables\VarDeclNode.cs" />
     <Compile Include="AST\Declarations\Types\TypeFieldNode.cs" />
     <Compile Include="AST\Declarations\Types\TypeFieldsNode.cs" />
+    <Compile Include="AST\ProgramNode.cs" />
     <Compile Include="CodeGeneration\CodeGenerator.cs" />
     <Compile Include="Parsing\ASTBuilder.cs" />
     <Compile Include="Parsing\ErrorListener.cs" />

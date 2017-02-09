@@ -10,6 +10,11 @@ namespace Tiger.Parsing
 {
     class ASTBuilder : TigerBaseVisitor<Node>
     {
+        public override Node VisitProgram([NotNull] TigerParser.ProgramContext context)
+        {
+            return new ProgramNode(context, (ExpressionNode)Visit(context.expr()));
+        }
+
         #region Expressions
         #region Unary
         public override Node VisitString([NotNull] TigerParser.StringContext context)

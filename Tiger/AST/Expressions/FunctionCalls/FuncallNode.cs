@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Tiger.Semantics;
 using Tiger.CodeGeneration;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Tiger.AST
 {
@@ -60,7 +62,12 @@ namespace Tiger.AST
         {
             foreach (var arg in Arguments)
                 arg.Generate(generator);
-            //generator.Emit(OpCodes.Call, SymbolInfo.Method);
+
+            Type stdl = generator.Module.DefineType("STDL");
+            Expression<Action<int>> expr = n => Console.Write(n);
+            MethodBuilder m = stdl.DefineMethod(SymbolInfo.Method.Name, MethodAttributes.Static | MethodAttributes.Public, typeof(void), Type.EmptyTypes);
+            expr.CompileToMethod(m);
+            generator.Generator.Emit(OpCodes.Call, generator.Type.GetMethod(SymbolInfo.Method.Name));
         }
     }
 }

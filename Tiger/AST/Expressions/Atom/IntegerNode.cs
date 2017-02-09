@@ -21,12 +21,12 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            throw new NotImplementedException();
+            //pass
         }
 
         public override void Generate(CodeGenerator generator)
         {
-            throw new NotImplementedException();
+            generator.Generator.Emit(OpCodes.Ldc_I4, Value);
         }
     }
 }

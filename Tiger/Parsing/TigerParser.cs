@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\Parsing\Tiger.g4 by ANTLR 4.6
+// Generated from D:\EDDY - Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\Parsing\Tiger.g4 by ANTLR 4.6
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -91,17 +91,25 @@ public partial class TigerParser : Parser {
 		Interpreter = new ParserATNSimulator(this, _ATN, decisionToDFA, sharedContextCache);
 	}
 	public partial class CompileUnitContext : ParserRuleContext {
-		public ExprContext expr() {
-			return GetRuleContext<ExprContext>(0);
-		}
 		public CompileUnitContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_compileUnit; } }
+	 
+		public CompileUnitContext() { }
+		public virtual void CopyFrom(CompileUnitContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class ProgramContext : CompileUnitContext {
+		public ExprContext expr() {
+			return GetRuleContext<ExprContext>(0);
+		}
+		public ProgramContext(CompileUnitContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ITigerVisitor<TResult> typedVisitor = visitor as ITigerVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitCompileUnit(this);
+			if (typedVisitor != null) return typedVisitor.VisitProgram(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
@@ -111,6 +119,7 @@ public partial class TigerParser : Parser {
 		CompileUnitContext _localctx = new CompileUnitContext(Context, State);
 		EnterRule(_localctx, 0, RULE_compileUnit);
 		try {
+			_localctx = new ProgramContext(_localctx);
 			EnterOuterAlt(_localctx, 1);
 			{
 			State = 12; expr(0);
