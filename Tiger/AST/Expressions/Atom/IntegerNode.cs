@@ -24,7 +24,7 @@ namespace Tiger.AST
             //pass
         }
 
-        public override void Generate(CodeGenerator generator)
+        public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
             generator.Generator.Emit(OpCodes.Ldc_I4, Value);
         }

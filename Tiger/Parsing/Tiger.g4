@@ -61,18 +61,18 @@ type_fields
  * Lexer Rules
  */
 
-fragment LETTER		:	[a-zA-Z]								;
-fragment DIGIT		:	[0-9]									;
-fragment ESCAPE_SEQ	:	'\\' ('n' | 'r' | 't' | '"' | '\\')		; // TODO falta el \ddd
-fragment CHAR		:	[ -~] | ESCAPE_SEQ						;
-fragment EMPTY		:	[ \t\n\r]								;
+fragment LETTER		:	[a-zA-Z]										;
+fragment DIGIT		:	[0-9]											;
+fragment ESCAPE_SEQ	:	'\\' ('n' | 'r' | 't' | '"' | EMPTY* '\\')		; // TODO falta el \ddd
+fragment CHAR		:	[ -~] | ESCAPE_SEQ								;
+fragment EMPTY		:	[ \t\n\r]										;
 
 COMMENT
 	:	'/*' (COMMENT | .)*? '*/' -> skip	
 	;
 
 STRING
-	:	'"' CHAR* ('\\' EMPTY* '\\' CHAR*)? '"'	
+	:	'"' CHAR* '"'
 	;
 
 INTEGER

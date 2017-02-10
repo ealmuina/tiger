@@ -13,7 +13,7 @@ namespace Tiger.AST
     {
         public GtNode(ParserRuleContext context) : base(context) { }
 
-        public override void Generate(CodeGenerator generator)
+        public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
             throw new NotImplementedException();
         }

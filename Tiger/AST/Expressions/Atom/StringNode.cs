@@ -14,19 +14,32 @@ namespace Tiger.AST
     {
         public StringNode(ParserRuleContext context, string text) : base(context)
         {
-            Text = text;
+            //TODO Chequear si dejo el escape de /.../ aqui o si se puede pasar al lexer
+            Text = "";
+            bool escaped = false;
+            for (int i = 1; i < text.Length - 1; i++)
+            {
+                if (text[i] == '\\')
+                {
+                    if (escaped) escaped = false;
+                    else escaped = true;
+                    continue;
+                }
+                if (escaped) continue;
+                Text += text[i];
+            }
         }
 
         public string Text { get; protected set; }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            throw new NotImplementedException();
+            //pass
         }
 
-        public override void Generate(CodeGenerator generator)
+        public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
-            throw new NotImplementedException();
+            generator.Generator.Emit(OpCodes.Ldstr, Text);
         }
     }
 }

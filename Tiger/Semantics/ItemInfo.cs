@@ -21,25 +21,10 @@ namespace Tiger.Semantics
     class VariableInfo : ItemInfo
     {
         public VariableInfo(string name) : base(name) { }
-
-        public LocalBuilder LocalVariable { get; set; }
     }
 
     class FunctionInfo : ItemInfo
     {
-        public FunctionInfo(string name, MethodInfo method) : base(name)
-        {
-            Method = method;
-        }
-
-        public MethodInfo Method { get; private set; }
-
-        public int ParameterCount
-        {
-            get
-            {
-                return Method.GetParameters().Length;
-            }
-        }
+        public FunctionInfo(string name) : base(name) { }
     }
 }

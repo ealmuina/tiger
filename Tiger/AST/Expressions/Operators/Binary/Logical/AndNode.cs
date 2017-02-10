@@ -13,7 +13,7 @@ namespace Tiger.AST
     {
         public AndNode(ParserRuleContext context) : base(context) { }
 
-        public override void Generate(CodeGenerator generator)
+        public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
         }
     }

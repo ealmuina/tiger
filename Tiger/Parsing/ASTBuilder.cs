@@ -335,7 +335,7 @@ namespace Tiger.Parsing
 
         public override Node VisitArrayType([NotNull] TigerParser.ArrayTypeContext context)
         {
-            var node = new ArrayType(context);
+            var node = new ArrayTypeNode(context);
             ITerminalNode id = context.ID();
             node.Children.Add(
                 new IdNode(

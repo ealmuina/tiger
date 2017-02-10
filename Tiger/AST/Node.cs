@@ -32,6 +32,6 @@ namespace Tiger.AST
 
         public abstract void CheckSemantics(Scope scope, List<SemanticError> errors);
 
-        public abstract void Generate(CodeGenerator generator);
+        public abstract void Generate(CodeGenerator generator, SymbolTable symbols);
     }
 }

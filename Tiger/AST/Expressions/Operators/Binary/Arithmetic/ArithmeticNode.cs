@@ -16,10 +16,10 @@ namespace Tiger.AST
 
         public abstract OpCode OperatorOpCode { get; }
 
-        public override void Generate(CodeGenerator generator)
+        public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
-            LeftOperand.Generate(generator);
-            RightOperand.Generate(generator);
+            LeftOperand.Generate(generator, symbols);
+            RightOperand.Generate(generator, symbols);
             generator.Generator.Emit(OperatorOpCode);
         }
     }

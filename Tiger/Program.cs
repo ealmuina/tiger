@@ -12,6 +12,7 @@ using Tiger.CodeGeneration;
 using Tiger.Parsing;
 using Tiger.Semantics;
 using Tiger.AST;
+using System.Linq.Expressions;
 
 namespace Tiger
 {
@@ -117,16 +118,59 @@ namespace Tiger
             AssemblyName assemblyName = new AssemblyName(name);
             generator.Assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave, Path.GetDirectoryName(outputPath));
             generator.Module = generator.Assembly.DefineDynamicModule(name, filename);
+
+            SymbolTable symbols = BuildStdl(generator.Module);
+
             generator.Type = generator.Module.DefineType("Program");
             MethodBuilder mainMethod = generator.Type.DefineMethod("Main", MethodAttributes.Static, typeof(void), System.Type.EmptyTypes);
             generator.Assembly.SetEntryPoint(mainMethod);
             generator.Generator = mainMethod.GetILGenerator();
 
-            root.Generate(generator);
+            root.Generate(generator, symbols);
 
             generator.Type.CreateType();
             generator.Module.CreateGlobalFunctions();
             generator.Assembly.Save(filename);
+        }
+
+        static SymbolTable BuildStdl(ModuleBuilder builder)
+        {
+            var symbols = new SymbolTable();
+            var stdl = builder.DefineType("StandardLibrary");
+
+            //TODO ord, chr
+
+            dynamic functions = new Expression[]
+            {
+                (Expression<Action<int>>)(s => Console.Write(s)), //printi
+                (Expression<Action<string>>)(s => Console.Write(s)), //print
+                (Expression<Func<string>>)(() => Console.ReadLine()), //getline
+                (Expression<Action<string>>)(s =>Console.WriteLine(s)), //printline
+                (Expression<Action<int>>)(n => Console.WriteLine(n)), //printiline
+                (Expression<Func<string, int>>)(s => s.Length), //size
+                (Expression<Func<string, int, int, string>>)((s, f, n) => s.Substring(f, n)), //substring
+                (Expression<Func<string, string, string>>)((s1, s2) => s1+s2), //concat
+                (Expression<Func<int, int>>)(i => i == 0 ? 1 : 0), //not
+                (Expression<Action<int>>)(i => Environment.Exit(i)), //exit
+            };
+
+            var names = new string[]
+            {
+                "printi", "print", "getline", "printline", "printiline", "size", "substring", "concat", "not", "exit"
+            };
+
+            for (int i = 0; i < functions.Length; i++)
+            {
+                var func = functions[i];
+                var name = names[i];
+
+                MethodBuilder method = stdl.DefineMethod(name, MethodAttributes.Static);
+                func.CompileToMethod(method);
+                symbols.Functions[name] = method;
+            };
+
+            stdl.CreateType();
+            return symbols;
         }
     }
 }

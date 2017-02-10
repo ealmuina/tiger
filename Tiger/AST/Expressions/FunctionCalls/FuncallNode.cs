@@ -47,27 +47,22 @@ namespace Tiger.AST
             }
 
             var fInfo = (FunctionInfo)info;
-            int parameterCount = fInfo.ParameterCount;
-            int argumentCount = Arguments.Count();
-            if (parameterCount != argumentCount)
-            {
-                errors.Add(SemanticError.WrongParameterNumber(FunctionName, parameterCount, argumentCount, this));
-                return;
-            }
+            //int parameterCount = fInfo.ParameterCount;
+            //int argumentCount = Arguments.Count();
+            //if (parameterCount != argumentCount)
+            //{
+            //    errors.Add(SemanticError.WrongParameterNumber(FunctionName, parameterCount, argumentCount, this));
+            //    return;
+            //}
 
             SymbolInfo = fInfo;
         }
 
-        public override void Generate(CodeGenerator generator)
+        public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
             foreach (var arg in Arguments)
-                arg.Generate(generator);
-
-            Type stdl = generator.Module.DefineType("STDL");
-            Expression<Action<int>> expr = n => Console.Write(n);
-            MethodBuilder m = stdl.DefineMethod(SymbolInfo.Method.Name, MethodAttributes.Static | MethodAttributes.Public, typeof(void), Type.EmptyTypes);
-            expr.CompileToMethod(m);
-            generator.Generator.Emit(OpCodes.Call, generator.Type.GetMethod(SymbolInfo.Method.Name));
+                arg.Generate(generator, symbols);
+            generator.Generator.Emit(OpCodes.Call, symbols.Functions[SymbolInfo.Name]);
         }
     }
 }

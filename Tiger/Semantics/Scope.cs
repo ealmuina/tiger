@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using Tiger.CodeGeneration;
 
 namespace Tiger.Semantics
 {
@@ -18,46 +19,7 @@ namespace Tiger.Semantics
 
         void SetFunctions()
         {
-            symbols["print"] = new FunctionInfo(
-                "print",
-                new Action<string>(s => Console.Write(s)).Method);
-
-            symbols["printi"] = new FunctionInfo(
-                "printi",
-                new Action<int>(s => Console.Write(s)).Method);
-
-            symbols["getline"] = new FunctionInfo("getline", typeof(Console).GetMethod("ReadLine"));
-
-            symbols["printline"] = new FunctionInfo(
-                "printline",
-                new Action<string>(s => Console.WriteLine(s)).Method);
-
-            symbols["printiline"] = new FunctionInfo(
-                "printiline",
-                new Action<int>(s => Console.WriteLine(s)).Method);
-
-            //TODO symbols["ord"]
-            //TODO symbols["chr"]
-
-            symbols["size"] = new FunctionInfo(
-                "size",
-                new Func<string, int>(s => s.Length).Method);
-
-            symbols["substring"] = new FunctionInfo(
-                "substring",
-                new Func<string, int, int, string>((s, f, n) => s.Substring(f, n)).Method);
-
-            symbols["concat"] = new FunctionInfo(
-                "concat",
-                new Func<string, string, string>((s1, s2) => s1 + s2).Method);
-
-            symbols["not"] = new FunctionInfo(
-                "not",
-                new Func<int, int>(i => i == 0 ? 1 : 0).Method);
-
-            symbols["exit"] = new FunctionInfo(
-                "exit",
-                new Action<int>(i => Environment.Exit(i)).Method);
+            //TODO Add standard library functions
         }
 
         public bool IsDefined(string name)
@@ -94,6 +56,18 @@ namespace Tiger.Semantics
             if (!IsDefined(name))
             {
                 var result = new VariableInfo(name);
+                symbols.Add(name, result);
+                return result;
+            }
+            else
+                throw new Exception(string.Format("Symbol {0} is already defined", name));
+        }
+
+        public FunctionInfo DefineFunction(string name)
+        {
+            if (!IsDefined(name))
+            {
+                var result = new FunctionInfo(name);
                 symbols.Add(name, result);
                 return result;
             }

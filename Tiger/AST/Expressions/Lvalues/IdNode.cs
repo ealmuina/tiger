@@ -29,7 +29,7 @@ namespace Tiger.AST
             // pass
         }
 
-        public override void Generate(CodeGenerator generator)
+        public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
             // pass
         }

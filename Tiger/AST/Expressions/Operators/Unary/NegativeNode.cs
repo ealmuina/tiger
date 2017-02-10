@@ -13,9 +13,9 @@ namespace Tiger.AST
     {
         public NegativeNode(ParserRuleContext context) : base(context) { }
 
-        public override void Generate(CodeGenerator generator)
+        public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
-            Operand.Generate(generator);
+            Operand.Generate(generator, symbols);
             //generator.Emit(OpCodes.Neg);
         }
     }
