@@ -55,24 +55,26 @@ namespace Tiger
 
         static void ProcessFile(string inputPath, string outputPath)
         {
-            Console.WriteLine("Building: {0}", Path.GetFullPath(inputPath));
+            Console.WriteLine("Tiger Compiler version 1.0\nCopyright (C) 2017 Eddy Almuiña\n");
+
+            //Console.WriteLine("Building: {0}", Path.GetFullPath(inputPath));
             Node root = ParseInput(inputPath);
             if (root == null)
             {
                 Environment.ExitCode = (int)ErrorCodes.SyntaxError;
                 return;
             }
-            Console.WriteLine("No syntax error found");
+            //Console.WriteLine("No syntax error found");
 
             if (!CheckSemantics(root))
             {
                 Environment.ExitCode = (int)ErrorCodes.SemanticError;
                 return;
             }
-            Console.WriteLine("No semantic error found.");
+            //Console.WriteLine("No semantic error found.");
 
             GenerateCode(root, outputPath);
-            Console.WriteLine("Success");
+            //Console.WriteLine("Success");
         }
 
         static Node ParseInput(string inputPath)
@@ -105,7 +107,7 @@ namespace Tiger
             if (errors.Count == 0)
                 return true;
             foreach (var error in errors)
-                Console.Error.WriteLine("Semantic error: {0} [line: {1}, column: {2}]", error.Message, error.Node.Line, error.Node.Column);
+                Console.Error.WriteLine("({1}, {2}): {0}.", error.Message, error.Node.Line, error.Node.Column);
             return false;
         }
 
@@ -145,7 +147,7 @@ namespace Tiger
                 (Expression<Action<int>>)(s => Console.Write(s)), //printi
                 (Expression<Action<string>>)(s => Console.Write(s)), //print
                 (Expression<Func<string>>)(() => Console.ReadLine()), //getline
-                (Expression<Action<string>>)(s =>Console.WriteLine(s)), //printline
+                (Expression<Action<string>>)(s => Console.WriteLine(s)), //printline
                 (Expression<Action<int>>)(n => Console.WriteLine(n)), //printiline
                 (Expression<Func<string, int>>)(s => s.Length), //size
                 (Expression<Func<string, int, int, string>>)((s, f, n) => s.Substring(f, n)), //substring

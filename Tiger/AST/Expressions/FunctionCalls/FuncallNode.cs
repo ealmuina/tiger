@@ -47,13 +47,26 @@ namespace Tiger.AST
             }
 
             var fInfo = (FunctionInfo)info;
-            //int parameterCount = fInfo.ParameterCount;
-            //int argumentCount = Arguments.Count();
-            //if (parameterCount != argumentCount)
-            //{
-            //    errors.Add(SemanticError.WrongParameterNumber(FunctionName, parameterCount, argumentCount, this));
-            //    return;
-            //}
+            int parameterCount = fInfo.Parameters.Length;
+            int argumentCount = Arguments.Count();
+            if (parameterCount != argumentCount)
+            {
+                errors.Add(SemanticError.WrongParameterNumber(FunctionName, parameterCount, argumentCount, this));
+                return;
+            }
+
+            var arguments = Arguments.ToArray();
+            for (int i = 0; i < parameterCount; i++)
+            {
+                string expectedT = fInfo.Parameters[i];
+                string exprT = arguments[i].Type;
+
+                if (exprT != expectedT)
+                {
+                    errors.Add(SemanticError.IncorrectTypeAssignation(exprT, expectedT, arguments[i]));
+                    return;
+                }
+            }
 
             SymbolInfo = fInfo;
         }

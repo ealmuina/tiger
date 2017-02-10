@@ -10,21 +10,29 @@ namespace Tiger.Semantics
 {
     abstract class ItemInfo
     {
-        protected ItemInfo(string name)
+        protected ItemInfo(string name, string type)
         {
             Name = name;
         }
 
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
+
+        public string Type { get; protected set; }
     }
 
     class VariableInfo : ItemInfo
     {
-        public VariableInfo(string name) : base(name) { }
+        public VariableInfo(string name, string type) : base(name, type) { }
     }
 
     class FunctionInfo : ItemInfo
     {
-        public FunctionInfo(string name) : base(name) { }
+        public FunctionInfo(string name, string returnType, params string[] parameters)
+            : base(name, returnType)
+        {
+            Parameters = parameters;
+        }
+
+        public string[] Parameters { get; protected set; }
     }
 }

@@ -28,6 +28,8 @@ namespace Tiger.AST
                 if (escaped) continue;
                 Text += text[i];
             }
+
+            Type = "String";
         }
 
         public string Text { get; protected set; }

@@ -68,7 +68,7 @@ namespace Tiger.Semantics
             {
                 Message = string.Format("Can not assign value to function or constant '{0}'", name),
                 Node = node
-            }; ;
+            };
         }
 
         public static SemanticError WrongParameterNumber(string name, int formalCount, int actualCount, Node node)
@@ -76,6 +76,15 @@ namespace Tiger.Semantics
             return new SemanticError
             {
                 Message = string.Format("Function '{0}' takes {1} arguments, got {2} instead", formalCount, actualCount),
+                Node = node
+            };
+        }
+
+        public static SemanticError IncorrectTypeAssignation(string exprT, string expectedT, Node node)
+        {
+            return new SemanticError
+            {
+                Message = string.Format("The expression return type '{0}' does not match with the expected type '{1}'", exprT, expectedT),
                 Node = node
             };
         }
