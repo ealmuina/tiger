@@ -16,7 +16,7 @@ namespace Tiger.AST
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
             Operand.Generate(generator, symbols);
-            //generator.Emit(OpCodes.Neg);
+            generator.Generator.Emit(OpCodes.Neg);
         }
     }
 }

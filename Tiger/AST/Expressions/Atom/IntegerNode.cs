@@ -10,7 +10,7 @@ using Tiger.CodeGeneration;
 
 namespace Tiger.AST
 {
-    class IntegerNode : ExpressionNode
+    class IntegerNode : AtomNode
     {
         public IntegerNode(ParserRuleContext context, string text) : base(context)
         {
@@ -19,11 +19,6 @@ namespace Tiger.AST
         }
 
         public int Value { get; protected set; }
-
-        public override void CheckSemantics(Scope scope, List<SemanticError> errors)
-        {
-            //pass
-        }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {

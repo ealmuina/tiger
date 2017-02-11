@@ -69,6 +69,7 @@ namespace Tiger.AST
             }
 
             SymbolInfo = fInfo;
+            Type = fInfo.Type;
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)

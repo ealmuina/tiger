@@ -17,6 +17,19 @@ namespace Tiger.AST
             get { return Children[0] as ExpressionNode; }
         }
 
+        public override string Type
+        {
+            get
+            {
+                return Children[0].Type;
+            }
+
+            protected set
+            {
+                base.Type = value;
+            }
+        }
+
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             Operand.CheckSemantics(scope, errors);

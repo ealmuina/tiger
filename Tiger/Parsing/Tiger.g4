@@ -61,11 +61,16 @@ type_fields
  * Lexer Rules
  */
 
-fragment LETTER		:	[a-zA-Z]										;
-fragment DIGIT		:	[0-9]											;
-fragment ESCAPE_SEQ	:	'\\' ('n' | 'r' | 't' | '"' | EMPTY* '\\')		; // TODO falta el \ddd
-fragment CHAR		:	[ -~] | ESCAPE_SEQ								;
-fragment EMPTY		:	[ \t\n\r]										;
+fragment LETTER		:	[a-zA-Z]												;
+fragment DIGIT		:	[0-9]													;
+
+fragment ASCII		:	'0' DIGIT DIGIT
+					|	'1' ([0-1] DIGIT | '2' [0-8])
+					;
+
+fragment ESCAPE_SEQ	:	'\\' ('n' | 'r' | 't' | '"' | EMPTY+ '\\' | ASCII)		; 
+fragment CHAR		:	([ -!] | [#-[] | [\]-~]) | ESCAPE_SEQ										;
+fragment EMPTY		:	[ \t\n\r]												;
 
 COMMENT
 	:	'/*' (COMMENT | .)*? '*/' -> skip	

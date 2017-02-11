@@ -97,6 +97,7 @@
     <Compile Include="AST\Declarations\Types\TypeFieldsNode.cs" />
     <Compile Include="AST\ProgramNode.cs" />
     <Compile Include="CodeGeneration\CodeGenerator.cs" />
+    <Compile Include="CodeGeneration\StandardLibrary.cs" />
     <Compile Include="CodeGeneration\SymbolTable.cs" />
     <Compile Include="Parsing\ASTBuilder.cs" />
     <Compile Include="Parsing\ErrorListener.cs" />

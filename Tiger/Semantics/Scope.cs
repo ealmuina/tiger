@@ -24,10 +24,10 @@ namespace Tiger.Semantics
                 new FunctionInfo("printi", "None", "Int"),
                 new FunctionInfo("print", "None", "String"),
                 new FunctionInfo("getline", "String", "None"),
-                new FunctionInfo("ord", "Int", "String"),
-                new FunctionInfo("chr", "String", "Int"),
                 new FunctionInfo("printline", "None", "String"),
                 new FunctionInfo("printiline", "None", "Int"),
+                new FunctionInfo("ord", "Int", "String"),
+                new FunctionInfo("chr", "String", "Int"),
                 new FunctionInfo("size", "Int", "String"),
                 new FunctionInfo("substring", "String", "String", "Int", "Int"),
                 new FunctionInfo("concat", "String", "String", "String"),
@@ -58,7 +58,7 @@ namespace Tiger.Semantics
             {
                 return GetItem<ItemInfo>(name);
             }
-        } 
+        }
 
         public TInfo GetItem<TInfo>(string name) where TInfo : ItemInfo
         {

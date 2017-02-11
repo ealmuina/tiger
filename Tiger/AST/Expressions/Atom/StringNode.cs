@@ -16,28 +16,56 @@ namespace Tiger.AST
         {
             //TODO Chequear si dejo el escape de /.../ aqui o si se puede pasar al lexer
             Text = "";
-            bool escaped = false;
             for (int i = 1; i < text.Length - 1; i++)
             {
-                if (text[i] == '\\')
+                if (text[i] != '\\')
                 {
-                    if (escaped) escaped = false;
-                    else escaped = true;
-                    continue;
+                    Text += text[i];
                 }
-                if (escaped) continue;
-                Text += text[i];
+                else
+                {
+                    i++;
+                    if (char.IsWhiteSpace(text[i]))
+                    {
+                        while (char.IsWhiteSpace(text[i]))
+                            i++;
+                    }
+                    else if (char.IsDigit(text[i]))
+                    {
+                        var value = byte.Parse(text.Substring(i, 3));
+                        Text += (char)value;
+                        i += 2;
+                    }
+                    else
+                    {
+                        char c;
+                        switch (text[i])
+                        {
+                            case 'n':
+                                c = '\n';
+                                break;
+                            case 't':
+                                c = '\t';
+                                break;
+                            case 'r':
+                                c = '\r';
+                                break;
+                            case '\\':
+                                c = '\\';
+                                break;
+                            default: //case '\"'
+                                c = '\"';
+                                break;
+                        }
+                        Text += c;
+                    }
+                }
             }
 
             Type = "String";
         }
 
         public string Text { get; protected set; }
-
-        public override void CheckSemantics(Scope scope, List<SemanticError> errors)
-        {
-            //pass
-        }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
