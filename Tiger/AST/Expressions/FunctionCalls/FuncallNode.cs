@@ -28,6 +28,11 @@ namespace Tiger.AST
 
         public FunctionInfo SymbolInfo { get; private set; }
 
+        public override string Type
+        {
+            get { return SymbolInfo.Type; }
+        }
+
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             foreach (var arg in Arguments)
@@ -69,7 +74,6 @@ namespace Tiger.AST
             }
 
             SymbolInfo = fInfo;
-            Type = fInfo.Type;
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)

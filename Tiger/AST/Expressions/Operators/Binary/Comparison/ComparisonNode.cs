@@ -12,5 +12,10 @@ namespace Tiger.AST
     abstract class ComparisonNode : BinaryNode
     {
         public ComparisonNode(ParserRuleContext context) : base(context) { }
+
+        protected override string OperationType
+        {
+            get { return "comparison"; }
+        }
     }
 }

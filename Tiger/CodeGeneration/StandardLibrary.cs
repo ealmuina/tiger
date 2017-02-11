@@ -6,28 +6,34 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Linq.Expressions;
+using Tiger.Semantics;
 
 namespace Tiger.CodeGeneration
 {
     static class StandardLibrary
     {
-        public static SymbolTable Build(ModuleBuilder builder)
+        public static SymbolTable Build(ModuleBuilder builder, Scope scope)
         {
-            TypeBuilder stdl = builder.DefineType("StandardLibrary");
             var symbols = new SymbolTable();
-            var funcs = typeof(StandardLibrary).GetMethods().Where(m => m.IsStatic && m.Name != "Build");
+            var funcs = typeof(StandardLibrary).GetMethods().Where(m => scope.UsedStdlFunctions.Contains(m.Name.ToLower()));
+            TypeBuilder stdl = null;
 
             foreach (var f in funcs)
             {
                 var args = new List<object>();
                 if (f.GetParameters().Length > 0)
+                {
+                    if (stdl == null)
+                        stdl = builder.DefineType("StandardLibrary");
                     args.Add(stdl);
+                }
 
                 var method = (MethodInfo)f.Invoke(null, args.ToArray());
                 symbols.Functions[f.Name.ToLower()] = method;
             }
 
-            stdl.CreateType();
+            if (stdl != null)
+                stdl.CreateType();
             return symbols;
         }
 

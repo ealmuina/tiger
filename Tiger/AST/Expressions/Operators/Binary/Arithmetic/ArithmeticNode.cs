@@ -14,13 +14,9 @@ namespace Tiger.AST
     {
         public ArithmeticNode(ParserRuleContext context) : base(context) { }
 
-        public abstract OpCode OperatorOpCode { get; }
-
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        protected override string OperationType
         {
-            LeftOperand.Generate(generator, symbols);
-            RightOperand.Generate(generator, symbols);
-            generator.Generator.Emit(OperatorOpCode);
+            get { return "arithmetic"; }
         }
     }
 }

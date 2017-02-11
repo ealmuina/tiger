@@ -35,22 +35,22 @@ namespace Tiger
                 Environment.ExitCode = (int)ErrorCodes.FileError;
                 return;
             }
-            try
+            //try
             {
                 ProcessFile(args[0], Path.ChangeExtension(args[0], "exe"));
             }
-            catch (Exception exc)
-            {
-                Console.Error.WriteLine("Unexpected error: {0}", exc.Message);
-                Environment.ExitCode = (int)ErrorCodes.UnexpectedError;
-            }
+            //catch (Exception exc)
+            //{
+            //    Console.Error.WriteLine("Unexpected error: {0}", exc.Message);
+            //    Environment.ExitCode = (int)ErrorCodes.UnexpectedError;
+            //}
         }
 
         static void PrintHelp()
         {
             Console.WriteLine("Usage:");
             Console.WriteLine("sl.exe [<input_file>]");
-            Console.WriteLine("<input_file>:\tPath to file written in SimpleLanguage to be compiled");
+            Console.WriteLine("<input_file>:\tPath to file written in Tiger to be compiled");
             Console.WriteLine("Without parameters programm will print this help.");
         }
 
@@ -67,14 +67,15 @@ namespace Tiger
             }
             //Console.WriteLine("No syntax error found");
 
-            if (!CheckSemantics(root))
+            var scope = new Scope();
+            if (!CheckSemantics(root, scope))
             {
                 Environment.ExitCode = (int)ErrorCodes.SemanticError;
                 return;
             }
             //Console.WriteLine("No semantic error found.");
 
-            GenerateCode(root, outputPath);
+            GenerateCode(root, outputPath, scope);
             //Console.WriteLine("Success");
         }
 
@@ -101,10 +102,10 @@ namespace Tiger
             //}
         }
 
-        static bool CheckSemantics(Node root)
+        static bool CheckSemantics(Node root, Scope scope)
         {
             List<SemanticError> errors = new List<SemanticError>();
-            root.CheckSemantics(new Scope(), errors);
+            root.CheckSemantics(scope, errors);
             if (errors.Count == 0)
                 return true;
             foreach (var error in errors)
@@ -112,7 +113,7 @@ namespace Tiger
             return false;
         }
 
-        static void GenerateCode(Node root, string outputPath)
+        static void GenerateCode(Node root, string outputPath, Scope scope)
         {
             var generator = new CodeGenerator(outputPath);
 
@@ -122,7 +123,7 @@ namespace Tiger
             generator.Assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave, Path.GetDirectoryName(outputPath));
             generator.Module = generator.Assembly.DefineDynamicModule(name, filename);
 
-            SymbolTable symbols = StandardLibrary.Build(generator.Module);
+            SymbolTable symbols = StandardLibrary.Build(generator.Module, scope);
 
             generator.Type = generator.Module.DefineType("Program");
             MethodBuilder mainMethod = generator.Type.DefineMethod("Main", MethodAttributes.Static, typeof(void), System.Type.EmptyTypes);

@@ -61,11 +61,14 @@ namespace Tiger.AST
                     }
                 }
             }
-
-            Type = "String";
         }
 
         public string Text { get; protected set; }
+
+        public override string Type
+        {
+            get { return "String"; }
+        }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {

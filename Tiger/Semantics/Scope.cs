@@ -10,16 +10,19 @@ namespace Tiger.Semantics
 {
     class Scope
     {
-        Dictionary<string, ItemInfo> symbols = new Dictionary<string, ItemInfo>();
+        Dictionary<string, ItemInfo> symbols;
+        FunctionInfo[] stdl;
 
         public Scope()
         {
-            SetFunctions();
+            symbols = new Dictionary<string, ItemInfo>();
+            UsedStdlFunctions = new HashSet<string>();
+            SetStdl();
         }
 
-        void SetFunctions()
+        void SetStdl()
         {
-            var stdl = new[]
+            stdl = new[]
             {
                 new FunctionInfo("printi", "None", "Int"),
                 new FunctionInfo("print", "None", "String"),
@@ -41,6 +44,8 @@ namespace Tiger.Semantics
 
         public bool IsDefined(string name)
         {
+            if (stdl.Where(m => m.Name == name).Count() > 0)
+                UsedStdlFunctions.Add(name);
             return symbols.ContainsKey(name);
         }
 
@@ -59,6 +64,8 @@ namespace Tiger.Semantics
                 return GetItem<ItemInfo>(name);
             }
         }
+
+        public HashSet<string> UsedStdlFunctions { get; protected set; }
 
         public TInfo GetItem<TInfo>(string name) where TInfo : ItemInfo
         {

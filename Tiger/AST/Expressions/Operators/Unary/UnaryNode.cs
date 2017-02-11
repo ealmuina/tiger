@@ -19,15 +19,7 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get
-            {
-                return Children[0].Type;
-            }
-
-            protected set
-            {
-                base.Type = value;
-            }
+            get { return Children[0].Type; }
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)

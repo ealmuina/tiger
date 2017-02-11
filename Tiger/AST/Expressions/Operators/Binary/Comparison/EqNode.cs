@@ -13,6 +13,11 @@ namespace Tiger.AST
     {
         public EqNode(ParserRuleContext context) : base(context) { }
 
+        public override OpCode OperatorOpCode
+        {
+            get { return OpCodes.Ceq; }
+        }
+
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
             throw new NotImplementedException();

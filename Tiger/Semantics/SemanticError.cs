@@ -88,5 +88,14 @@ namespace Tiger.Semantics
                 Node = node
             };
         }
+
+        public static SemanticError InvalidBinaryOperation(string type, string member, Node node)
+        {
+            return new SemanticError
+            {
+                Message = string.Format("Invalid use of binary {0} operator with a non-integer {1} value", type, member),
+                Node = node
+            };
+        }
     }
 }
