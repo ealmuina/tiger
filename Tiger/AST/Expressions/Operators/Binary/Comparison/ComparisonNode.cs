@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection.Emit;
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
+using Tiger.Semantics;
 
 namespace Tiger.AST
 {
@@ -13,9 +14,23 @@ namespace Tiger.AST
     {
         public ComparisonNode(ParserRuleContext context) : base(context) { }
 
-        protected override string OperationType
+        public override string Type
         {
-            get { return "comparison"; }
+            get { return "Int"; }
         }
+
+        public override void CheckSemantics(Scope scope, List<SemanticError> errors)
+        {
+            if (!SupportType(LeftOperand.Type))
+                errors.Add(SemanticError.InvalidUseOfOperator("binary relational", "valid", "left", LeftOperand));
+
+            if (!SupportType(RightOperand.Type))
+                errors.Add(SemanticError.InvalidUseOfOperator("binary relational", "valid", "right", RightOperand));
+
+            if (LeftOperand.Type != RightOperand.Type)
+                errors.Add(SemanticError.TypesDoNotMatch("relational", this));
+        }
+
+        protected abstract bool SupportType(string type);
     }
 }

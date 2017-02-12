@@ -12,12 +12,9 @@ namespace Tiger.AST
 {
     class ProgramNode : Node
     {
-        public ProgramNode(ParserRuleContext context, ExpressionNode expression) : base(context)
-        {
-            Expression = expression;
-        }
+        public ProgramNode(ParserRuleContext context) : base(context) { }
 
-        public ExpressionNode Expression { get; protected set; }
+        public ExpressionNode Expression { get { return (ExpressionNode)Children[0]; } }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

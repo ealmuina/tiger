@@ -89,11 +89,20 @@ namespace Tiger.Semantics
             };
         }
 
-        public static SemanticError InvalidBinaryOperation(string type, string member, Node node)
+        public static SemanticError InvalidUseOfOperator(string op, string type, string member, Node node)
         {
             return new SemanticError
             {
-                Message = string.Format("Invalid use of binary {0} operator with a non-integer {1} value", type, member),
+                Message = string.Format("Invalid use of {0} operator with a non-{1} {2} value", op, type, member),
+                Node = node
+            };
+        }
+
+        public static SemanticError TypesDoNotMatch(string op, Node node)
+        {
+            return new SemanticError
+            {
+                Message = string.Format("Types of left and right operands of the binary {0} operator do not match", op),
                 Node = node
             };
         }

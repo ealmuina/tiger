@@ -12,6 +12,11 @@ namespace Tiger.AST
     {
         public MinusNode(ParserRuleContext context) : base(context) { }
 
+        public override string OperatorName
+        {
+            get { return "minus"; }
+        }
+
         public override OpCode OperatorOpCode
         {
             get { return OpCodes.Sub; }

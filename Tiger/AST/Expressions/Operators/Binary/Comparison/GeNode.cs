@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
+using System.Reflection;
 
 namespace Tiger.AST
 {
@@ -13,14 +14,33 @@ namespace Tiger.AST
     {
         public GeNode(ParserRuleContext context) : base(context) { }
 
-        public override OpCode OperatorOpCode
+        protected override bool SupportType(string type)
         {
-            get { return OpCodes.C; }
+            return new[] { "Int", "String" }.Contains(type);
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
-            throw new NotImplementedException();
+            LeftOperand.Generate(generator, symbols);
+            RightOperand.Generate(generator, symbols);
+
+            ILGenerator il = generator.Generator;
+
+            if (Type == "String")
+            {
+                //Compare the strings using the string CompareTo method
+                MethodInfo compareTo = typeof(string).GetMethod("CompareTo", new[] { typeof(string) });
+                il.Emit(OpCodes.Call, compareTo);
+                il.Emit(OpCodes.Ldc_I4, -1);
+                il.Emit(OpCodes.Cgt);
+            }
+            else
+            {
+                //The relation >= is true iff < is false
+                il.Emit(OpCodes.Clt);
+                il.Emit(OpCodes.Ldc_I4_0);
+                il.Emit(OpCodes.Ceq);
+            }
         }
     }
 }

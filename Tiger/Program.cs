@@ -24,7 +24,7 @@ namespace Tiger
             if (args.Length != 1)
             {
                 Console.Error.WriteLine("Wrong parameter number.");
-                Environment.ExitCode = (int)ErrorCodes.WrongParameters;
+                Environment.ExitCode = 1;
                 PrintHelp();
                 return;
             }
@@ -32,7 +32,7 @@ namespace Tiger
             if (!File.Exists(args[0]))
             {
                 Console.Error.WriteLine("Input file path is not valid, does not exist or user has no sufficient permission to read it.");
-                Environment.ExitCode = (int)ErrorCodes.FileError;
+                Environment.ExitCode = 1;
                 return;
             }
             //try
@@ -58,36 +58,29 @@ namespace Tiger
         {
             Console.WriteLine("Tiger Compiler version 1.0\nCopyright (C) 2017 Eddy Almuiña\n");
 
-            //Console.WriteLine("Building: {0}", Path.GetFullPath(inputPath));
             Node root = ParseInput(inputPath);
-            if (root == null)
-            {
-                Environment.ExitCode = (int)ErrorCodes.SyntaxError;
-                return;
-            }
-            //Console.WriteLine("No syntax error found");
-
             var scope = new Scope();
-            if (!CheckSemantics(root, scope))
+
+            if (root == null || !CheckSemantics(root, scope))
             {
-                Environment.ExitCode = (int)ErrorCodes.SemanticError;
+                Environment.ExitCode = 1;
                 return;
             }
-            //Console.WriteLine("No semantic error found.");
 
             GenerateCode(root, outputPath, scope);
-            //Console.WriteLine("Success");
         }
 
         static Node ParseInput(string inputPath)
         {
-            //try
+            try
             {
                 var input = new AntlrFileStream(inputPath);
                 var lexer = new TigerLexer(input);
+                lexer.RemoveErrorListeners();
 
                 var tokens = new CommonTokenStream(lexer);
                 var parser = new TigerParser(tokens);
+                parser.ErrorHandler = new BailErrorStrategy();
                 parser.RemoveErrorListeners();
                 parser.AddErrorListener(new ErrorListener());
 
@@ -96,10 +89,10 @@ namespace Tiger
                 var ast = astBuilder.Visit(tree);
                 return ast as Node;
             }
-            //catch (Exception)
-            //{
-            //    return null;
-            //}
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         static bool CheckSemantics(Node root, Scope scope)

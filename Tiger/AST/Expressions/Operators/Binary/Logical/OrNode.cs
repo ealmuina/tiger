@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
+using System.Reflection.Emit;
 
 namespace Tiger.AST
 {
@@ -12,9 +13,14 @@ namespace Tiger.AST
     {
         public OrNode(ParserRuleContext context) : base(context) { }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override OpCode OperatorOpCode
         {
-            throw new NotImplementedException();
+            get { return OpCodes.Or; }
+        }
+
+        public override OpCode ShortCircuitOpCode
+        {
+            get { return OpCodes.Ldc_I4_1; }
         }
     }
 }

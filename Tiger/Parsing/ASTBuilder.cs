@@ -12,7 +12,9 @@ namespace Tiger.Parsing
     {
         public override Node VisitProgram([NotNull] TigerParser.ProgramContext context)
         {
-            return new ProgramNode(context, (ExpressionNode)Visit(context.expr()));
+            var node = new ProgramNode(context);
+            node.Children.Add(Visit(context.expr()));
+            return node;
         }
 
         #region Expressions
@@ -67,8 +69,8 @@ namespace Tiger.Parsing
                     throw new NotSupportedException();
             }
 
-            node.Children.Add(Visit(context.e1));
-            node.Children.Add(Visit(context.e2));
+            node.Children.Add(Visit(context.expr(0)));
+            node.Children.Add(Visit(context.expr(1)));
             return node;
         }
 
@@ -99,8 +101,8 @@ namespace Tiger.Parsing
                     throw new NotSupportedException();
             }
 
-            node.Children.Add(Visit(context.e1));
-            node.Children.Add(Visit(context.e2));
+            node.Children.Add(Visit(context.expr(0)));
+            node.Children.Add(Visit(context.expr(1)));
             return node;
         }
 
@@ -119,8 +121,8 @@ namespace Tiger.Parsing
                     throw new NotSupportedException();
             }
 
-            node.Children.Add(Visit(context.e1));
-            node.Children.Add(Visit(context.e2));
+            node.Children.Add(Visit(context.expr(0)));
+            node.Children.Add(Visit(context.expr(1)));
             return node;
         }
 

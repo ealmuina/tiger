@@ -12,6 +12,11 @@ namespace Tiger.AST
     {
         public DivNode(ParserRuleContext context) : base(context) { }
 
+        public override string OperatorName
+        {
+            get { return "divide"; }
+        }
+
         public override OpCode OperatorOpCode
         {
             get { return OpCodes.Div; }

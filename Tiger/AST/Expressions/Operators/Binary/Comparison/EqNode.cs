@@ -13,14 +13,16 @@ namespace Tiger.AST
     {
         public EqNode(ParserRuleContext context) : base(context) { }
 
-        public override OpCode OperatorOpCode
+        protected override bool SupportType(string type)
         {
-            get { return OpCodes.Ceq; }
+            return type != "None";
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
-            throw new NotImplementedException();
+            LeftOperand.Generate(generator, symbols);
+            RightOperand.Generate(generator, symbols);
+            generator.Generator.Emit(OpCodes.Ceq);
         }
     }
 }

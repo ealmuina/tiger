@@ -100,6 +100,7 @@
     <Compile Include="CodeGeneration\StandardLibrary.cs" />
     <Compile Include="CodeGeneration\SymbolTable.cs" />
     <Compile Include="Parsing\ASTBuilder.cs" />
+    <Compile Include="Parsing\BailTigerLexer.cs" />
     <Compile Include="Parsing\ErrorListener.cs" />
     <Compile Include="Parsing\TigerBaseVisitor.cs" />
     <Compile Include="Parsing\TigerLexer.cs" />

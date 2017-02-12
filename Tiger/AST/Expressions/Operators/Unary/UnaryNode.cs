@@ -16,15 +16,5 @@ namespace Tiger.AST
         {
             get { return Children[0] as ExpressionNode; }
         }
-
-        public override string Type
-        {
-            get { return Children[0].Type; }
-        }
-
-        public override void CheckSemantics(Scope scope, List<SemanticError> errors)
-        {
-            Operand.CheckSemantics(scope, errors);
-        }
     }
 }

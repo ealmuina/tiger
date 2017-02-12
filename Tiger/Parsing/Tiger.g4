@@ -5,7 +5,7 @@ grammar Tiger;
  */
 
 compileUnit
-	:	expr																# Program
+	:	expr EOF															# Program
 	;
 
 expr
@@ -15,11 +15,11 @@ expr
 	|	lvalue																# LValue	
 
 	|	'-' expr															# UnaryMinus
-	|	e1=expr op=('*' | '/') e2=expr										# Arithmetic
-	|	e1=expr op=('+' | '-') e2=expr										# Arithmetic
-	|	e1=expr op=('<>' | '=' | '>=' | '<=' | '>' | '<') e2=expr			# Comparison
-	|	e1=expr op='&' e2=expr												# Logical
-	|	e1=expr op='|' e2=expr												# Logical
+	|	expr op=('*' | '/') expr											# Arithmetic
+	|	expr op=('+' | '-') expr											# Arithmetic
+	|	expr op=('<>' | '=' | '>=' | '<=' | '>' | '<') expr					# Comparison
+	|	expr op='&' expr													# Logical
+	|	expr op='|' expr													# Logical
 
 	|	lvalue ':=' expr													# Assign
 	|	ID '(' (expr (',' expr)*)? ')'										# Call
@@ -69,12 +69,8 @@ fragment ASCII		:	'0' DIGIT DIGIT
 					;
 
 fragment ESCAPE_SEQ	:	'\\' ('n' | 'r' | 't' | '"' | EMPTY+ '\\' | ASCII)		; 
-fragment CHAR		:	([ -!] | [#-[] | [\]-~]) | ESCAPE_SEQ										;
+fragment CHAR		:	([ -!] | [#-[] | [\]-~]) | ESCAPE_SEQ					;
 fragment EMPTY		:	[ \t\n\r]												;
-
-COMMENT
-	:	'/*' (COMMENT | .)*? '*/' -> skip	
-	;
 
 STRING
 	:	'"' CHAR* '"'
@@ -86,6 +82,10 @@ INTEGER
 
 ID
 	:	LETTER (LETTER | DIGIT | '_')*		
+	;
+
+COMMENT
+	:	'/*' (COMMENT | .)*? '*/' -> skip
 	;
 
 WS	

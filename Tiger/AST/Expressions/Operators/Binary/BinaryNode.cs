@@ -14,8 +14,6 @@ namespace Tiger.AST
     {
         public BinaryNode(ParserRuleContext context) : base(context) { }
 
-        public abstract OpCode OperatorOpCode { get; }
-
         public ExpressionNode LeftOperand
         {
             get { return Children[0] as ExpressionNode; }
@@ -24,32 +22,6 @@ namespace Tiger.AST
         public ExpressionNode RightOperand
         {
             get { return Children[1] as ExpressionNode; }
-        }
-
-        public override string Type
-        {
-            get { return "Int"; }
-        }
-
-        protected abstract string OperationType { get; }
-
-        public override void CheckSemantics(Scope scope, List<SemanticError> errors)
-        {
-            LeftOperand.CheckSemantics(scope, errors);
-            RightOperand.CheckSemantics(scope, errors);
-
-            if (LeftOperand.Type != "Int")
-                errors.Add(SemanticError.InvalidBinaryOperation(OperationType, "left", LeftOperand));
-
-            if (RightOperand.Type != "Int")
-                errors.Add(SemanticError.InvalidBinaryOperation(OperationType, "right", RightOperand));
-    }
-
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
-        {
-            LeftOperand.Generate(generator, symbols);
-            RightOperand.Generate(generator, symbols);
-            generator.Generator.Emit(OperatorOpCode);
         }
     }
 }
