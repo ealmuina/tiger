@@ -1,1 +1,1 @@
-print(if 0 then "Eddy" else "Nelson")
+while 1 do print("hi")

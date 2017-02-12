@@ -57,6 +57,8 @@ namespace Tiger.Semantics
             return false;
         }
 
+        public bool InsideLoop { get; set; }
+
         public ItemInfo this[string name]
         {
             get

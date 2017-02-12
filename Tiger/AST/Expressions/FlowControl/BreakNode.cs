@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
+using System.Reflection.Emit;
 
 namespace Tiger.AST
 {
@@ -15,12 +16,17 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            throw new NotImplementedException();
+            if (!scope.InsideLoop)
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("break used out of a while or for statement"),
+                    Node = this
+                });
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
-            throw new NotImplementedException();
+            generator.Generator.Emit(OpCodes.Br, symbols.LoopEnd);
         }
     }
 }

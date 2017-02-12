@@ -12,8 +12,6 @@ using Tiger.CodeGeneration;
 using Tiger.Parsing;
 using Tiger.Semantics;
 using Tiger.AST;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 
 namespace Tiger
 {

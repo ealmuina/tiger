@@ -29,6 +29,13 @@ namespace Tiger.AST
 
             if (LeftOperand.Type != RightOperand.Type)
                 errors.Add(SemanticError.TypesDoNotMatch("relational", this));
+
+            if (LeftOperand is ComparisonNode || RightOperand is ComparisonNode)
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Comparison operators do not associate"),
+                    Node = this
+                });
         }
 
         protected abstract bool SupportType(string type);
