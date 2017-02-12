@@ -106,5 +106,32 @@ namespace Tiger.Semantics
                 Node = node
             };
         }
+
+        public static SemanticError IfConditionNotInteger(Node node)
+        {
+            return new SemanticError
+            {
+                Message = string.Format("The condition of the if-then-else statement does not return an integer value"),
+                Node = node
+            };
+        }
+
+        public static SemanticError IfThenNotReturns(Node node)
+        {
+            return new SemanticError
+            {
+                Message = string.Format("The then expression of the if-then statement should not return a value"),
+                Node = node
+            };            
+        }
+
+        public static SemanticError IfThenElseBadTypes(Node node)
+        {
+            return new SemanticError
+            {
+                Message = string.Format("The return type of the expressions of the if-then-else statement is not the same"),
+                Node = node
+            };            
+        }
     }
 }

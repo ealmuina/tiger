@@ -4,6 +4,6 @@
     <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>./test.tig</StartArguments>
+    <StartArguments>Input\test.tig</StartArguments>
   </PropertyGroup>
 </Project>

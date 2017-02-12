@@ -208,9 +208,11 @@ namespace Tiger.Parsing
         public override Node VisitIf([NotNull] TigerParser.IfContext context)
         {
             var node = new IfNode(context);
-            node.Children.Add(Visit(context.e1)); //If condition
-            node.Children.Add(Visit(context.e2)); //Then expression
-            node.Children.Add(context.e3 == null ? new NilNode() : Visit(context.e3)); //Else expression if any, otherwise nil
+            node.Children.Add(Visit(context.expr(0))); //If condition
+            node.Children.Add(Visit(context.expr(1))); //Then expression
+
+            var elseExpr = context.expr(2);
+            node.Children.Add(elseExpr != null ? Visit(elseExpr) : null); //Else expression if any, otherwise nil
             return node;
         }
 

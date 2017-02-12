@@ -1,7 +1,0 @@
-let var x := 1
-in
-  let var x := "a"
-  in
-    print(x)
-  end
-end
