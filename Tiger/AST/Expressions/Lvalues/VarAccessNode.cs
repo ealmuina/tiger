@@ -26,6 +26,8 @@ namespace Tiger.AST
 
         public string Name { get; protected set; }
 
+        public bool IsParam { get; protected set; }
+
         public override string Type
         {
             get { return type; }
@@ -43,7 +45,7 @@ namespace Tiger.AST
             {
                 var info = (VariableInfo)scope[Name];
 
-                if (info.ReadOnly && !IsAccessor)
+                if (info.IsReadOnly && !IsAccessor)
                     errors.Add(new SemanticError
                     {
                         Message = string.Format("Invalid use of assignment to a readonly variable"),
@@ -51,18 +53,24 @@ namespace Tiger.AST
                     });
 
                 type = info.Type;
+                IsParam = info.IsParam;
             }
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
             ILGenerator il = generator.Generator;
-            LocalBuilder variable = symbols.Variables[Name];
 
-            if (IsAccessor)
-                il.Emit(OpCodes.Ldloc, variable);
+            if (IsParam)
+                il.Emit(OpCodes.Ldarg, symbols.ParamIndex[Name]);
             else
-                il.Emit(OpCodes.Stloc, variable);
+            {
+                LocalBuilder variable = symbols.Variables[Name];
+                if (IsAccessor)
+                    il.Emit(OpCodes.Ldloc, variable);
+                else
+                    il.Emit(OpCodes.Stloc, variable);
+            }
         }
     }
 }

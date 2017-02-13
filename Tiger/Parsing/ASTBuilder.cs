@@ -296,18 +296,21 @@ namespace Tiger.Parsing
             IToken id = context.id;
             node.Children.Add(
                 new IdNode(id.Line, id.Column, id.Text));
+
             node.Children.Add(
                 context.type_fields() == null ?
-                new NilNode() :
+                null :
                 Visit(context.type_fields()));
 
             IToken typeId = context.typeId;
-            node.Children.Add(typeId == null ?
-                new NilNode() as Node :
+            node.Children.Add(
+                typeId == null ?
+                null :
                 new IdNode(
                     typeId.Line,
                     typeId.Column,
                     typeId.Text));
+
             node.Children.Add(Visit(context.expr()));
 
             return node;
@@ -354,24 +357,20 @@ namespace Tiger.Parsing
 
         public override Node VisitTypeFields([NotNull] TigerParser.TypeFieldsContext context)
         {
-            var node = new TypeFieldsNode(context);
+            var names = new List<string>();
+            var types = new List<string>();
+
             ITerminalNode[] ids = context.ID();
 
-            for (int i = 0; i < ids.Length - 1; i += 2)
+            for (int i = 0; i < ids.Length; i++)
             {
-                var name = new IdNode(
-                    ids[i].Symbol.Line,
-                    ids[i].Symbol.Column,
-                    ids[i].GetText());
-                var type = new IdNode(
-                    ids[i + 1].Symbol.Line,
-                    ids[i + 1].Symbol.Column,
-                    ids[i + 1].GetText());
-
-                var field = new TypeFieldNode(ids[i].Symbol.Line, ids[i].Symbol.Column);
-                node.Children.Add(field);
+                if (i % 2 == 0)
+                    names.Add(ids[i].GetText());
+                else
+                    types.Add(ids[i].GetText());
             }
 
+            var node = new TypeFieldsNode(context, names.ToArray(), types.ToArray());
             return node;
         }
         #endregion

@@ -75,7 +75,7 @@ namespace Tiger.Semantics
         {
             return new SemanticError
             {
-                Message = string.Format("Function '{0}' takes {1} arguments, got {2} instead", formalCount, actualCount),
+                Message = string.Format("Function '{0}' takes {1} arguments, got {2} instead", name, formalCount, actualCount),
                 Node = node
             };
         }

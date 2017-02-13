@@ -23,12 +23,15 @@ namespace Tiger.Semantics
 
     class VariableInfo : ItemInfo
     {
-        public VariableInfo(string name, string type, bool readOnly) : base(name, type)
+        public VariableInfo(string name, string type, bool readOnly, bool isparam) : base(name, type)
         {
-            ReadOnly = readOnly;
+            IsReadOnly = readOnly;
+            IsParam = isparam;
         }
 
-        public bool ReadOnly { get; protected set; }
+        public bool IsReadOnly { get; protected set; }
+
+        public bool IsParam { get; protected set; }
     }
 
     class FunctionInfo : ItemInfo

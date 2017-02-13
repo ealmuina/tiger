@@ -117,8 +117,9 @@ namespace Tiger
             SymbolTable symbols = StandardLibrary.Build(generator.Module, scope);
 
             generator.Type = generator.Module.DefineType("Program");
-            MethodBuilder mainMethod = generator.Type.DefineMethod("Main", MethodAttributes.Static, typeof(void), System.Type.EmptyTypes);
+            MethodBuilder mainMethod = generator.Type.DefineMethod("Main", MethodAttributes.Static, typeof(void), Type.EmptyTypes);
             generator.Assembly.SetEntryPoint(mainMethod);
+            generator.Method = mainMethod;
             generator.Generator = mainMethod.GetILGenerator();
 
             root.Generate(generator, symbols);

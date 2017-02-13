@@ -21,6 +21,8 @@ namespace Tiger.CodeGeneration
 
         public TypeBuilder Type { get; set; }
 
+        public MethodBuilder Method { get; set; }
+
         public AssemblyBuilder Assembly { get; set; }
 
         public string Name { get; set; }

@@ -67,10 +67,7 @@ namespace Tiger.AST
                 string exprT = arguments[i].Type;
 
                 if (exprT != expectedT)
-                {
                     errors.Add(SemanticError.IncorrectTypeAssignation(exprT, expectedT, arguments[i]));
-                    return;
-                }
             }
 
             SymbolInfo = fInfo;

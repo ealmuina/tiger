@@ -38,7 +38,7 @@ namespace Tiger.AST
             foreach (var node in Children.Where(n => n != null))
                 node.CheckSemantics(scope, errors);
 
-            scope.DefineVariable(Name, VariableType, IsReadonly);
+            scope.DefineVariable(Name, VariableType, IsReadonly, false);
 
             if (Children[2].Type == Types.Void)
                 errors.Add(new SemanticError

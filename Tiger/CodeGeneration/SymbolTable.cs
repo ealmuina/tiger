@@ -15,14 +15,15 @@ namespace Tiger.CodeGeneration
             Functions = new Dictionary<string, MethodInfo>();
             Variables = new Dictionary<string, LocalBuilder>();
             Types = DefaultTypes();
+            ParamIndex = new Dictionary<string, int>();
         }
 
         private Dictionary<string, Type> DefaultTypes()
         {
             var types = new Dictionary<string, Type>();
 
-            types["Int"] = typeof(int);
-            types["String"] = typeof(string);
+            types[Semantics.Types.Int] = typeof(int);
+            types[Semantics.Types.String] = typeof(string);
 
             return types;
         }
@@ -32,6 +33,8 @@ namespace Tiger.CodeGeneration
         public Dictionary<string, LocalBuilder> Variables { get; protected set; }
 
         public Dictionary<string, Type> Types { get; protected set; }
+
+        public Dictionary<string, int> ParamIndex { get; protected set; }
 
         public Label LoopEnd { get; set; }
 
@@ -46,6 +49,7 @@ namespace Tiger.CodeGeneration
             clone.Functions = new Dictionary<string, MethodInfo>(Functions);
             clone.Variables = new Dictionary<string, LocalBuilder>(Variables);
             clone.Types = new Dictionary<string, Type>(Types);
+            clone.ParamIndex = new Dictionary<string, int>(ParamIndex);
             clone.LoopEnd = LoopEnd;
             return clone;
         }
