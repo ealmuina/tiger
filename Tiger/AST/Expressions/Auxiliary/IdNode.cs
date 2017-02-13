@@ -10,7 +10,7 @@ using Tiger.CodeGeneration;
 
 namespace Tiger.AST
 {
-    class IdNode : LValueNode
+    class IdNode : AuxiliaryNode
     {
         public IdNode(ParserRuleContext context, string name) : base(context)
         {
@@ -23,15 +23,5 @@ namespace Tiger.AST
         }
 
         public string Name { get; protected set; }
-
-        public override void CheckSemantics(Scope scope, List<SemanticError> errors)
-        {
-            // pass
-        }
-
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
-        {
-            // pass
-        }
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
+using Tiger.Semantics;
 
 namespace Tiger.AST
 {
@@ -15,7 +16,7 @@ namespace Tiger.AST
 
         protected override bool SupportType(string type)
         {
-            return type != "None";
+            return type != Types.Void;
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)

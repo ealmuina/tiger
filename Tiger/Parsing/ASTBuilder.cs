@@ -36,7 +36,9 @@ namespace Tiger.Parsing
 
         public override Node VisitLValue([NotNull] TigerParser.LValueContext context)
         {
-            return Visit(context.lvalue());
+            var node = (LValueNode)Visit(context.lvalue());
+            node.IsAccessor = true;
+            return node;
         }
 
         public override Node VisitUnaryMinus([NotNull] TigerParser.UnaryMinusContext context)
@@ -197,8 +199,8 @@ namespace Tiger.Parsing
             var typeId = new IdNode(context, context.ID().GetText());
 
             node.Children.Add(typeId);
-            node.Children.Add(Visit(context.e1));
-            node.Children.Add(Visit(context.e2));
+            node.Children.Add(Visit(context.expr(0)));
+            node.Children.Add(Visit(context.expr(1)));
 
             return node;
         }
@@ -219,8 +221,8 @@ namespace Tiger.Parsing
         public override Node VisitWhile([NotNull] TigerParser.WhileContext context)
         {
             var node = new WhileNode(context);
-            node.Children.Add(Visit(context.e1)); //Condition
-            node.Children.Add(Visit(context.e2)); //Do expression
+            node.Children.Add(Visit(context.expr(0))); //Condition
+            node.Children.Add(Visit(context.expr(1))); //Do expression
             return node;
         }
 
@@ -229,13 +231,14 @@ namespace Tiger.Parsing
             var node = new ForNode(context);
 
             ITerminalNode id = context.ID();
-            var init = new VarDeclNode(id.Symbol.Line, id.Symbol.Column);
+            var init = new VarDeclNode(id.Symbol.Line, id.Symbol.Column, true);
             init.Children.Add(new IdNode(id.Symbol.Line, id.Symbol.Column, id.GetText()));
-            init.Children.Add(Visit(context.e1));
+            init.Children.Add(null);
+            init.Children.Add(Visit(context.expr(0)));
 
             node.Children.Add(init);
-            node.Children.Add(Visit(context.e2)); //To expression
-            node.Children.Add(Visit(context.e3)); //Do expression
+            node.Children.Add(Visit(context.expr(1))); //To expression
+            node.Children.Add(Visit(context.expr(2))); //Do expression
 
             return node;
         }
@@ -249,7 +252,7 @@ namespace Tiger.Parsing
         #region Lvalue
         public override Node VisitIdLValue([NotNull] TigerParser.IdLValueContext context)
         {
-            return new IdNode(context, context.ID().GetText());
+            return new VarAccessNode(context, context.ID().GetText());
         }
 
         public override Node VisitFieldLValue([NotNull] TigerParser.FieldLValueContext context)
@@ -387,7 +390,7 @@ namespace Tiger.Parsing
 
             IToken typeId = context.typeId;
             node.Children.Add(typeId == null ?
-                new NilNode() as Node :
+                null :
                 new IdNode(
                     typeId.Line,
                     typeId.Column,

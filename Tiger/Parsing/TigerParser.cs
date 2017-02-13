@@ -180,9 +180,6 @@ public partial class TigerParser : Parser {
 		}
 	}
 	public partial class ForContext : ExprContext {
-		public ExprContext e1;
-		public ExprContext e2;
-		public ExprContext e3;
 		public ITerminalNode ID() { return GetToken(TigerParser.ID, 0); }
 		public ExprContext[] expr() {
 			return GetRuleContexts<ExprContext>();
@@ -241,8 +238,6 @@ public partial class TigerParser : Parser {
 		}
 	}
 	public partial class WhileContext : ExprContext {
-		public ExprContext e1;
-		public ExprContext e2;
 		public ExprContext[] expr() {
 			return GetRuleContexts<ExprContext>();
 		}
@@ -274,8 +269,6 @@ public partial class TigerParser : Parser {
 		}
 	}
 	public partial class ArrayContext : ExprContext {
-		public ExprContext e1;
-		public ExprContext e2;
 		public ITerminalNode ID() { return GetToken(TigerParser.ID, 0); }
 		public ExprContext[] expr() {
 			return GetRuleContexts<ExprContext>();
@@ -488,9 +481,9 @@ public partial class TigerParser : Parser {
 				Context = _localctx;
 				_prevctx = _localctx;
 				State = 30; Match(T__16);
-				State = 31; ((WhileContext)_localctx).e1 = expr(0);
+				State = 31; expr(0);
 				State = 32; Match(T__17);
-				State = 33; ((WhileContext)_localctx).e2 = expr(9);
+				State = 33; expr(9);
 				}
 				break;
 			case 8:
@@ -501,11 +494,11 @@ public partial class TigerParser : Parser {
 				State = 35; Match(T__18);
 				State = 36; Match(ID);
 				State = 37; Match(T__19);
-				State = 38; ((ForContext)_localctx).e1 = expr(0);
+				State = 38; expr(0);
 				State = 39; Match(T__20);
-				State = 40; ((ForContext)_localctx).e2 = expr(0);
+				State = 40; expr(0);
 				State = 41; Match(T__17);
-				State = 42; ((ForContext)_localctx).e3 = expr(8);
+				State = 42; expr(8);
 				}
 				break;
 			case 9:
@@ -681,10 +674,10 @@ public partial class TigerParser : Parser {
 				_prevctx = _localctx;
 				State = 110; Match(ID);
 				State = 111; Match(T__31);
-				State = 112; ((ArrayContext)_localctx).e1 = expr(0);
+				State = 112; expr(0);
 				State = 113; Match(T__32);
 				State = 114; Match(T__33);
-				State = 115; ((ArrayContext)_localctx).e2 = expr(1);
+				State = 115; expr(1);
 				}
 				break;
 			}

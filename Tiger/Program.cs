@@ -78,14 +78,14 @@ namespace Tiger
 
                 var tokens = new CommonTokenStream(lexer);
                 var parser = new TigerParser(tokens);
-                parser.ErrorHandler = new BailErrorStrategy();
+                parser.ErrorHandler = new Parsing.BailErrorStrategy();
                 parser.RemoveErrorListeners();
                 parser.AddErrorListener(new ErrorListener());
 
                 IParseTree tree = parser.compileUnit();
                 var astBuilder = new ASTBuilder();
-                var ast = astBuilder.Visit(tree);
-                return ast as Node;
+                Node ast = astBuilder.Visit(tree);
+                return ast;
             }
             catch (Exception)
             {

@@ -12,5 +12,7 @@ namespace Tiger.AST
         public LValueNode(ParserRuleContext context) : base(context) { }
 
         public LValueNode(int line, int column) : base(line, column) { }
+
+        public bool IsAccessor { get; set; }
     }
 }

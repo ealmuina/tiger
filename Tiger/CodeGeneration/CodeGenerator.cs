@@ -28,13 +28,5 @@ namespace Tiger.CodeGeneration
         public string FileName { get; set; }
 
         public ILGenerator Generator { get; set; }
-
-        public int LetCount { get; set; }
-
-        public int VariableCount { get; set; }
-
-        public int FunctionCount { get; set; }
-
-        public int FieldCount { get; set; }
     }
 }

@@ -24,7 +24,7 @@ namespace Tiger.AST
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
             Expression.Generate(generator, symbols);
-            if (Expression.Type != "None")
+            if (Expression.Type != Types.Void)
                 generator.Generator.Emit(OpCodes.Pop);
             generator.Generator.Emit(OpCodes.Ret);
         }

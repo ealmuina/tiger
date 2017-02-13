@@ -16,11 +16,16 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get { return "Int"; }
+            get { return Types.Int; }
         }
+
+        protected abstract bool SupportType(string type);
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
+            LeftOperand.CheckSemantics(scope, errors);
+            RightOperand.CheckSemantics(scope, errors);
+
             if (!SupportType(LeftOperand.Type))
                 errors.Add(SemanticError.InvalidUseOfOperator("binary relational", "valid", "left", LeftOperand));
 
@@ -37,7 +42,5 @@ namespace Tiger.AST
                     Node = this
                 });
         }
-
-        protected abstract bool SupportType(string type);
     }
 }

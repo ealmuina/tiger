@@ -20,7 +20,7 @@ namespace Tiger.AST
             {
                 if (Children.Count > 0 && !Children.Exists(x => x is BreakNode))
                     return Children.Last().Type;
-                return "None";
+                return Types.Void;
             }
         }
 
@@ -35,7 +35,7 @@ namespace Tiger.AST
             foreach (var expr in Children)
             {
                 expr.Generate(generator, symbols);
-                if (expr != Children.Last() && expr.Type != "None")
+                if (expr != Children.Last() && expr.Type != Types.Void)
                     generator.Generator.Emit(OpCodes.Pop);
             }
         }

@@ -28,7 +28,7 @@ namespace Tiger.AST
 
         public int Column { get; protected set; }
 
-        public virtual string Type { get { return "None"; } }
+        public virtual string Type { get { return Types.Void; } }
 
         public List<Node> Children { get; protected set; } = new List<Node>();
 

@@ -16,7 +16,7 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get { return "Int"; }
+            get { return Types.Int; }
         }
 
         public abstract OpCode OperatorOpCode { get; }
@@ -30,11 +30,11 @@ namespace Tiger.AST
 
             if (LeftOperand.Type != Type)
                 errors.Add(SemanticError.InvalidUseOfOperator(
-                    "binary logical", LeftOperand.Type == "Nil" ? "valued" : "integer", "left", LeftOperand));
+                    "binary logical", LeftOperand.Type == Types.Nil ? "valued" : "integer", "left", LeftOperand));
 
             if (RightOperand.Type != Type)
                 errors.Add(SemanticError.InvalidUseOfOperator(
-                    "binary logical", RightOperand.Type == "Nil" ? "valued" : "integer", "right", RightOperand));
+                    "binary logical", RightOperand.Type == Types.Nil ? "valued" : "integer", "right", RightOperand));
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)

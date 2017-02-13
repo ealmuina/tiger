@@ -26,16 +26,32 @@ namespace Tiger.AST
             get { return Children[1] as ExpressionNode; }
         }
 
-        public VariableInfo SymbolInfo { get; private set; }
+        public VariableInfo SymbolInfo { get; protected set; }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            throw new NotImplementedException();
+            foreach (var node in Children)
+                node.CheckSemantics(scope, errors);
+
+            if (Expression.Type == Types.Void)
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Expression being assigned does not return a value"),
+                    Node = Expression
+                });
+
+            else if (LValue.Type != Expression.Type)
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Incompatible types for assignation"),
+                    Node = this
+                });
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
-            throw new NotImplementedException();
+            Expression.Generate(generator, symbols);
+            LValue.Generate(generator, symbols);   
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Tiger.AST
         {
             get
             {
-                return Children[2] == null ? "None" : Children[2].Type;
+                return Children[2] == null ? Types.Void : Children[2].Type;
 
             }
         }
@@ -28,10 +28,10 @@ namespace Tiger.AST
             foreach (var expr in Children.Where(e => e != null))
                 expr.CheckSemantics(scope, errors);
 
-            if (Children[0].Type != "Int")
+            if (Children[0].Type != Types.Int)
                 errors.Add(SemanticError.IfConditionNotInteger(Children[0]));
 
-            if (Children[2] == null && Children[1].Type != "None") //if-then
+            if (Children[2] == null && Children[1].Type != Types.Void) //if-then
                 errors.Add(SemanticError.IfThenNotReturns(Children[1]));
 
             if (Children[2] != null && Children[1].Type != Children[2].Type) //if-then-else

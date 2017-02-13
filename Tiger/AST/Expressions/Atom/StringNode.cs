@@ -14,7 +14,6 @@ namespace Tiger.AST
     {
         public StringNode(ParserRuleContext context, string text) : base(context)
         {
-            //TODO Chequear si dejo el escape de /.../ aqui o si se puede pasar al lexer
             Text = "";
             for (int i = 1; i < text.Length - 1; i++)
             {
@@ -67,7 +66,7 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get { return "String"; }
+            get { return Types.String; }
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)

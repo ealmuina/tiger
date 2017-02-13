@@ -17,12 +17,27 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            throw new NotImplementedException();
+            //Define Functions and Types at the start of their scopes
+            foreach (var node in Children)
+            {
+                if (node is FuncDeclNode)
+                {
+                    var func = (FuncDeclNode)node;
+                    scope.DefineFunction(func.Name, func.FunctionType);
+                }
+
+                if (node is TypeDeclNode)
+                    scope.DefineType((node as TypeDeclNode).Name);
+            }
+
+            foreach (var node in Children)
+                node.CheckSemantics(scope, errors);
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
         {
-            throw new NotImplementedException();
+            foreach (var node in Children)
+                node.Generate(generator, symbols);
         }
     }
 }

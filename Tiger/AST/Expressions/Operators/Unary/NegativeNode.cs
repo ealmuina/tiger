@@ -16,14 +16,14 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get { return "Int"; }
+            get { return Types.Int; }
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            if (Operand.Type != "Int")
+            if (Operand.Type != Types.Int)
                 errors.Add(SemanticError.InvalidUseOfOperator(
-                    "unary minus", Operand.Type == "Nil" ? "valued" : "integer", "operand", Operand));
+                    "unary minus", Operand.Type == Types.Nil ? "valued" : "integer", "operand", Operand));
 
             Operand.CheckSemantics(scope, errors);
         }

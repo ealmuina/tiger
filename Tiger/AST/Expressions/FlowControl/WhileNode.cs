@@ -16,7 +16,7 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get { return "None"; }
+            get { return Types.Void; }
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
@@ -25,14 +25,14 @@ namespace Tiger.AST
             scope.InsideLoop = true;
             Children[1].CheckSemantics(scope, errors);
 
-            if (Children[0].Type != "Int")
+            if (Children[0].Type != Types.Int)
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Invalid type of condition of the while statement"),
                     Node = Children[0]
                 });
 
-            if (Children[1].Type != "None")
+            if (Children[1].Type != Types.Void)
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("while used with an expression with return value"),
@@ -48,6 +48,8 @@ namespace Tiger.AST
 
             Label condition = il.DefineLabel();
             Label end = il.DefineLabel();
+
+            Label loopEnd = symbols.LoopEnd; //store current loopEnd so we can restore it later
             symbols.LoopEnd = end;
 
             //Check condition
@@ -62,6 +64,8 @@ namespace Tiger.AST
 
             //false, end
             il.MarkLabel(end);
+
+            symbols.LoopEnd = loopEnd;
         }
     }
 }

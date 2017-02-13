@@ -9,9 +9,18 @@ using Tiger.Semantics;
 
 namespace Tiger.AST
 {
-    class FuncDeclNode : LValueNode
+    class FuncDeclNode : DeclarationNode
     {
         public FuncDeclNode(ParserRuleContext context) : base(context) { }
+
+        public string FunctionType
+        {
+            get
+            {
+                return Children[1] != null ?
+                    (Children[1] as IdNode).Name : Types.Void;
+            }
+        }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

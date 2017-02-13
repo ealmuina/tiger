@@ -22,8 +22,8 @@ expr
 	|	expr op='|' expr													# Logical
 
 	|	'if' expr 'then' expr ('else' expr)?								# If
-	|	'while' e1=expr 'do' e2=expr										# While	
-	|	'for' ID ':=' e1=expr 'to' e2=expr 'do' e3=expr						# For			
+	|	'while' expr 'do' expr												# While	
+	|	'for' ID ':=' expr 'to' expr 'do' expr								# For			
 	|	'break'																# Break
 	
 	|	'let' decl* 'in' (expr (';' expr)*)? 'end'							# Let
@@ -32,7 +32,7 @@ expr
 	|	ID '(' (expr (',' expr)*)? ')'										# Call
 	|	'(' (expr (';' expr)*)? ')'											# ParenExprs
 	|	typeID=ID	'{' (ID '=' expr (',' ID '=' expr)*)? '}'				# Record
-	|	ID '[' e1=expr ']' 'of' e2=expr										# Array	
+	|	ID '[' expr ']' 'of' expr											# Array	
 	;
 
 lvalue

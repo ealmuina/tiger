@@ -20,14 +20,7 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get { return "Int"; }
-        }
-
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
-        {
-            LeftOperand.Generate(generator, symbols);
-            RightOperand.Generate(generator, symbols);
-            generator.Generator.Emit(OperatorOpCode);
+            get { return Types.Int; }
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
@@ -37,11 +30,18 @@ namespace Tiger.AST
 
             if (LeftOperand.Type != Type)
                 errors.Add(SemanticError.InvalidUseOfOperator(
-                    OperatorName, LeftOperand.Type == "Nil" ? "valued" : "integer", "left", LeftOperand));
+                    OperatorName, LeftOperand.Type == Types.Nil ? "valued" : "integer", "left", LeftOperand));
 
             if (RightOperand.Type != Type)
                 errors.Add(SemanticError.InvalidUseOfOperator(
-                    OperatorName, RightOperand.Type == "Nil" ? "valued" : "integer", "right", RightOperand));
+                    OperatorName, RightOperand.Type == Types.Nil ? "valued" : "integer", "right", RightOperand));
+        }
+
+        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        {
+            LeftOperand.Generate(generator, symbols);
+            RightOperand.Generate(generator, symbols);
+            generator.Generator.Emit(OperatorOpCode);
         }
     }
 }

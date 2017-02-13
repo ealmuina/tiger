@@ -1,1 +1,39 @@
-while 1 do print("hi")
+let
+	var a:= 10
+in
+	printi(a); 
+	print("\n");
+	let
+		var before := a
+		var a:= let 
+					var a:= 1000 
+				in 
+					printi(a); 
+					print("\n"); 
+					a-10 
+				end
+		var after := a
+	in
+		printi(a); 
+		print("\n");
+		printi(before); 
+		print("\n");
+		printi(after); 
+		print("\n")
+	end;
+	for j:= 1 to 10 do 
+	( 
+		1; 
+		2; 
+		3; 
+		printi(j); 
+		print("\n") 
+	);
+	let
+		var a:= -100
+	in
+		printi(a); 
+		print("\n")
+	end;
+	printi(a)
+end

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
 using System.Reflection;
+using Tiger.Semantics;
 
 namespace Tiger.AST
 {
@@ -16,7 +17,7 @@ namespace Tiger.AST
 
         protected override bool SupportType(string type)
         {
-            return new[] { "Int", "String" }.Contains(type);
+            return new[] { Types.Int, Types.String }.Contains(type);
         }
 
         public override void Generate(CodeGenerator generator, SymbolTable symbols)
@@ -26,7 +27,7 @@ namespace Tiger.AST
 
             ILGenerator il = generator.Generator;
 
-            if (Type == "String")
+            if (Type == Types.String)
             {
                 //Compare the strings using the string CompareTo method
                 MethodInfo compareTo = typeof(string).GetMethod("CompareTo", new[] { typeof(string) });

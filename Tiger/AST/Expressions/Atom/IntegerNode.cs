@@ -19,7 +19,7 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get { return "Int"; }
+            get { return Types.Int; }
         }
 
         public int Value { get; protected set; }

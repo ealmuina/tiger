@@ -47,8 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AST\Expressions\Auxiliary\AuxiliaryNode.cs" />
     <Compile Include="AST\Expressions\Containers\ArrayNode.cs" />
     <Compile Include="AST\Declarations\Types\ArrayType.cs" />
+    <Compile Include="AST\Expressions\Lvalues\VarAccessNode.cs" />
     <Compile Include="AST\Expressions\Operators\Binary\AssignNode.cs" />
     <Compile Include="AST\Expressions\Nil\NilNode.cs" />
     <Compile Include="AST\Declarations\DeclarationListNode.cs" />
@@ -80,7 +82,7 @@
     <Compile Include="AST\Expressions\FlowControl\IfNode.cs" />
     <Compile Include="AST\Expressions\FlowControl\WhileNode.cs" />
     <Compile Include="AST\Expressions\FunctionCalls\FuncallNode.cs" />
-    <Compile Include="AST\Expressions\Lvalues\IdNode.cs" />
+    <Compile Include="AST\Expressions\Auxiliary\IdNode.cs" />
     <Compile Include="AST\Expressions\Atom\IntegerNode.cs" />
     <Compile Include="AST\Expressions\Lvalues\IndexNode.cs" />
     <Compile Include="AST\Expressions\Let\LetNode.cs" />
@@ -100,7 +102,7 @@
     <Compile Include="CodeGeneration\StandardLibrary.cs" />
     <Compile Include="CodeGeneration\SymbolTable.cs" />
     <Compile Include="Parsing\ASTBuilder.cs" />
-    <Compile Include="Parsing\BailTigerLexer.cs" />
+    <Compile Include="Parsing\BailErrorStrategy.cs" />
     <Compile Include="Parsing\ErrorListener.cs" />
     <Compile Include="Parsing\TigerBaseVisitor.cs" />
     <Compile Include="Parsing\TigerLexer.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="Semantics\ItemInfo.cs" />
     <Compile Include="Semantics\Scope.cs" />
     <Compile Include="Semantics\SemanticError.cs" />
+    <Compile Include="Semantics\Types.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
