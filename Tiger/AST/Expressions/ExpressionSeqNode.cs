@@ -14,11 +14,18 @@ namespace Tiger.AST
     {
         public ExpressionSeqNode(ParserRuleContext context) : base(context) { }
 
+        bool MayCauseBreak(Node node)
+        {
+            return node is BreakNode || node.Children.Exists(n => MayCauseBreak(n));
+        }
+
+        bool InLoop { get; set; }
+
         public override string Type
         {
             get
             {
-                if (Children.Count > 0 && !Children.Exists(x => x is BreakNode))
+                if (Children.Count > 0 && !(InLoop && MayCauseBreak(this)))
                     return Children.Last().Type;
                 return Types.Void;
             }
@@ -26,6 +33,8 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
+            InLoop = scope.InsideLoop;
+
             foreach (var expr in Children)
                 expr.CheckSemantics(scope, errors);
         }

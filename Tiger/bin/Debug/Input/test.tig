@@ -1,10 +1,12 @@
-/* Este programa es válido. */
-let
-	var a : int := 0
-	var b : int := -4
-	var x : int := a & b
-	var y : int := a | b
-in
-	printiline(x); /* Imprime 0 */
-	printiline(y) /* Imprime 1 */
-end
+(
+    if 1 & "abc" then ();
+    if "abc" & 1 then ();
+    if ("abc") & nil then ()
+)
+
+/*
+Semantic Error: Invalid use of binary logical operator with a non-integer right value at line 2.
+Semantic Error: Invalid use of binary logical operator with a non-integer left value at line 3.
+Semantic Error: Invalid use of binary logical operator with a non-integer left value at line 4.
+Semantic Error: Invalid use of binary logical operator with a non-integer right value at line 4.
+*/
