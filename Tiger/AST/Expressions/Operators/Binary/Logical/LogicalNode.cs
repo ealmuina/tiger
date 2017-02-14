@@ -46,7 +46,9 @@ namespace Tiger.AST
 
             // Put 1 on evaluation stack if first operand is not 0; 0 otherwise
             il.Emit(OpCodes.Ldc_I4_0);
-            il.Emit(OpCodes.Cgt);
+            il.Emit(OpCodes.Ceq);
+            il.Emit(OpCodes.Ldc_I4_0);
+            il.Emit(OpCodes.Ceq);
 
             // If first operand matches short circuit condition (& -> 0 (false), | -> 1 (true)) then return 
             il.Emit(OpCodes.Dup);
@@ -57,7 +59,9 @@ namespace Tiger.AST
 
             // Put 1 on evaluation stack if second operand is not 0; 0 otherwise
             il.Emit(OpCodes.Ldc_I4_0);
-            il.Emit(OpCodes.Cgt);
+            il.Emit(OpCodes.Ceq);
+            il.Emit(OpCodes.Ldc_I4_0);
+            il.Emit(OpCodes.Ceq);
 
             // Perform bitwise operation
             il.Emit(OperatorOpCode);
