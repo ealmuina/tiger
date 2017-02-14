@@ -123,13 +123,6 @@ public interface ITigerVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitComparison([NotNull] TigerParser.ComparisonContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>Let</c>
-	/// labeled alternative in <see cref="TigerParser.expr"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitLet([NotNull] TigerParser.LetContext context);
-	/// <summary>
 	/// Visit a parse tree produced by the <c>Assign</c>
 	/// labeled alternative in <see cref="TigerParser.expr"/>.
 	/// </summary>
@@ -143,6 +136,13 @@ public interface ITigerVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitRecord([NotNull] TigerParser.RecordContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>Let</c>
+	/// labeled alternative in <see cref="TigerParser.expr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLet([NotNull] TigerParser.LetContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>LValue</c>
 	/// labeled alternative in <see cref="TigerParser.expr"/>.

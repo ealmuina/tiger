@@ -21,18 +21,18 @@ expr
 	|	expr op='&' expr													# Logical
 	|	expr op='|' expr													# Logical
 
+	|	lvalue ':=' expr													# Assign
+	|	ID '(' (expr (',' expr)*)? ')'										# Call
+	|	'(' (expr (';' expr)*)? ')'											# ParenExprs
+	|	typeID=ID	'{' (ID '=' expr (',' ID '=' expr)*)? '}'				# Record
+	|	ID '[' expr ']' 'of' expr											# Array	
+
 	|	'if' expr 'then' expr ('else' expr)?								# If
 	|	'while' expr 'do' expr												# While	
 	|	'for' ID ':=' expr 'to' expr 'do' expr								# For			
 	|	'break'																# Break
 	
 	|	'let' decl* 'in' (expr (';' expr)*)? 'end'							# Let
-
-	|	lvalue ':=' expr													# Assign
-	|	ID '(' (expr (',' expr)*)? ')'										# Call
-	|	'(' (expr (';' expr)*)? ')'											# ParenExprs
-	|	typeID=ID	'{' (ID '=' expr (',' ID '=' expr)*)? '}'				# Record
-	|	ID '[' expr ']' 'of' expr											# Array	
 	;
 
 lvalue
@@ -65,7 +65,7 @@ fragment LETTER		:	[a-zA-Z]												;
 fragment DIGIT		:	[0-9]													;
 
 fragment ASCII		:	'0' DIGIT DIGIT
-					|	'1' ([0-1] DIGIT | '2' [0-8])
+					|	'1' ([0-1] DIGIT | '2' [0-7])
 					;
 
 fragment ESCAPE_SEQ	:	'\\' ('n' | 'r' | 't' | '"' | EMPTY+ '\\' | ASCII)		; 
