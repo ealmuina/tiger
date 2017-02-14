@@ -20,7 +20,7 @@ namespace Tiger.AST
             throw new NotImplementedException();
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
             throw new NotImplementedException();
         }

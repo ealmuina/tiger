@@ -13,7 +13,6 @@ namespace Tiger.Semantics
         Dictionary<string, ItemInfo> symbols;
         Dictionary<string, TypeInfo> types;
         Dictionary<string, string> parentType;
-        FunctionInfo[] stdl;
 
         public Scope()
         {
@@ -35,7 +34,7 @@ namespace Tiger.Semantics
 
         void SetStdl()
         {
-            stdl = new[]
+            Stdl = new[]
             {
                 new FunctionInfo("printi", Types.Void, Types.Int),
                 new FunctionInfo("print", Types.Void, Types.String),
@@ -51,7 +50,7 @@ namespace Tiger.Semantics
                 new FunctionInfo("exit", Types.Void, Types.Int),
             };
 
-            foreach (var func in stdl)
+            foreach (var func in Stdl)
                 symbols[func.Name] = func;
         }
 
@@ -61,9 +60,18 @@ namespace Tiger.Semantics
             types[Types.String] = new TypeInfo(Types.String);
         }
 
+        string GetRoot(string t)
+        {
+            while (parentType[t] != null)
+                t = parentType[t];
+            return t;
+        }
+
+        public FunctionInfo[] Stdl { get; protected set; }
+
         public bool IsDefined(string name)
         {
-            if (stdl.Where(m => m.Name == name).Count() > 0)
+            if (Stdl.Where(m => m.Name == name).Count() > 0)
                 UsedStdlFunctions.Add(name);
             return symbols.ContainsKey(name);
         }
@@ -140,13 +148,6 @@ namespace Tiger.Semantics
             clone.InsideLoop = InsideLoop;
             clone.UsedStdlFunctions = UsedStdlFunctions;
             return clone;
-        }
-
-        string GetRoot(string t)
-        {
-            while (parentType[t] != null)
-                t = parentType[t];
-            return t;
         }
     }
 }

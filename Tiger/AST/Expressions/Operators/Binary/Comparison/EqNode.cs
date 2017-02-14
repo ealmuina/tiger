@@ -19,10 +19,10 @@ namespace Tiger.AST
             return type != Types.Void;
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
-            LeftOperand.Generate(generator, symbols);
-            RightOperand.Generate(generator, symbols);
+            LeftOperand.Generate(generator);
+            RightOperand.Generate(generator);
             generator.Generator.Emit(OpCodes.Ceq);
         }
     }

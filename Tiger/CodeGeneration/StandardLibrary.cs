@@ -12,9 +12,9 @@ namespace Tiger.CodeGeneration
 {
     static class StandardLibrary
     {
-        public static SymbolTable Build(ModuleBuilder builder, Scope scope)
+        public static void Build(CodeGenerator generator, Scope scope)
         {
-            var symbols = new SymbolTable();
+            ModuleBuilder builder = generator.Module;
             var funcs = typeof(StandardLibrary).GetMethods().Where(m => scope.UsedStdlFunctions.Contains(m.Name.ToLower()));
             TypeBuilder stdl = null;
 
@@ -29,12 +29,11 @@ namespace Tiger.CodeGeneration
                 }
 
                 var method = (MethodInfo)f.Invoke(null, args.ToArray());
-                symbols.Functions[f.Name.ToLower()] = method;
+                generator.Functions[f.Name.ToLower()] = method;
             }
 
             if (stdl != null)
                 stdl.CreateType();
-            return symbols;
         }
 
         public static MethodInfo Print()

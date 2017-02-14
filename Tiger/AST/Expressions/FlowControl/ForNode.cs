@@ -47,22 +47,22 @@ namespace Tiger.AST
                 });
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
-            symbols = (SymbolTable)symbols.Clone();
+            generator = (CodeGenerator)generator.Clone();
             ILGenerator il = generator.Generator;
 
-            Children[0].Generate(generator, symbols);
-            Children[1].Generate(generator, symbols);
+            Children[0].Generate(generator);
+            Children[1].Generate(generator);
             LocalBuilder top = il.DeclareLocal(typeof(int));
             il.Emit(OpCodes.Stloc, top);
-            LocalBuilder cursor = symbols.Variables[Cursor];
+            LocalBuilder cursor = generator.Variables[Cursor];
 
             Label condition = il.DefineLabel();
             Label end = il.DefineLabel();
 
-            Label loopEnd = symbols.LoopEnd; //store current loopEnd so we can restore it later
-            symbols.LoopEnd = end;
+            Label loopEnd = generator.LoopEnd; //store current loopEnd so we can restore it later
+            generator.LoopEnd = end;
 
             if (Type != Types.Void)
                 il.Emit(OpCodes.Ldc_I4_0); //dummy value on evaluation stack
@@ -76,7 +76,7 @@ namespace Tiger.AST
             //For body
             if (Type != Types.Void)
                 il.Emit(OpCodes.Pop); //forget last iteration value
-            Children[2].Generate(generator, symbols);
+            Children[2].Generate(generator);
 
             //Increase cursor value and continue iteration
             il.Emit(OpCodes.Ldloc, cursor);
@@ -88,7 +88,7 @@ namespace Tiger.AST
             //end
             il.MarkLabel(end);
 
-            symbols.LoopEnd = loopEnd;
+            generator.LoopEnd = loopEnd;
         }
     }
 }

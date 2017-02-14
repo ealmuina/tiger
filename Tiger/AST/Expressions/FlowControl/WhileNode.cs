@@ -42,30 +42,30 @@ namespace Tiger.AST
             scope.InsideLoop = false;
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
 
             Label condition = il.DefineLabel();
             Label end = il.DefineLabel();
 
-            Label loopEnd = symbols.LoopEnd; //store current loopEnd so we can restore it later
-            symbols.LoopEnd = end;
+            Label loopEnd = generator.LoopEnd; //store current loopEnd so we can restore it later
+            generator.LoopEnd = end;
 
             //Check condition
             il.MarkLabel(condition);
-            Children[0].Generate(generator, symbols);
+            Children[0].Generate(generator);
             il.Emit(OpCodes.Ldc_I4_0);
             il.Emit(OpCodes.Beq, end);
 
             //true, exec body
-            Children[1].Generate(generator, symbols);
+            Children[1].Generate(generator);
             il.Emit(OpCodes.Br, condition);
 
             //false, end
             il.MarkLabel(end);
 
-            symbols.LoopEnd = loopEnd;
+            generator.LoopEnd = loopEnd;
         }
     }
 }

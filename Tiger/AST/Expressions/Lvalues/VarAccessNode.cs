@@ -36,11 +36,20 @@ namespace Tiger.AST
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             if (!scope.IsDefined<VariableInfo>(Name))
+            {
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Undefined variable {0}", Name),
                     Node = this
                 });
+
+                if (scope.IsDefined(Name))
+                    errors.Add(new SemanticError
+                    {
+                        Message = string.Format("Function '{0}' used as variable", Name),
+                        Node = this
+                    });
+            }
             else
             {
                 var info = (VariableInfo)scope[Name];
@@ -57,15 +66,15 @@ namespace Tiger.AST
             }
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
 
             if (IsParam)
-                il.Emit(OpCodes.Ldarg, symbols.ParamIndex[Name]);
+                il.Emit(OpCodes.Ldarg, generator.ParamIndex[Name]);
             else
             {
-                LocalBuilder variable = symbols.Variables[Name];
+                LocalBuilder variable = generator.Variables[Name];
                 if (IsAccessor)
                     il.Emit(OpCodes.Ldloc, variable);
                 else

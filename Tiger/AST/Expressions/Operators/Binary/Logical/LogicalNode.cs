@@ -37,9 +37,9 @@ namespace Tiger.AST
                     "binary logical", RightOperand.Type == Types.Nil ? "valued" : "integer", "right", RightOperand));
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
-            LeftOperand.Generate(generator, symbols);
+            LeftOperand.Generate(generator);
 
             ILGenerator il = generator.Generator;
             Label end = il.DefineLabel();
@@ -53,7 +53,7 @@ namespace Tiger.AST
             il.Emit(ShortCircuitOpCode);
             il.Emit(OpCodes.Beq, end);
 
-            RightOperand.Generate(generator, symbols);
+            RightOperand.Generate(generator);
 
             // Put 1 on evaluation stack if second operand is not 0; 0 otherwise
             il.Emit(OpCodes.Ldc_I4_0);

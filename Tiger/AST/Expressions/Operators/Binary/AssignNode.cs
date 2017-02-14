@@ -40,7 +40,7 @@ namespace Tiger.AST
                     Node = Expression
                 });
 
-            else if (LValue.Type != Expression.Type)
+            else if (LValue.Type != Expression.Type && Expression.Type != Types.Nil)
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Incompatible types for assignation"),
@@ -48,10 +48,10 @@ namespace Tiger.AST
                 });
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
-            Expression.Generate(generator, symbols);
-            LValue.Generate(generator, symbols);   
+            Expression.Generate(generator);
+            LValue.Generate(generator);   
         }
     }
 }

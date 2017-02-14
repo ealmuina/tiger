@@ -21,9 +21,9 @@ namespace Tiger.AST
             Expression.CheckSemantics(scope, errors);
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
-            Expression.Generate(generator, symbols);
+            Expression.Generate(generator);
             if (Expression.Type != Types.Void)
                 generator.Generator.Emit(OpCodes.Pop);
             generator.Generator.Emit(OpCodes.Ret);

@@ -32,8 +32,12 @@ namespace Tiger.AST
             if (!SupportType(RightOperand.Type))
                 errors.Add(SemanticError.InvalidUseOfOperator("binary relational", "valid", "right", RightOperand));
 
-            if (LeftOperand.Type != RightOperand.Type)
-                errors.Add(SemanticError.TypesDoNotMatch("relational", this));
+            if (!scope.SameType(RightOperand.Type, LeftOperand.Type) && LeftOperand.Type != Types.Nil && RightOperand.Type != Types.Nil)
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Types of left and right operands of the binary relational operator do not match"),
+                    Node = this
+                });
 
             if (LeftOperand is ComparisonNode || RightOperand is ComparisonNode)
                 errors.Add(new SemanticError

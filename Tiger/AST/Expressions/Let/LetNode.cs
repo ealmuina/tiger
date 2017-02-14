@@ -32,16 +32,16 @@ namespace Tiger.AST
                 node.CheckSemantics(scope, errors);
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
-            symbols = (SymbolTable)symbols.Clone();
+            generator = (CodeGenerator)generator.Clone();
             var il = generator.Generator;
 
-            Children[0].Generate(generator, symbols);
+            Children[0].Generate(generator);
 
             for (int i = 1; i < Children.Count; i++)
             {
-                Children[i].Generate(generator, symbols);
+                Children[i].Generate(generator);
                 if (i < Children.Count - 1 && Children[i].Type != Types.Void)
                     il.Emit(OpCodes.Pop);
             }

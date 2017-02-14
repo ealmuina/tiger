@@ -40,7 +40,6 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            scope.DefineFunction(Name, FunctionType, Arguments.Types);
             scope = (Scope)scope.Clone();
 
             if (Arguments != null)
@@ -57,18 +56,16 @@ namespace Tiger.AST
             Expression.CheckSemantics(scope, errors);
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
-            ILGenerator currentil = generator.Generator; //store current generator
-
             MethodBuilder func = generator.Type.DefineMethod(Name, MethodAttributes.Static);
-            func.SetReturnType(symbols.Types[FunctionType]);
-            symbols.Functions[Name] = func;
+            func.SetReturnType(generator.Types[FunctionType]);
+            generator.Functions[Name] = func;
+
+            generator = (CodeGenerator)generator.Clone();
 
             generator.Method = func;
             generator.Generator = func.GetILGenerator();
-
-            symbols = (SymbolTable)symbols.Clone();
 
             if (Arguments != null)
             {
@@ -78,19 +75,17 @@ namespace Tiger.AST
 
                 for (int i = 0; i < names.Length; i++)
                 {
-                    symbols.ParamIndex[names[i]] = i;
-                    paramTypes.Add(symbols.Types[types[i]]);
+                    generator.ParamIndex[names[i]] = i;
+                    paramTypes.Add(generator.Types[types[i]]);
                 }
 
                 func.SetParameters(paramTypes.ToArray());
             }
 
-            Expression.Generate(generator, symbols);
+            Expression.Generate(generator);
 
             if (FunctionType != Types.Void)
                 generator.Generator.Emit(OpCodes.Ret);
-
-            generator.Generator = currentil; //back to old generator
         }
     }
 }

@@ -29,18 +29,30 @@ namespace Tiger.AST
                 expr.CheckSemantics(scope, errors);
 
             if (Children[0].Type != Types.Int)
-                errors.Add(SemanticError.IfConditionNotInteger(Children[0]));
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("The condition of the if-then-else statement does not return an integer value"),
+                    Node = Children[0]
+                });
 
             if (Children[2] == null && Children[1].Type != Types.Void) //if-then
-                errors.Add(SemanticError.IfThenNotReturns(Children[1]));
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("The then expression of the if-then statement should not return a value"),
+                    Node = Children[1]
+                });
 
             if (Children[2] != null && Children[1].Type != Children[2].Type) //if-then-else
-                errors.Add(SemanticError.IfThenElseBadTypes(this));
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("The return type of the expressions of the if-then-else statement is not the same"),
+                    Node = this
+                });
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
-            Children[0].Generate(generator, symbols);
+            Children[0].Generate(generator);
 
             ILGenerator il = generator.Generator;
             Label _else = il.DefineLabel();
@@ -51,13 +63,13 @@ namespace Tiger.AST
             il.Emit(OpCodes.Beq, _else);
 
             //true
-            Children[1].Generate(generator, symbols);
+            Children[1].Generate(generator);
             il.Emit(OpCodes.Br, end); //skip false expr
 
             //false
             il.MarkLabel(_else);
             if (Children[2] != null)
-                Children[2].Generate(generator, symbols);
+                Children[2].Generate(generator);
 
             il.MarkLabel(end);
         }

@@ -20,10 +20,10 @@ namespace Tiger.AST
             return new[] { Types.Int, Types.String }.Contains(type);
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
-            LeftOperand.Generate(generator, symbols);
-            RightOperand.Generate(generator, symbols);
+            LeftOperand.Generate(generator);
+            RightOperand.Generate(generator);
 
             ILGenerator il = generator.Generator;
 

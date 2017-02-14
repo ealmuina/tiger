@@ -49,7 +49,7 @@
   <ItemGroup>
     <Compile Include="AST\Expressions\Auxiliary\AuxiliaryNode.cs" />
     <Compile Include="AST\Expressions\Containers\ArrayNode.cs" />
-    <Compile Include="AST\Declarations\Types\ArrayType.cs" />
+    <Compile Include="AST\Declarations\Types\ArrayTypeNode.cs" />
     <Compile Include="AST\Expressions\Lvalues\VarAccessNode.cs" />
     <Compile Include="AST\Expressions\Operators\Binary\AssignNode.cs" />
     <Compile Include="AST\Expressions\Nil\NilNode.cs" />
@@ -99,7 +99,6 @@
     <Compile Include="AST\ProgramNode.cs" />
     <Compile Include="CodeGeneration\CodeGenerator.cs" />
     <Compile Include="CodeGeneration\StandardLibrary.cs" />
-    <Compile Include="CodeGeneration\SymbolTable.cs" />
     <Compile Include="Parsing\ASTBuilder.cs" />
     <Compile Include="Parsing\BailErrorStrategy.cs" />
     <Compile Include="Parsing\ErrorListener.cs" />

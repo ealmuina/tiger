@@ -74,15 +74,26 @@ namespace Tiger
             {
                 var input = new AntlrFileStream(inputPath);
                 var lexer = new TigerLexer(input);
+
+                var errors = new List<string>();
                 lexer.RemoveErrorListeners();
+                lexer.AddErrorListener(new LexerErrorListener(errors));
 
                 var tokens = new CommonTokenStream(lexer);
                 var parser = new TigerParser(tokens);
-                parser.ErrorHandler = new Parsing.BailErrorStrategy();
+
                 parser.RemoveErrorListeners();
-                parser.AddErrorListener(new ErrorListener());
+                parser.AddErrorListener(new ParserErrorListener(errors));
 
                 IParseTree tree = parser.compileUnit();
+
+                if (errors.Count > 0)
+                {
+                    foreach (var error in errors)
+                        Console.Error.WriteLine(error);
+                    return null;
+                }
+
                 var astBuilder = new ASTBuilder();
                 Node ast = astBuilder.Visit(tree);
                 return ast;
@@ -114,7 +125,7 @@ namespace Tiger
             generator.Assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave, Path.GetDirectoryName(outputPath));
             generator.Module = generator.Assembly.DefineDynamicModule(name, filename);
 
-            SymbolTable symbols = StandardLibrary.Build(generator.Module, scope);
+            StandardLibrary.Build(generator, scope);
 
             generator.Type = generator.Module.DefineType("Program");
             MethodBuilder mainMethod = generator.Type.DefineMethod("Main", MethodAttributes.Static, typeof(void), Type.EmptyTypes);
@@ -122,7 +133,7 @@ namespace Tiger
             generator.Method = mainMethod;
             generator.Generator = mainMethod.GetILGenerator();
 
-            root.Generate(generator, symbols);
+            root.Generate(generator);
 
             generator.Type.CreateType();
             generator.Module.CreateGlobalFunctions();

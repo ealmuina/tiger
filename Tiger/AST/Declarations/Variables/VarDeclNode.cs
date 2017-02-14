@@ -54,7 +54,7 @@ namespace Tiger.AST
                     Node = this
                 });
 
-            if (Children[1] != null && !scope.SameType((Children[1] as IdNode).Name, Children[2].Type))
+            if (Children[1] != null && Children[2].Type != Types.Nil && !scope.SameType((Children[1] as IdNode).Name, Children[2].Type))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Expression assigned to variable does not match with its type"),
@@ -62,16 +62,16 @@ namespace Tiger.AST
                 });
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
-            Type type = symbols.GetType(VariableType);
+            Type type = generator.GetType(VariableType);
             LocalBuilder variable = il.DeclareLocal(type);
 
-            Children[2].Generate(generator, symbols);
+            Children[2].Generate(generator);
             il.Emit(OpCodes.Stloc, variable);
 
-            symbols.Variables[Name] = variable;
+            generator.Variables[Name] = variable;
         }
     }
 }

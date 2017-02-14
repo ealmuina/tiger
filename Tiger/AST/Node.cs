@@ -15,13 +15,13 @@ namespace Tiger.AST
         public Node(ParserRuleContext context)
         {
             Line = context.Start.Line;
-            Column = context.Start.Column;
+            Column = context.Start.Column + 1;
         }
 
         public Node(int line, int column)
         {
             Line = line;
-            Column = column;
+            Column = column + 1;
         }
 
         public int Line { get; protected set; }
@@ -34,6 +34,6 @@ namespace Tiger.AST
 
         public abstract void CheckSemantics(Scope scope, List<SemanticError> errors);
 
-        public abstract void Generate(CodeGenerator generator, SymbolTable symbols);
+        public abstract void Generate(CodeGenerator generator);
     }
 }

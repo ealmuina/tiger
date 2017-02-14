@@ -23,7 +23,15 @@ namespace Tiger.AST
                 if (node is FuncDeclNode)
                 {
                     var func = (FuncDeclNode)node;
-                    scope.DefineFunction(func.Name, func.FunctionType);
+                    if (scope.Stdl.Where(n => n.Name == func.Name).Count() > 0)
+                        errors.Add(new SemanticError
+                        {
+                            Message = string.Format("Standard library function {0} can not be redefined", func.Name),
+                            Node = Children[0]
+                        });
+                    else
+                        scope.DefineFunction(func.Name, func.FunctionType,
+                            func.Arguments != null ? func.Arguments.Types : new string[] { });
                 }
 
                 if (node is TypeDeclNode)
@@ -34,10 +42,10 @@ namespace Tiger.AST
                 node.CheckSemantics(scope, errors);
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
             foreach (var node in Children)
-                node.Generate(generator, symbols);
+                node.Generate(generator);
         }
     }
 }

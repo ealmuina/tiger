@@ -30,11 +30,11 @@ namespace Tiger.AST
                 expr.CheckSemantics(scope, errors);
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
             foreach (var expr in Children)
             {
-                expr.Generate(generator, symbols);
+                expr.Generate(generator);
                 if (expr != Children.Last() && expr.Type != Types.Void)
                     generator.Generator.Emit(OpCodes.Pop);
             }

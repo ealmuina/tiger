@@ -24,7 +24,7 @@ namespace Tiger.AST
 
         public int Value { get; protected set; }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
             generator.Generator.Emit(OpCodes.Ldc_I4, Value);
         }

@@ -37,10 +37,10 @@ namespace Tiger.AST
                     OperatorName, RightOperand.Type == Types.Nil ? "valued" : "integer", "right", RightOperand));
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
-            LeftOperand.Generate(generator, symbols);
-            RightOperand.Generate(generator, symbols);
+            LeftOperand.Generate(generator);
+            RightOperand.Generate(generator);
             generator.Generator.Emit(OperatorOpCode);
         }
     }

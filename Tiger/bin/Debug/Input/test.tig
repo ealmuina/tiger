@@ -1,5 +1,9 @@
-undefined_function(1)
-
-/*
-Semantic Error: Calling an undefined function undefined_function at line 1.
-*/
+let
+	/* calculate n! */
+	function nfactor(n: int): int =
+		if  n = 0 
+			then 1
+			else n * nfactor(n-1)
+in
+	printi(nfactor(10))
+end

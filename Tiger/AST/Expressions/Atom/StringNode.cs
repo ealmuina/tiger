@@ -69,7 +69,7 @@ namespace Tiger.AST
             get { return Types.String; }
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
             generator.Generator.Emit(OpCodes.Ldstr, Text);
         }

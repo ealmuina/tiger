@@ -40,14 +40,22 @@ namespace Tiger.AST
 
             if (!scope.IsDefined(FunctionName))
             {
-                errors.Add(SemanticError.FunctionDoesNotExist(FunctionName, this));
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Function '{0}' does not exist", FunctionName),
+                    Node = this
+                });
                 return;
             }
 
             ItemInfo info = scope[FunctionName];
             if (!(info is FunctionInfo))
             {
-                errors.Add(SemanticError.VariableOrConstantUsedAsFunction(FunctionName, this));
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Variable or constant '{0}' is being used as a function", FunctionName),
+                    Node = this
+                });
                 return;
             }
 
@@ -56,7 +64,11 @@ namespace Tiger.AST
             int argumentCount = Arguments.Count();
             if (parameterCount != argumentCount)
             {
-                errors.Add(SemanticError.WrongParameterNumber(FunctionName, parameterCount, argumentCount, this));
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Function '{0}' takes {1} arguments, got {2} instead", FunctionName, parameterCount, argumentCount),
+                    Node = this
+                });
                 return;
             }
 
@@ -67,17 +79,21 @@ namespace Tiger.AST
                 string exprT = arguments[i].Type;
 
                 if (exprT != expectedT)
-                    errors.Add(SemanticError.IncorrectTypeAssignation(exprT, expectedT, arguments[i]));
+                    errors.Add(new SemanticError
+                    {
+                        Message = string.Format("Called function {0} with argument type '{1}' when expecting '{2}'", FunctionName, exprT, expectedT),
+                        Node = arguments[i]
+                    });
             }
 
             SymbolInfo = fInfo;
         }
 
-        public override void Generate(CodeGenerator generator, SymbolTable symbols)
+        public override void Generate(CodeGenerator generator)
         {
             foreach (var arg in Arguments)
-                arg.Generate(generator, symbols);
-            generator.Generator.Emit(OpCodes.Call, symbols.Functions[SymbolInfo.Name]);
+                arg.Generate(generator);
+            generator.Generator.Emit(OpCodes.Call, generator.Functions[SymbolInfo.Name]);
         }
     }
 }
