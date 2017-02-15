@@ -1,11 +1,9 @@
 let
-	function foo() = (
-		let
-			function foo(i : int) = (  )
-		in
-			foo( 12 )
-		end
-	)
+	var a : int := 0
 in
-	foo()
+	while 1 do (
+		a := 5;
+		while 1 do (4; break; 3);
+		a
+	)
 end

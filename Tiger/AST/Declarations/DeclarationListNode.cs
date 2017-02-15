@@ -17,6 +17,27 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
+            IEnumerable<DeclarationNode> varsAndFunctions = Children.Where(n => !(n is TypeDeclNode)).Cast<DeclarationNode>();
+            IEnumerable<TypeDeclNode> decls = Children.Where(n => n is TypeDeclNode).Cast<TypeDeclNode>();
+
+            foreach (var node in varsAndFunctions)
+                if (varsAndFunctions.Count(n => n.Name == node.Name) > 1)
+                    errors.Add(new SemanticError
+                    {
+                        Message = string.Format("{0} '{1}' is declared directly in a 'let' expression several times",
+                                                (node is VarDeclNode) ? "Variable" : "Function",
+                                                node.Name),
+                        Node = this
+                    });
+
+            foreach (var node in decls)
+                if (varsAndFunctions.Count(n => n.Name == node.Name) > 1)
+                    errors.Add(new SemanticError
+                    {
+                        Message = string.Format("Type '{0}' is declared directly in a 'let' expression several times", node.Name),
+                        Node = this
+                    });
+
             //Define Functions and Types at the start of their scopes
             foreach (var node in Children)
             {

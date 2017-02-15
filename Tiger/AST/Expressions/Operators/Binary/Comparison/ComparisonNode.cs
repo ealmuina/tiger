@@ -39,6 +39,13 @@ namespace Tiger.AST
                     Node = this
                 });
 
+            if (LeftOperand.Type == Types.Nil && RightOperand.Type == Types.Nil)
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Types of left and right operands of the binary relational operator can't be both 'nil'"),
+                    Node = this
+                });
+
             if (LeftOperand is ComparisonNode || RightOperand is ComparisonNode)
                 errors.Add(new SemanticError
                 {

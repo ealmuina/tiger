@@ -50,7 +50,16 @@ namespace Tiger.AST
                 string[] types = Arguments.Types;
 
                 for (int i = 0; i < names.Length; i++)
+                {
+                    if (names[i] == Name)
+                        errors.Add(new SemanticError
+                        {
+                            Message = string.Format("There is an argument named as the function"),
+                            Node = this
+                        });
+
                     scope.DefineVariable(names[i], types[i], false, true);
+                }
             }
 
             Expression.CheckSemantics(scope, errors);
@@ -83,9 +92,7 @@ namespace Tiger.AST
             }
 
             Expression.Generate(generator);
-
-            if (FunctionType != Types.Void)
-                generator.Generator.Emit(OpCodes.Ret);
+            generator.Generator.Emit(OpCodes.Ret);
         }
     }
 }
