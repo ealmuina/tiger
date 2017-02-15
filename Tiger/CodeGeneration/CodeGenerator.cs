@@ -46,6 +46,7 @@ namespace Tiger.CodeGeneration
 
             types[Semantics.Types.Int] = typeof(int);
             types[Semantics.Types.String] = typeof(string);
+            types[Semantics.Types.Void] = typeof(void);
 
             return types;
         }

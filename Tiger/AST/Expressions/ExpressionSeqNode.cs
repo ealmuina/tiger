@@ -41,6 +41,7 @@ namespace Tiger.AST
 
         public override void Generate(CodeGenerator generator)
         {
+            generator.Generator.Emit(OpCodes.Nop);
             foreach (var expr in Children)
             {
                 expr.Generate(generator);

@@ -12,6 +12,7 @@ using Tiger.CodeGeneration;
 using Tiger.Parsing;
 using Tiger.Semantics;
 using Tiger.AST;
+using Antlr4.Runtime.Atn;
 
 namespace Tiger
 {
@@ -33,15 +34,9 @@ namespace Tiger
                 Environment.ExitCode = 1;
                 return;
             }
-            //try
-            {
-                ProcessFile(args[0], Path.ChangeExtension(args[0], "exe"));
-            }
-            //catch (Exception exc)
-            //{
-            //    Console.Error.WriteLine("Unexpected error: {0}", exc.Message);
-            //    Environment.ExitCode = (int)ErrorCodes.UnexpectedError;
-            //}
+
+            ProcessFile(args[0], Path.ChangeExtension(args[0], "exe"));
+            Console.WriteLine();
         }
 
         static void PrintHelp()
@@ -54,7 +49,7 @@ namespace Tiger
 
         static void ProcessFile(string inputPath, string outputPath)
         {
-            Console.WriteLine("Tiger Compiler version 1.0\nCopyright (C) 2017 Eddy Almuiña\n");
+            Console.WriteLine("Tiger Compiler version 1.0\nCopyright (C) 2017 Eddy Almuiña");
 
             Node root = ParseInput(inputPath);
             var scope = new Scope();
@@ -89,6 +84,7 @@ namespace Tiger
 
                 if (errors.Count > 0)
                 {
+                    Console.WriteLine();
                     foreach (var error in errors)
                         Console.Error.WriteLine(error);
                     return null;
@@ -110,6 +106,7 @@ namespace Tiger
             root.CheckSemantics(scope, errors);
             if (errors.Count == 0)
                 return true;
+            Console.WriteLine();
             foreach (var error in errors)
                 Console.Error.WriteLine("({1}, {2}): {0}.", error.Message, error.Node.Line, error.Node.Column);
             return false;

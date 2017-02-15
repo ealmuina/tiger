@@ -1,12 +1,11 @@
-(
-    if 1 & "abc" then ();
-    if "abc" & 1 then ();
-    if ("abc") & nil then ()
-)
-
-/*
-Semantic Error: Invalid use of binary logical operator with a non-integer right value at line 2.
-Semantic Error: Invalid use of binary logical operator with a non-integer left value at line 3.
-Semantic Error: Invalid use of binary logical operator with a non-integer left value at line 4.
-Semantic Error: Invalid use of binary logical operator with a non-integer right value at line 4.
-*/
+let
+	function foo() = (
+		let
+			function foo(i : int) = (  )
+		in
+			foo( 12 )
+		end
+	)
+in
+	foo()
+end
