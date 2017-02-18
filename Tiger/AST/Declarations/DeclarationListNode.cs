@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using Tiger.CodeGeneration;
@@ -65,6 +67,18 @@ namespace Tiger.AST
 
         public override void Generate(CodeGenerator generator)
         {
+            //Define Functions and Types at the start of their scopes
+            foreach (var node in Children)
+            {
+                if (node is FuncDeclNode)
+                    (node as FuncDeclNode).Define(generator);
+
+                if (node is TypeDeclNode)
+                {
+                    //TODO Implement
+                }
+            }
+
             foreach (var node in Children)
                 node.Generate(generator);
         }

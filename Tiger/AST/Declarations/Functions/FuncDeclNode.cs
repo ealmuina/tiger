@@ -13,6 +13,9 @@ namespace Tiger.AST
 {
     class FuncDeclNode : DeclarationNode
     {
+        CodeGenerator generator;
+        VariableInfo[] foreignVariables;
+
         public FuncDeclNode(ParserRuleContext context) : base(context) { }
 
         public TypeFieldsNode Arguments
@@ -40,7 +43,15 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
+            foreignVariables = (VariableInfo[])scope.Variables.Clone();
             scope = (Scope)scope.Clone();
+            var info = (FunctionInfo)scope[Name];
+
+            foreach (var fv in foreignVariables)
+            {
+                scope.DefineVariable(fv.Name, fv.Type, (scope[fv.Name] as VariableInfo).IsReadOnly, true, true);
+                info.ForeignVars.Add(fv.Name);
+            }
 
             if (Arguments != null)
             {
@@ -58,41 +69,108 @@ namespace Tiger.AST
                             Node = this
                         });
 
-                    scope.DefineVariable(names[i], types[i], false, true);
+                    scope.DefineVariable(names[i], types[i], false, true, false);
+                    info.ForeignVars.Remove(names[i]);
                 }
             }
 
             Expression.CheckSemantics(scope, errors);
+
+            if (Expression.Type != Types.Nil && FunctionType != Expression.Type)
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("The expression assigned to function '{0}' returns '{1}' and doesn't match with the expected '{2}'",
+                                            Name, Expression.Type, FunctionType),
+                    Node = this
+                });
         }
 
-        public override void Generate(CodeGenerator generator)
+        public void Define(CodeGenerator generator)
         {
             MethodBuilder func = generator.Type.DefineMethod(Name, MethodAttributes.Static);
             func.SetReturnType(generator.Types[FunctionType]);
             generator.Functions[Name] = func;
 
-            generator = (CodeGenerator)generator.Clone();
-
+            this.generator = (CodeGenerator)generator.Clone();
+            this.generator.Functions = generator.Functions;
+            generator = this.generator;
             generator.Method = func;
             generator.Generator = func.GetILGenerator();
+            generator.Variables.Clear();
 
+            var paramTypes = new List<Type>();
+
+            //Store parameters types
             if (Arguments != null)
             {
                 string[] names = Arguments.Names;
                 string[] types = Arguments.Types;
-                var paramTypes = new List<Type>();
 
                 for (int i = 0; i < names.Length; i++)
                 {
                     generator.ParamIndex[names[i]] = i;
                     paramTypes.Add(generator.Types[types[i]]);
                 }
+            }
 
-                func.SetParameters(paramTypes.ToArray());
+            //Store foreign variables types to pass them as ref parameters
+            VariableInfo[] fv = foreignVariables;
+            int paramIndex = Arguments != null ? Arguments.Names.Length : 0;
+            for (int i = 0; i < fv.Length; i++)
+            {
+                if (Arguments != null && Arguments.Names.Contains(fv[i].Name))
+                    continue;
+
+                generator.ParamIndex[fv[i].Name] = paramIndex++;
+                paramTypes.Add(generator.Types[fv[i].Type].MakeByRefType());
+            }
+
+            //Set parameters types
+            generator.Method.SetParameters(paramTypes.ToArray());
+
+            //Set parameters names
+            if (Arguments != null)
+            {
+                string[] names = Arguments.Names;
+
+                for (int i = 0; i < names.Length; i++)
+                    generator.Method.DefineParameter(i + 1, ParameterAttributes.None, names[i]);
+            }
+
+            //Set names of parameters representing foreign variables 
+            paramIndex = Arguments != null ? Arguments.Names.Length + 1 : 1;
+            for (int i = 0; i < fv.Length; i++)
+            {
+                if (Arguments != null && Arguments.Names.Contains(fv[i].Name))
+                    continue;
+
+                generator.Method.DefineParameter(paramIndex++, ParameterAttributes.None, fv[i].Name);
+            }
+        }
+
+        public override void Generate(CodeGenerator generator)
+        {
+            generator = this.generator;
+            ILGenerator il = generator.Generator;
+
+            // Save arguments to local variables
+            if (Arguments != null)
+            {
+                string[] names = Arguments.Names;
+                string[] types = Arguments.Types;
+
+                for (int i = 0; i < names.Length; i++)
+                {
+                    LocalBuilder arg = generator.Generator.DeclareLocal(generator.Types[types[i]]);
+                    generator.Variables[names[i]] = arg;
+
+                    il.Emit(OpCodes.Ldarg, i);
+                    il.Emit(OpCodes.Stloc, arg);
+                }
             }
 
             Expression.Generate(generator);
-            generator.Generator.Emit(OpCodes.Ret);
+            il.Emit(OpCodes.Ret);
         }
     }
 }

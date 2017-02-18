@@ -26,11 +26,11 @@ namespace Tiger.AST
             get { return Children.Skip(1).Cast<ExpressionNode>(); }
         }
 
-        public FunctionInfo SymbolInfo { get; private set; }
+        public FunctionInfo SymbolInfo { get; protected set; }
 
         public override string Type
         {
-            get { return SymbolInfo.Type; }
+            get { return SymbolInfo != null ? SymbolInfo.Type : Types.Void; }
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
@@ -69,7 +69,6 @@ namespace Tiger.AST
                     Message = string.Format("Function '{0}' takes {1} arguments, got {2} instead", FunctionName, parameterCount, argumentCount),
                     Node = this
                 });
-                return;
             }
 
             var arguments = Arguments.ToArray();
@@ -78,7 +77,7 @@ namespace Tiger.AST
                 string expectedT = fInfo.Parameters[i];
                 string exprT = arguments[i].Type;
 
-                if (exprT != expectedT)
+                if (exprT != Types.Nil && exprT != expectedT)
                     errors.Add(new SemanticError
                     {
                         Message = string.Format("Called function {0} with argument type '{1}' when expecting '{2}'", FunctionName, exprT, expectedT),
@@ -91,9 +90,26 @@ namespace Tiger.AST
 
         public override void Generate(CodeGenerator generator)
         {
+            ILGenerator il = generator.Generator;
+
             foreach (var arg in Arguments)
                 arg.Generate(generator);
-            generator.Generator.Emit(OpCodes.Call, generator.Functions[SymbolInfo.Name]);
+
+            if (!SymbolInfo.IsStdlFunc)
+                foreach (var fv in SymbolInfo.ForeignVars)
+                {
+                    if (generator.Variables.ContainsKey(fv))
+                    {
+                        if (!SymbolInfo.Parameters.Contains(fv))
+                            il.Emit(OpCodes.Ldloca, generator.Variables[fv]);
+                    }
+                    else
+                    {
+                        il.Emit(OpCodes.Ldarg, generator.ParamIndex[fv]);
+                    }
+                }
+
+            il.Emit(OpCodes.Call, generator.Functions[SymbolInfo.Name]);
         }
     }
 }

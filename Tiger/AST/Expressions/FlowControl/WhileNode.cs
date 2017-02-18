@@ -14,6 +14,16 @@ namespace Tiger.AST
     {
         public WhileNode(ParserRuleContext context) : base(context) { }
 
+        public ExpressionNode Condition
+        {
+            get { return Children[0] as ExpressionNode; }
+        }
+
+        public ExpressionNode Expression
+        {
+            get { return Children[1] as ExpressionNode; }
+        }
+
         public override string Type
         {
             get { return Types.Void; }
@@ -21,25 +31,26 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            Children[0].CheckSemantics(scope, errors);
+            Condition.CheckSemantics(scope, errors);
+            bool wasInside = scope.InsideLoop;
             scope.InsideLoop = true;
-            Children[1].CheckSemantics(scope, errors);
+            Expression.CheckSemantics(scope, errors);
 
-            if (Children[0].Type != Types.Int)
+            if (Condition.Type != Types.Int)
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Invalid type of condition of the while statement"),
-                    Node = Children[0]
+                    Node = Condition
                 });
 
-            if (Children[1].Type != Types.Void)
+            if (Expression.Type != Types.Void)
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("while used with an expression with return value"),
-                    Node = Children[0]
+                    Node = Expression
                 });
 
-            scope.InsideLoop = false;
+            scope.InsideLoop = wasInside;
         }
 
         public override void Generate(CodeGenerator generator)
@@ -54,12 +65,12 @@ namespace Tiger.AST
 
             //Check condition
             il.MarkLabel(condition);
-            Children[0].Generate(generator);
+            Condition.Generate(generator);
             il.Emit(OpCodes.Ldc_I4_0);
             il.Emit(OpCodes.Beq, end);
 
             //true, exec body
-            Children[1].Generate(generator);
+            Expression.Generate(generator);
             il.Emit(OpCodes.Br, condition);
 
             //false, end

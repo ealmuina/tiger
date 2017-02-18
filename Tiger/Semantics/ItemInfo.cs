@@ -23,26 +23,34 @@ namespace Tiger.Semantics
 
     class VariableInfo : ItemInfo
     {
-        public VariableInfo(string name, string type, bool readOnly, bool isparam) : base(name, type)
+        public VariableInfo(string name, string type, bool readOnly, bool isparam, bool isForeign) : base(name, type)
         {
             IsReadOnly = readOnly;
             IsParam = isparam;
+            IsForeign = isForeign;
         }
 
         public bool IsReadOnly { get; protected set; }
 
         public bool IsParam { get; protected set; }
+
+        public bool IsForeign { get; protected set; }
     }
 
     class FunctionInfo : ItemInfo
     {
-        public FunctionInfo(string name, string returnType, params string[] parameters)
+        public FunctionInfo(string name, bool inStdl, string returnType, params string[] parameters)
             : base(name, returnType)
         {
+            IsStdlFunc = inStdl;
             Parameters = parameters;
         }
 
         public string[] Parameters { get; protected set; }
+
+        public bool IsStdlFunc { get; protected set; }
+
+        public List<string> ForeignVars { get; } = new List<string>(); //stores the names of the foreign variables visibles from the function
     }
 
     class TypeInfo : ItemInfo

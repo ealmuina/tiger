@@ -86,7 +86,7 @@ namespace Tiger
                 {
                     Console.WriteLine();
                     foreach (var error in errors)
-                        Console.Error.WriteLine(error);
+                        Console.WriteLine(error);
                     return null;
                 }
 

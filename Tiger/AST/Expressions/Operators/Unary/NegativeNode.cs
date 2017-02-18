@@ -21,11 +21,11 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
+            Operand.CheckSemantics(scope, errors);
+
             if (Operand.Type != Types.Int)
                 errors.Add(SemanticError.InvalidUseOfOperator(
                     "unary minus", Operand.Type == Types.Nil ? "valued" : "integer", "operand", Operand));
-
-            Operand.CheckSemantics(scope, errors);
         }
 
         public override void Generate(CodeGenerator generator)

@@ -28,6 +28,8 @@ namespace Tiger.AST
 
         public bool IsParam { get; protected set; }
 
+        public bool IsForeign { get; protected set; }
+
         public override string Type
         {
             get { return type; }
@@ -63,6 +65,7 @@ namespace Tiger.AST
 
                 type = info.Type;
                 IsParam = info.IsParam;
+                IsForeign = info.IsForeign;
             }
         }
 
@@ -71,7 +74,26 @@ namespace Tiger.AST
             ILGenerator il = generator.Generator;
 
             if (IsParam)
-                il.Emit(OpCodes.Ldarg, generator.ParamIndex[Name]);
+            {
+                if (IsForeign)
+                    if (IsAccessor)
+                    {
+                        il.Emit(OpCodes.Ldarg, generator.ParamIndex[Name]);
+                        il.Emit(OpCodes.Ldobj, generator.Types[Type]);
+                    }
+                    else
+                    {
+                        //swap expression result with variable address
+                        LocalBuilder temp = il.DeclareLocal(generator.Types[Type]);
+                        il.Emit(OpCodes.Stloc, temp);
+                        il.Emit(OpCodes.Ldarg, generator.ParamIndex[Name]);
+                        il.Emit(OpCodes.Ldloc, temp);
+
+                        il.Emit(OpCodes.Stobj, generator.Types[Type]);
+                    }
+                else
+                    il.Emit(OpCodes.Ldloc, generator.Variables[Name]);
+            }
             else
             {
                 LocalBuilder variable = generator.Variables[Name];

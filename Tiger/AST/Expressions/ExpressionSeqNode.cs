@@ -16,7 +16,7 @@ namespace Tiger.AST
 
         bool MayCauseBreak(Node node)
         {
-            return node is BreakNode || node.Children.Exists(n => MayCauseBreak(n));
+            return node != null && (node is BreakNode || node.Children.Exists(n => MayCauseBreak(n)));
         }
 
         bool InLoop { get; set; }
@@ -44,7 +44,7 @@ namespace Tiger.AST
             foreach (var expr in Children)
             {
                 expr.Generate(generator);
-                if (expr != Children.Last() && expr.Type != Types.Void)
+                if (expr.Type != Types.Void && (expr != Children.Last() || (expr == Children.Last() && Type == Types.Void)))
                     generator.Generator.Emit(OpCodes.Pop);
             }
         }

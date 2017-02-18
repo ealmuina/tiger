@@ -65,11 +65,11 @@ namespace Tiger.CodeGeneration
 
         public ILGenerator Generator { get; set; }
 
-        public Dictionary<string, MethodInfo> Functions { get; protected set; }
+        public Dictionary<string, MethodInfo> Functions { get; set; }
 
-        public Dictionary<string, LocalBuilder> Variables { get; protected set; }
+        public Dictionary<string, LocalBuilder> Variables { get; set; }
 
-        public Dictionary<string, Type> Types { get; protected set; }
+        public Dictionary<string, Type> Types { get; set; }
 
         public Dictionary<string, int> ParamIndex { get; protected set; }
 

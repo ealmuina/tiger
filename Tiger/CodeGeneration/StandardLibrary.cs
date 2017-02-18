@@ -96,7 +96,7 @@ namespace Tiger.CodeGeneration
         public static MethodInfo Ord(TypeBuilder stdl)
         {
             MethodBuilder method = stdl.DefineMethod("ord", MethodAttributes.Static);
-            Expression<Func<string, int>> ord = (s) => s.Length == 0 ? -1 : (byte)s[0];
+            Expression<Func<string, int>> ord = (s) => (s == null || s.Length == 0) ? -1 : (byte)s[0];
             ord.CompileToMethod(method);
             return method;
         }
