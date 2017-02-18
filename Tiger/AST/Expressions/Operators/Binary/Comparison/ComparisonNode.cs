@@ -24,7 +24,12 @@ namespace Tiger.AST
 
         protected abstract void CompareInt(ILGenerator il);
 
-        protected abstract void CompareString(ILGenerator il);
+        protected virtual void CompareString(ILGenerator il)
+        {
+            //Compare the strings using the string's CompareTo method
+            MethodInfo compareTo = typeof(string).GetMethod("CompareTo", new[] { typeof(string) });
+            il.Emit(OpCodes.Call, compareTo);
+        }
 
         protected abstract void CompareOther(ILGenerator il);
 
@@ -72,13 +77,7 @@ namespace Tiger.AST
                 CompareInt(generator.Generator);
 
             else if (LeftOperand.Type == Types.String)
-            {
-                //Compare the strings using the string CompareTo method
-                MethodInfo compareTo = typeof(string).GetMethod("CompareTo", new[] { typeof(string) });
-                il.Emit(OpCodes.Call, compareTo);
-
                 CompareString(generator.Generator);
-            }
 
             else
                 CompareOther(generator.Generator);

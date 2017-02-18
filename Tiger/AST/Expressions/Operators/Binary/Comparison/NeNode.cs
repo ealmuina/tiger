@@ -10,7 +10,7 @@ using Tiger.Semantics;
 
 namespace Tiger.AST
 {
-    class NeNode : ComparisonNode
+    class NeNode : EqNode
     {
         public NeNode(ParserRuleContext context) : base(context) { }
 
@@ -29,9 +29,8 @@ namespace Tiger.AST
 
         protected override void CompareString(ILGenerator il)
         {
-            il.Emit(OpCodes.Ldc_I4_0);
-            il.Emit(OpCodes.Ceq);
-            // if comparison result is 0 they are not equals
+            base.CompareString(il);
+            //just invert equality comparison's result
             il.Emit(OpCodes.Ldc_I4_0);
             il.Emit(OpCodes.Ceq);
         }

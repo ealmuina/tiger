@@ -30,6 +30,7 @@ namespace Tiger.AST
 
         protected override void CompareString(ILGenerator il)
         {
+            base.CompareString(il);
             il.Emit(OpCodes.Ldc_I4, 1);
             il.Emit(OpCodes.Clt);
         }

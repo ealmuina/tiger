@@ -76,7 +76,7 @@ namespace Tiger.CodeGeneration
             il.Emit(OpCodes.Blt, error);
 
             il.Emit(OpCodes.Dup);
-            il.Emit(OpCodes.Ldc_I4, 126);
+            il.Emit(OpCodes.Ldc_I4, 127);
             il.Emit(OpCodes.Bgt, error);
 
             MethodInfo toChar = typeof(Convert).GetMethod("ToChar", new[] { typeof(int) });
