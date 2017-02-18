@@ -19,16 +19,27 @@ namespace Tiger.AST
             return type != Types.Void;
         }
 
-        public override void Generate(CodeGenerator generator)
+        protected override void CompareInt(ILGenerator il)
         {
-            LeftOperand.Generate(generator);
-            RightOperand.Generate(generator);
-
-            ILGenerator il = generator.Generator;
             //The are different if they are not equals
             il.Emit(OpCodes.Ceq);
             il.Emit(OpCodes.Ldc_I4_0);
             il.Emit(OpCodes.Ceq);
+        }
+
+        protected override void CompareString(ILGenerator il)
+        {
+            il.Emit(OpCodes.Ldc_I4_0);
+            il.Emit(OpCodes.Ceq);
+            // if comparison result is 0 they are not equals
+            il.Emit(OpCodes.Ldc_I4_0);
+            il.Emit(OpCodes.Ceq);
+        }
+
+        protected override void CompareOther(ILGenerator il)
+        {
+            //Same as comparing integers
+            CompareInt(il);
         }
     }
 }

@@ -20,28 +20,20 @@ namespace Tiger.AST
             return new[] { Types.Int, Types.String }.Contains(type);
         }
 
-        public override void Generate(CodeGenerator generator)
+        protected override void CompareInt(ILGenerator il)
         {
-            LeftOperand.Generate(generator);
-            RightOperand.Generate(generator);
-
-            ILGenerator il = generator.Generator;
-
-            if (Type == Types.String)
-            {
-                //Compare the strings using the string CompareTo method
-                MethodInfo compareTo = typeof(string).GetMethod("CompareTo", new[] { typeof(string) });
-                il.Emit(OpCodes.Call, compareTo);
-                il.Emit(OpCodes.Ldc_I4, -1);
-                il.Emit(OpCodes.Cgt);
-            }
-            else
-            {
-                //The relation >= is true iff < is false
-                il.Emit(OpCodes.Clt);
-                il.Emit(OpCodes.Ldc_I4_0);
-                il.Emit(OpCodes.Ceq);
-            }
+            //The relation >= is true iff < is false
+            il.Emit(OpCodes.Clt);
+            il.Emit(OpCodes.Ldc_I4_0);
+            il.Emit(OpCodes.Ceq);
         }
+
+        protected override void CompareString(ILGenerator il)
+        {
+            il.Emit(OpCodes.Ldc_I4, -1);
+            il.Emit(OpCodes.Cgt);
+        }
+
+        protected override void CompareOther(ILGenerator il) { }
     }
 }

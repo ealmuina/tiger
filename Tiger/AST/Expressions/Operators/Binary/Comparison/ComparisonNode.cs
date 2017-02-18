@@ -7,6 +7,7 @@ using System.Reflection.Emit;
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
+using System.Reflection;
 
 namespace Tiger.AST
 {
@@ -20,6 +21,12 @@ namespace Tiger.AST
         }
 
         protected abstract bool SupportType(string type);
+
+        protected abstract void CompareInt(ILGenerator il);
+
+        protected abstract void CompareString(ILGenerator il);
+
+        protected abstract void CompareOther(ILGenerator il);
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
@@ -52,6 +59,29 @@ namespace Tiger.AST
                     Message = string.Format("Comparison operators do not associate"),
                     Node = this
                 });
+        }
+
+        public override void Generate(CodeGenerator generator)
+        {
+            LeftOperand.Generate(generator);
+            RightOperand.Generate(generator);
+
+            ILGenerator il = generator.Generator;          
+
+            if (LeftOperand.Type == Types.Int)
+                CompareInt(generator.Generator);
+
+            else if (LeftOperand.Type == Types.String)
+            {
+                //Compare the strings using the string CompareTo method
+                MethodInfo compareTo = typeof(string).GetMethod("CompareTo", new[] { typeof(string) });
+                il.Emit(OpCodes.Call, compareTo);
+
+                CompareString(generator.Generator);
+            }
+
+            else
+                CompareOther(generator.Generator);
         }
     }
 }

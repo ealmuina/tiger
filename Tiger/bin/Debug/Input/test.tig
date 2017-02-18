@@ -1,19 +1,36 @@
-/*Este programa imprime 5 bloques de 5 líneas cada uno,
-	donde en cada línea están los # del 1 al 10 multiplicados
-	por # de línea y # de bloque*/
-
-(
-for j:= 1 to 10 do
-(
-	for k:= 1 to 10 do
-	(
-		for l:= 1 to 10 do
-			( printi(j*k*l); print(" ") );
-		print("\n");
-		if k = 5 then break
-	);
-	
-	printline("----------------------");
-	if j = 5 then break
-)
-)
+let 
+	function a(num:int, s : string) = 
+		(let
+			function f(num: int, s: string) = 
+				(
+					num := 10;
+					s := concat(s, "!")
+				)
+			function b(num1:int):int =
+				(
+					num := num - 1;
+					num
+				)
+		in
+			if num >= 4 then
+				let
+					var num := 0
+					var s := "hello"
+				in
+					f(num, s);
+					printiline(num);
+					printline(s)
+				end;
+				
+			printiline(b(10))
+		end;
+		printiline(num);
+		
+		if (num > 3) then
+			a(num - 1, concat(s, "!"));
+		printiline(num);
+		printline(s)
+		)
+in
+	a(5, "hello")
+end
