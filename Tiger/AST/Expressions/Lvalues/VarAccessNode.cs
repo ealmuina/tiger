@@ -76,6 +76,7 @@ namespace Tiger.AST
             if (IsParam)
             {
                 if (IsForeign)
+                {
                     if (IsAccessor)
                     {
                         il.Emit(OpCodes.Ldarg, generator.ParamIndex[Name]);
@@ -91,8 +92,14 @@ namespace Tiger.AST
 
                         il.Emit(OpCodes.Stobj, generator.Types[Type]);
                     }
+                }
                 else
-                    il.Emit(OpCodes.Ldloc, generator.Variables[Name]);
+                {
+                    if (IsAccessor)
+                        il.Emit(OpCodes.Ldloc, generator.Variables[Name]);
+                    else
+                        il.Emit(OpCodes.Stloc, generator.Variables[Name]);
+                }
             }
             else
             {

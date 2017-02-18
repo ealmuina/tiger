@@ -1,7 +1,7 @@
 let 
 	function a(num:int, s : string) = 
 		(let
-			function f(num: int, s: string) = 
+			function a(num: int, s: string) = 
 				(
 					num := 10;
 					s := concat(s, "!")
@@ -17,7 +17,7 @@ let
 					var num := 0
 					var s := "hello"
 				in
-					f(num, s);
+					a(num, s);
 					printiline(num);
 					printline(s)
 				end;
