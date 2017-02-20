@@ -18,12 +18,12 @@ namespace Tiger.AST
 
         public FuncDeclNode(ParserRuleContext context) : base(context) { }
 
-        public TypeFieldsNode Arguments
+        public RecordTypeNode Arguments
         {
             get
             {
                 return Children[1] != null ?
-                    (TypeFieldsNode)Children[1] : null;
+                    (RecordTypeNode)Children[1] : null;
             }
         }
 
@@ -49,7 +49,7 @@ namespace Tiger.AST
 
             foreach (var fv in foreignVariables)
             {
-                scope.DefineVariable(fv.Name, fv.Type, (scope[fv.Name] as VariableInfo).IsReadOnly, true, true);
+                scope.DefineVariable(fv.Name, fv.Type, (scope[fv.Name] as VariableInfo).IsReadOnly, true);
                 info.ForeignVars.Add(fv.Name);
             }
 
@@ -69,7 +69,7 @@ namespace Tiger.AST
                             Node = this
                         });
 
-                    scope.DefineVariable(names[i], types[i], false, true, false);
+                    scope.DefineVariable(names[i], types[i], false, false);
                     info.ForeignVars.Remove(names[i]);
                 }
             }

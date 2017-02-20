@@ -13,6 +13,6 @@ namespace Tiger.AST
 
         public LValueNode(int line, int column) : base(line, column) { }
 
-        public bool IsAccessor { get; set; }
+        public bool ByValue { get; set; }
     }
 }

@@ -1,20 +1,22 @@
 let
-	function a(b:int) = 
-		(let
-			function c(d:int):int =
-				b
-		in
-			printiline(c(5))
-		end;
-		b := b - 1;
-		let
-			var c := b
-		in
-			printiline(c)
-		end;
-		if (b > 0) then
-			a(b)
-		)
+	var name : string := "John"
+	var age : int := 22
 in
-	a(3)
+	name := "Jane" ;
+	
+		let
+			type Cuco = int
+		in
+			let
+				type Integer = Int
+				type Int = Cuco
+				var x : Integer := 12
+			in
+				x
+			end
+		end 
+	;
+
+	age 
+	
 end

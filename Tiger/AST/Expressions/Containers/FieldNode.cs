@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
+using System.Reflection.Emit;
 
 namespace Tiger.AST
 {
@@ -15,14 +16,25 @@ namespace Tiger.AST
 
         public FieldNode(int line, int column) : base(line, column) { }
 
+        public string Name
+        {
+            get { return (Children[0] as IdNode).Name; }
+        }
+
+        public override string Type
+        {
+            get { return Children[1].Type; }
+        }
+
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            throw new NotImplementedException();
+            foreach (var node in Children)
+                node.CheckSemantics(scope, errors);
         }
 
         public override void Generate(CodeGenerator generator)
         {
-            throw new NotImplementedException();
+            Children[1].Generate(generator);
         }
     }
 }

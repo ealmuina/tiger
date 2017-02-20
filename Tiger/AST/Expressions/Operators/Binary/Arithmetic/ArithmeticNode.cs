@@ -28,6 +28,9 @@ namespace Tiger.AST
             LeftOperand.CheckSemantics(scope, errors);
             RightOperand.CheckSemantics(scope, errors);
 
+            if (errors.Count > 0)
+                return;
+
             if (LeftOperand.Type != Type)
                 errors.Add(SemanticError.InvalidUseOfOperator(
                     OperatorName, LeftOperand.Type == Types.Nil ? "valued" : "integer", "left", LeftOperand));

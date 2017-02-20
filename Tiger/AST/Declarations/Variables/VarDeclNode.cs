@@ -39,7 +39,7 @@ namespace Tiger.AST
             foreach (var node in Children.Where(n => n != null))
                 node.CheckSemantics(scope, errors);
 
-            scope.DefineVariable(Name, VariableType, IsReadonly, false, false);
+            scope.DefineVariable(Name, VariableType, IsReadonly, false);
 
             if (Children[2].Type == Types.Void)
                 errors.Add(new SemanticError
@@ -55,7 +55,14 @@ namespace Tiger.AST
                     Node = this
                 });
 
-            if (Children[1] != null && Children[2].Type != Types.Nil && !scope.SameType((Children[1] as IdNode).Name, Children[2].Type))
+            if (Children[1] != null && !scope.DefinedTypes.ContainsKey(VariableType))
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Cannot declare variable of undefined type '{0}'", VariableType),
+                    Node = Children[1]
+                });
+
+            else if (Children[1] != null && Children[2].Type != Types.Nil && !scope.SameType((Children[1] as IdNode).Name, Children[2].Type))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Expression assigned to variable does not match with its type"),

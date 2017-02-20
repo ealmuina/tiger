@@ -13,6 +13,7 @@ using Tiger.Parsing;
 using Tiger.Semantics;
 using Tiger.AST;
 using Antlr4.Runtime.Atn;
+using System.Threading;
 
 namespace Tiger
 {
@@ -34,7 +35,7 @@ namespace Tiger
                 Environment.ExitCode = 1;
                 return;
             }
-
+            
             ProcessFile(args[0], Path.ChangeExtension(args[0], "exe"));
             Console.WriteLine();
         }

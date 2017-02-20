@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AST\Declarations\Types\TypeNode.cs" />
     <Compile Include="AST\Expressions\Auxiliary\AuxiliaryNode.cs" />
     <Compile Include="AST\Expressions\Containers\ArrayNode.cs" />
     <Compile Include="AST\Declarations\Types\ArrayTypeNode.cs" />
@@ -95,7 +96,7 @@
     <Compile Include="AST\Expressions\Operators\Unary\UnaryNode.cs" />
     <Compile Include="AST\Expressions\Containers\RecordNode.cs" />
     <Compile Include="AST\Declarations\Variables\VarDeclNode.cs" />
-    <Compile Include="AST\Declarations\Types\TypeFieldsNode.cs" />
+    <Compile Include="AST\Declarations\Types\RecordTypeNode.cs" />
     <Compile Include="AST\ProgramNode.cs" />
     <Compile Include="CodeGeneration\CodeGenerator.cs" />
     <Compile Include="CodeGeneration\StandardLibrary.cs" />

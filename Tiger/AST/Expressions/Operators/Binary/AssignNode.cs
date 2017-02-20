@@ -49,9 +49,10 @@ namespace Tiger.AST
         }
 
         public override void Generate(CodeGenerator generator)
-        {            
-            Expression.Generate(generator);
+        {
             LValue.Generate(generator);
+            Expression.Generate(generator);
+            generator.Generator.Emit(OpCodes.Stobj, generator.Types[LValue.Type]);          
         }
     }
 }

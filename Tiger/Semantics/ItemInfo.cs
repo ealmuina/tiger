@@ -23,16 +23,13 @@ namespace Tiger.Semantics
 
     class VariableInfo : ItemInfo
     {
-        public VariableInfo(string name, string type, bool readOnly, bool isparam, bool isForeign) : base(name, type)
+        public VariableInfo(string name, string type, bool readOnly, bool isForeign) : base(name, type)
         {
             IsReadOnly = readOnly;
-            IsParam = isparam;
             IsForeign = isForeign;
         }
 
         public bool IsReadOnly { get; protected set; }
-
-        public bool IsParam { get; protected set; }
 
         public bool IsForeign { get; protected set; }
     }
@@ -56,5 +53,15 @@ namespace Tiger.Semantics
     class TypeInfo : ItemInfo
     {
         public TypeInfo(string name) : base(name, Types.Void) { }
+
+        public TypeInfo(string name, string[] fieldNames, string[] fieldTypes) : base(name, Types.Void)
+        {
+            FieldNames = fieldNames;
+            FieldTypes = fieldTypes;
+        }
+
+        public string[] FieldNames { get; protected set; }
+
+        public string[] FieldTypes { get; protected set; }
     }
 }

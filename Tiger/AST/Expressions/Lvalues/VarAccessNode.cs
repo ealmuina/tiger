@@ -12,8 +12,6 @@ namespace Tiger.AST
 {
     class VarAccessNode : LValueNode
     {
-        string type;
-
         public VarAccessNode(ParserRuleContext context, string name) : base(context)
         {
             Name = name;
@@ -26,13 +24,11 @@ namespace Tiger.AST
 
         public string Name { get; protected set; }
 
-        public bool IsParam { get; protected set; }
-
-        public bool IsForeign { get; protected set; }
+        public VariableInfo Info { get; protected set; }
 
         public override string Type
         {
-            get { return type; }
+            get { return Info.Type; }
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
@@ -56,16 +52,14 @@ namespace Tiger.AST
             {
                 var info = (VariableInfo)scope[Name];
 
-                if (info.IsReadOnly && !IsAccessor)
+                if (info.IsReadOnly && !ByValue)
                     errors.Add(new SemanticError
                     {
                         Message = string.Format("Invalid use of assignment to a readonly variable"),
                         Node = this
                     });
 
-                type = info.Type;
-                IsParam = info.IsParam;
-                IsForeign = info.IsForeign;
+                Info = info;
             }
         }
 
@@ -73,41 +67,14 @@ namespace Tiger.AST
         {
             ILGenerator il = generator.Generator;
 
-            if (IsParam)
-            {
-                if (IsForeign)
-                {
-                    if (IsAccessor)
-                    {
-                        il.Emit(OpCodes.Ldarg, generator.ParamIndex[Name]);
-                        il.Emit(OpCodes.Ldobj, generator.Types[Type]);
-                    }
-                    else
-                    {
-                        //swap expression result with variable address
-                        LocalBuilder temp = il.DeclareLocal(generator.Types[Type]);
-                        il.Emit(OpCodes.Stloc, temp);
-                        il.Emit(OpCodes.Ldarg, generator.ParamIndex[Name]);
-                        il.Emit(OpCodes.Ldloc, temp);
-
-                        il.Emit(OpCodes.Stobj, generator.Types[Type]);
-                    }
-                }
-                else
-                {
-                    if (IsAccessor)
-                        il.Emit(OpCodes.Ldloc, generator.Variables[Name]);
-                    else
-                        il.Emit(OpCodes.Stloc, generator.Variables[Name]);
-                }
-            }
+            if (Info.IsForeign)
+                il.Emit(OpCodes.Ldarg, generator.ParamIndex[Name]);
             else
+                il.Emit(OpCodes.Ldloca, generator.Variables[Name]);
+
+            if (ByValue)
             {
-                LocalBuilder variable = generator.Variables[Name];
-                if (IsAccessor)
-                    il.Emit(OpCodes.Ldloc, variable);
-                else
-                    il.Emit(OpCodes.Stloc, variable);
+                il.Emit(OpCodes.Ldobj, generator.Types[Type]);
             }
         }
     }

@@ -37,7 +37,7 @@ namespace Tiger.Parsing
         public override Node VisitLValue([NotNull] TigerParser.LValueContext context)
         {
             var node = (LValueNode)Visit(context.lvalue());
-            node.IsAccessor = true;
+            node.ByValue = true;
             return node;
         }
 
@@ -131,7 +131,11 @@ namespace Tiger.Parsing
         public override Node VisitAssign([NotNull] TigerParser.AssignContext context)
         {
             var node = new AssignNode(context);
-            node.Children.Add(Visit(context.lvalue()));
+
+            var lvalue = (LValueNode)Visit(context.lvalue());
+            lvalue.ByValue = false;
+            node.Children.Add(lvalue);
+
             node.Children.Add(Visit(context.expr()));
             return node;
         }
@@ -258,7 +262,9 @@ namespace Tiger.Parsing
         public override Node VisitFieldLValue([NotNull] TigerParser.FieldLValueContext context)
         {
             var node = new FieldAccessNode(context);
-            node.Children.Add(Visit(context.lvalue()));
+            var lvalue = (LValueNode)Visit(context.lvalue());
+            lvalue.ByValue = true;
+            node.Children.Add(lvalue);
 
             ITerminalNode id = context.ID();
             node.Children.Add(
@@ -370,7 +376,7 @@ namespace Tiger.Parsing
                     types.Add(ids[i].GetText());
             }
 
-            var node = new TypeFieldsNode(context, names.ToArray(), types.ToArray());
+            var node = new RecordTypeNode(context, names.ToArray(), types.ToArray());
             return node;
         }
         #endregion

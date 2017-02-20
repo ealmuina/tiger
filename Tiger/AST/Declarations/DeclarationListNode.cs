@@ -58,7 +58,7 @@ namespace Tiger.AST
                 }
 
                 if (node is TypeDeclNode)
-                    scope.DefineType((node as TypeDeclNode).Name);
+                    (node as TypeDeclNode).DefineType(scope, errors);
             }
 
             foreach (var node in Children)
@@ -74,9 +74,7 @@ namespace Tiger.AST
                     (node as FuncDeclNode).Define(generator);
 
                 if (node is TypeDeclNode)
-                {
-                    //TODO Implement
-                }
+                    (node as TypeDeclNode).Define(generator);
             }
 
             foreach (var node in Children)

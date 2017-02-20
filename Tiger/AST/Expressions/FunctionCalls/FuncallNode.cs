@@ -38,6 +38,9 @@ namespace Tiger.AST
             foreach (var arg in Arguments)
                 arg.CheckSemantics(scope, errors);
 
+            if (errors.Count > 0)
+                return;
+
             if (!scope.IsDefined(FunctionName))
             {
                 errors.Add(new SemanticError
@@ -69,6 +72,7 @@ namespace Tiger.AST
                     Message = string.Format("Function '{0}' takes {1} arguments, got {2} instead", FunctionName, parameterCount, argumentCount),
                     Node = this
                 });
+                return;
             }
 
             var arguments = Arguments.ToArray();
@@ -77,7 +81,7 @@ namespace Tiger.AST
                 string expectedT = fInfo.Parameters[i];
                 string exprT = arguments[i].Type;
 
-                if (exprT != Types.Nil && exprT != expectedT)
+                if (exprT != Types.Nil && !scope.SameType(exprT, expectedT))
                     errors.Add(new SemanticError
                     {
                         Message = string.Format("Called function {0} with argument type '{1}' when expecting '{2}'", FunctionName, exprT, expectedT),
@@ -93,7 +97,9 @@ namespace Tiger.AST
             ILGenerator il = generator.Generator;
 
             foreach (var arg in Arguments)
+            {
                 arg.Generate(generator);
+            }
 
             if (!SymbolInfo.IsStdlFunc)
                 foreach (var fv in SymbolInfo.ForeignVars)

@@ -11,9 +11,9 @@ using System.Reflection;
 
 namespace Tiger.AST
 {
-    class TypeFieldsNode : Node
+    class RecordTypeNode : TypeNode
     {
-        public TypeFieldsNode(ParserRuleContext context, string[] names, string[] types) : base(context)
+        public RecordTypeNode(ParserRuleContext context, string[] names, string[] types) : base(context)
         {
             Names = names;
             Types = types;
@@ -36,9 +36,17 @@ namespace Tiger.AST
                 if (!scope.IsDefined<Semantics.TypeInfo>(type))
                     errors.Add(new SemanticError
                     {
-                        Message = string.Format("Undefined parameter type '{0}'", type),
+                        Message = string.Format("Undefined field type '{0}'", type),
                         Node = this
                     });
+        }
+
+        public Dictionary<string, FieldBuilder> Define(CodeGenerator generator)
+        {
+            var result = new Dictionary<string, FieldBuilder>();
+            for (int i = 0; i < Names.Length; i++)
+                result[Names[i]] = generator.Type.DefineField(Names[i], generator.Types[Types[i]], FieldAttributes.Public);
+            return result;
         }
 
         public override void Generate(CodeGenerator generator)

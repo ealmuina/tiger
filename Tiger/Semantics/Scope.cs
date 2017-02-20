@@ -11,13 +11,12 @@ namespace Tiger.Semantics
     class Scope : ICloneable
     {
         Dictionary<string, ItemInfo> symbols;
-        Dictionary<string, TypeInfo> types;
         Dictionary<string, string> parentType;
 
         public Scope()
         {
             symbols = new Dictionary<string, ItemInfo>();
-            types = new Dictionary<string, TypeInfo>();
+            DefinedTypes = new Dictionary<string, TypeInfo>();
 
             parentType = new Dictionary<string, string>();
             parentType[Types.Int]
@@ -56,8 +55,8 @@ namespace Tiger.Semantics
 
         void SetTypes()
         {
-            types[Types.Int] = new TypeInfo(Types.Int);
-            types[Types.String] = new TypeInfo(Types.String);
+            DefinedTypes[Types.Int] = new TypeInfo(Types.Int, new string[] { }, new string[] { });
+            DefinedTypes[Types.String] = new TypeInfo(Types.String, new string[] { }, new string[] { });
         }
 
         string GetRoot(string t)
@@ -85,7 +84,7 @@ namespace Tiger.Semantics
         {
             if (typeof(TInfo) == typeof(TypeInfo))
             {
-                return types.ContainsKey(name);
+                return DefinedTypes.ContainsKey(name);
             }
             else
             {
@@ -99,6 +98,8 @@ namespace Tiger.Semantics
         public bool InsideLoop { get; set; }
 
         public HashSet<string> UsedStdlFunctions { get; protected set; }
+
+        public Dictionary<string, TypeInfo> DefinedTypes { get; protected set; }
 
         public ItemInfo this[string name]
         {
@@ -116,9 +117,9 @@ namespace Tiger.Semantics
             throw new Exception(string.Format("Symbol {0} is not defined", name));
         }
 
-        public VariableInfo DefineVariable(string name, string type, bool readOnly, bool isParam, bool isForeign)
+        public VariableInfo DefineVariable(string name, string type, bool readOnly, bool isForeign)
         {
-            var result = new VariableInfo(name, type, readOnly, isParam, isForeign);
+            var result = new VariableInfo(name, type, readOnly, isForeign);
             symbols[name] = result;
             return result;
         }
@@ -130,10 +131,20 @@ namespace Tiger.Semantics
             return result;
         }
 
-        public TypeInfo DefineType(string name)
+        public TypeInfo DefineType(string name, string[] fieldNames, string[] fieldTypes)
         {
+            var result = new TypeInfo(name, fieldNames, fieldTypes);
+            parentType[name] = null;
+            DefinedTypes[name] = result;
+            return result;
+        }
+
+        public TypeInfo DefineType(string name, string aliased)
+        {
+            //TODO Fix working with aliases
             var result = new TypeInfo(name);
-            types[name] = result;
+            parentType[name] = aliased;
+            DefinedTypes[name] = result;
             return result;
         }
 
@@ -148,7 +159,7 @@ namespace Tiger.Semantics
         {
             var clone = new Scope();
             clone.symbols = new Dictionary<string, ItemInfo>(symbols);
-            clone.types = new Dictionary<string, TypeInfo>(types);
+            clone.DefinedTypes = new Dictionary<string, TypeInfo>(DefinedTypes);
             clone.parentType = new Dictionary<string, string>(parentType);
             clone.InsideLoop = InsideLoop;
             clone.UsedStdlFunctions = UsedStdlFunctions;

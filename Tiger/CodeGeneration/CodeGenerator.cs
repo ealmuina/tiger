@@ -20,6 +20,7 @@ namespace Tiger.CodeGeneration
             Variables = new Dictionary<string, LocalBuilder>();
             Types = DefaultTypes();
             ParamIndex = new Dictionary<string, int>();
+            Fields = new Dictionary<string, Dictionary<string, FieldBuilder>>();
         }
 
         protected CodeGenerator(CodeGenerator other)
@@ -37,6 +38,7 @@ namespace Tiger.CodeGeneration
             Variables = new Dictionary<string, LocalBuilder>(other.Variables);
             Types = new Dictionary<string, Type>(other.Types);
             ParamIndex = new Dictionary<string, int>(other.ParamIndex);
+            Fields = new Dictionary<string, Dictionary<string, FieldBuilder>>(other.Fields);
             LoopEnd = other.LoopEnd;
         }
 
@@ -73,6 +75,8 @@ namespace Tiger.CodeGeneration
 
         public Dictionary<string, int> ParamIndex { get; protected set; }
 
+        public Dictionary<string, Dictionary<string, FieldBuilder>> Fields { get; protected set; }
+
         public Label LoopEnd { get; set; }
 
         public Type GetType(string type)
@@ -84,5 +88,5 @@ namespace Tiger.CodeGeneration
         {
             return new CodeGenerator(this);
         }
-    }
+    }   
 }

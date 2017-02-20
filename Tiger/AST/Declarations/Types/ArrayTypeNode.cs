@@ -9,11 +9,16 @@ using Tiger.Semantics;
 
 namespace Tiger.AST
 {
-    class ArrayTypeNode : Node
+    class ArrayTypeNode : TypeNode
     {
         public ArrayTypeNode(ParserRuleContext context) : base(context) { }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Define(CodeGenerator generator)
         {
             throw new NotImplementedException();
         }
