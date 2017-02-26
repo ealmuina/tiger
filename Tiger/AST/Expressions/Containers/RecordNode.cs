@@ -34,7 +34,7 @@ namespace Tiger.AST
                 });
             else
             {
-                TypeInfo info = scope.DefinedTypes[Type];
+                TypeInfo info = scope.GetItem<TypeInfo>(Type);
                 for (int i = 1; i < Children.Count; i++)
                     if (Children[i].Type != Types.Nil && !scope.SameType(Children[i].Type, info.FieldTypes[i - 1]))
                         errors.Add(new SemanticError

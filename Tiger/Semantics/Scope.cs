@@ -11,19 +11,11 @@ namespace Tiger.Semantics
     class Scope : ICloneable
     {
         Dictionary<string, ItemInfo> symbols;
-        Dictionary<string, string> parentType;
 
         public Scope()
         {
             symbols = new Dictionary<string, ItemInfo>();
             DefinedTypes = new Dictionary<string, TypeInfo>();
-
-            parentType = new Dictionary<string, string>();
-            parentType[Types.Int]
-                = parentType[Types.String]
-                = parentType[Types.Nil]
-                = parentType[Types.Void]
-                = null; //base types
 
             UsedStdlFunctions = new HashSet<string>();
 
@@ -57,13 +49,8 @@ namespace Tiger.Semantics
         {
             DefinedTypes[Types.Int] = new TypeInfo(Types.Int, new string[] { }, new string[] { });
             DefinedTypes[Types.String] = new TypeInfo(Types.String, new string[] { }, new string[] { });
-        }
-
-        string GetRoot(string t)
-        {
-            while (parentType[t] != null)
-                t = parentType[t];
-            return t;
+            DefinedTypes[Types.Void] = new TypeInfo(Types.Void, new string[] { }, new string[] { });
+            DefinedTypes[Types.Nil] = new TypeInfo(Types.Nil, new string[] { }, new string[] { });
         }
 
         public FunctionInfo[] Stdl { get; protected set; }
@@ -111,9 +98,22 @@ namespace Tiger.Semantics
 
         public TInfo GetItem<TInfo>(string name) where TInfo : ItemInfo
         {
-            ItemInfo item = null;
-            if (symbols.TryGetValue(name, out item) && item is TInfo)
-                return (TInfo)item;
+            if (typeof(TInfo) == typeof(TypeInfo))
+            {
+                TypeInfo item = null;
+                if (DefinedTypes.TryGetValue(name, out item))
+                {
+                    while (item is TypeAlias)
+                        item = DefinedTypes[(item as TypeAlias).Aliased];
+                    return item as TInfo;
+                }
+            }
+            else
+            {
+                ItemInfo item = null;
+                if (symbols.TryGetValue(name, out item) && item is TInfo)
+                    return (TInfo)item;
+            }
             throw new Exception(string.Format("Symbol {0} is not defined", name));
         }
 
@@ -134,25 +134,39 @@ namespace Tiger.Semantics
         public TypeInfo DefineType(string name, string[] fieldNames, string[] fieldTypes)
         {
             var result = new TypeInfo(name, fieldNames, fieldTypes);
-            parentType[name] = null;
             DefinedTypes[name] = result;
             return result;
         }
 
         public TypeInfo DefineType(string name, string aliased)
         {
-            //TODO Fix working with aliases
-            var result = new TypeInfo(name);
-            parentType[name] = aliased;
+            var result = new TypeAlias(name, aliased);
             DefinedTypes[name] = result;
             return result;
         }
 
         public bool SameType(string t1, string t2)
         {
-            string root1 = GetRoot(t1);
-            string root2 = GetRoot(t2);
-            return root1 == root2;
+            var info1 = GetItem<TypeInfo>(t1);
+            var info2 = GetItem<TypeInfo>(t2);
+            return info1 == info2;
+        }
+
+        public bool BadAlias(string name)
+        {
+            TypeInfo item = DefinedTypes[name];
+            var visited = new HashSet<TypeInfo>();
+            while (item is TypeAlias)
+            {
+                string next = (item as TypeAlias).Aliased;
+
+                if (!DefinedTypes.ContainsKey(next) || visited.Contains(item))
+                    return true;
+
+                visited.Add(item);
+                item = DefinedTypes[next];
+            }
+            return false;
         }
 
         public object Clone()
@@ -160,7 +174,6 @@ namespace Tiger.Semantics
             var clone = new Scope();
             clone.symbols = new Dictionary<string, ItemInfo>(symbols);
             clone.DefinedTypes = new Dictionary<string, TypeInfo>(DefinedTypes);
-            clone.parentType = new Dictionary<string, string>(parentType);
             clone.InsideLoop = InsideLoop;
             clone.UsedStdlFunctions = UsedStdlFunctions;
             return clone;

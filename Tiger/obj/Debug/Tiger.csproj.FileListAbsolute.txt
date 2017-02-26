@@ -5,3 +5,9 @@ D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\T
 D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\obj\Debug\Tiger.exe
 D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\obj\Debug\Tiger.pdb
 D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\obj\Debug\Tiger.csprojResolveAssemblyReference.cache
+D:\EDDY - Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\bin\Debug\Tiger.exe.config
+D:\EDDY - Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\obj\Debug\Tiger.exe
+D:\EDDY - Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\obj\Debug\Tiger.pdb
+D:\EDDY - Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\bin\Debug\Tiger.exe
+D:\EDDY - Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\bin\Debug\Tiger.pdb
+D:\EDDY - Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\obj\Debug\Tiger.csprojResolveAssemblyReference.cache

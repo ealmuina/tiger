@@ -19,6 +19,13 @@ namespace Tiger.AST
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             Expression.CheckSemantics(scope, errors);
+
+            if (errors.Count == 0 && !scope.DefinedTypes.ContainsKey(Expression.Type))
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Type '{0}' returned by the expression isn't visible in its context", Expression.Type),
+                    Node = Expression
+                });
         }
 
         public override void Generate(CodeGenerator generator)

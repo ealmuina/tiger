@@ -1,22 +1,24 @@
-let
-	var name : string := "John"
-	var age : int := 22
-in
-	name := "Jane" ;
-	
-		let
-			type Cuco = int
-		in
-			let
-				type Integer = Int
-				type Int = Cuco
-				var x : Integer := 12
-			in
-				x
-			end
-		end 
-	;
-
-	age 
-	
-end
+/* Este programa es válido.
+Aquí hay 4 secuencias de declaraciones:
+(1) secuencia de declaraciones de funciones (líneas B-D)
+(2) secuencia de declaraciones de variables (líneas E-F)
+(3) secuencia de declaraciones de funciones (línea G) [una sola función]
+(4) secuencia de declaraciones de tipos (líneas H-J).
+Como las funciones f1 y f2 están en la misma secuencia de declaraciones de funciones (1)
+[y, por tanto, ambas son “visibles” desde el comienzo de (1)], desde el cuerpo de f1 se
+puede llamar a f2, a pesar de que f2 está declarada después que f1. Algo análogo ocurre
+con las declaraciones de tipos en (4).
+Este programa imprime 3628800. */
+let /* A */
+function f1(n : int) : int = if n <= 0 then 1 else n * f2(n-1) /* B */
+function writei(i : int) = printi(i) /* C */
+function f2(n : int) : int = if n <= 0 then 1 else n * f1(n-1) /* D */
+var x : int := 10 /* E */
+var y : int := 0 /* F */
+function g() = writei(f1(x)) /* G */
+type Person = { Name : string, Pet : Animal } /* H */
+type Animal = { Name : string, Owner : Individual } /* I */
+type Individual = Person /* J */
+in /* K */
+g() /* L */
+end /* M */

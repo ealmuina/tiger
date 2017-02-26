@@ -36,7 +36,17 @@ namespace Tiger.AST
             InLoop = scope.InsideLoop;
 
             foreach (var expr in Children)
+            {
+                int errorsCount = errors.Count;
                 expr.CheckSemantics(scope, errors);
+
+                if (errorsCount == errors.Count && !scope.DefinedTypes.ContainsKey(expr.Type))
+                    errors.Add(new SemanticError
+                    {
+                        Message = string.Format("Type '{0}' returned by the expression isn't visible in its context", expr.Type),
+                        Node = expr
+                    });
+            }
         }
 
         public override void Generate(CodeGenerator generator)

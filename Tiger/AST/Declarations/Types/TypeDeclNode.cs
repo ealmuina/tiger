@@ -18,9 +18,16 @@ namespace Tiger.AST
 
         public TypeDeclNode(ParserRuleContext context) : base(context) { }
 
+        public bool IsAlias
+        {
+            get { return Children[1] is IdNode; }
+        }
+
+        public Semantics.TypeInfo TypeInfo { get; protected set; }
+
         public void DefineType(Scope scope, List<SemanticError> errors)
         {
-            if (Children[1] is IdNode)
+            if (IsAlias)
             {
                 var alias = (IdNode)Children[1];
                 scope.DefineType(Name, alias.Name);
@@ -40,17 +47,23 @@ namespace Tiger.AST
         {
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
+
+            if (IsAlias && scope.BadAlias(Name))
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Type '{0}' is part of an invalid alias cycle", Name),
+                    Node = this
+                });
+            else
+                TypeInfo = scope.GetItem<Semantics.TypeInfo>(Name);
         }
 
         public void Define(CodeGenerator generator)
         {
-            if (Children[1] is IdNode)
-            {
-                var alias = (IdNode)Children[1];
-                generator.Types[Name] = generator.Types[alias.Name];
-            }
+            if (IsAlias)
+                return;
 
-            else if (Children[1] is RecordTypeNode)
+            if (Children[1] is RecordTypeNode)
             {
                 this.generator = (CodeGenerator)generator.Clone();
                 this.generator.Type = this.generator.Module.DefineType(Name, TypeAttributes.Public);

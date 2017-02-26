@@ -35,16 +35,8 @@ namespace Tiger.AST
         public override void Generate(CodeGenerator generator)
         {
             generator = (CodeGenerator)generator.Clone();
-            var il = generator.Generator;
-
-            Children[0].Generate(generator);
-
-            for (int i = 1; i < Children.Count; i++)
-            {
-                Children[i].Generate(generator);
-                if (i < Children.Count - 1 && Children[i].Type != Types.Void)
-                    il.Emit(OpCodes.Pop);
-            }
+            foreach (var node in Children)
+                node.Generate(generator);
         }
     }
 }

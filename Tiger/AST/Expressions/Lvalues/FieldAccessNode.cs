@@ -33,7 +33,7 @@ namespace Tiger.AST
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
 
-            TypeInfo info = scope.DefinedTypes[Children[0].Type];
+            var info = scope.GetItem<TypeInfo>(Children[0].Type);
 
             if (!info.FieldNames.Contains(FieldName))
                 errors.Add(new SemanticError

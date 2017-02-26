@@ -109,7 +109,7 @@ namespace Tiger
                 return true;
             Console.WriteLine();
             foreach (var error in errors)
-                Console.Error.WriteLine("({1}, {2}): {0}.", error.Message, error.Node.Line, error.Node.Column);
+                Console.WriteLine("({1}, {2}): {0}.", error.Message, error.Node.Line, error.Node.Column);
             return false;
         }
 

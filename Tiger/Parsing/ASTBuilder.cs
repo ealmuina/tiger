@@ -160,9 +160,12 @@ namespace Tiger.Parsing
             TigerParser.DeclContext[] decls = context.decl();
             var declarations = new DeclarationListNode(decls[0]);
             declarations.Children.AddRange(from decl in decls select Visit(decl));
-
             node.Children.Add(declarations);
-            node.Children.AddRange(from expr in context.expr() select Visit(expr));
+
+            TigerParser.ExprContext[] exprs = context.expr();
+            var expressions = new ExpressionSeqNode(exprs[0]);
+            expressions.Children.AddRange(from e in exprs select Visit(e));
+            node.Children.Add(expressions);
 
             return node;
         }

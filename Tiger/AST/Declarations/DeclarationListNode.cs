@@ -62,7 +62,10 @@ namespace Tiger.AST
             }
 
             foreach (var node in Children)
+            {
+                if (errors.Count > 0) break;
                 node.CheckSemantics(scope, errors);
+            }
         }
 
         public override void Generate(CodeGenerator generator)
@@ -76,6 +79,11 @@ namespace Tiger.AST
                 if (node is TypeDeclNode)
                     (node as TypeDeclNode).Define(generator);
             }
+
+            //Store real types for aliases
+            foreach (var node in Children.Where(n => n is TypeDeclNode).Cast<TypeDeclNode>())
+                generator.Types[node.Name] = generator.Types[node.TypeInfo.Name];
+
 
             foreach (var node in Children)
                 node.Generate(generator);
