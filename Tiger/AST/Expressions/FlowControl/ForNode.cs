@@ -33,7 +33,7 @@ namespace Tiger.AST
             Children[1].CheckSemantics(scope, errors);
             Children[2].CheckSemantics(clone, errors);
 
-            if ((Children[0] as VarDeclNode).VariableType != Types.Int)
+            if ((Children[0] as VarDeclNode).Type != Types.Int)
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("The return type of the expression for the lower bound of the 'for' loop is not integer"),

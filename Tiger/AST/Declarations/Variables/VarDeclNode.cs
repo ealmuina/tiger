@@ -25,7 +25,7 @@ namespace Tiger.AST
 
         public bool IsReadonly { get; protected set; }
 
-        public string VariableType
+        public override string Type
         {
             get
             {
@@ -39,7 +39,7 @@ namespace Tiger.AST
             foreach (var node in Children.Where(n => n != null))
                 node.CheckSemantics(scope, errors);
 
-            scope.DefineVariable(Name, VariableType, IsReadonly, false);
+            scope.DefineVariable(Name, scope.GetItem<Semantics.TypeInfo>(Type).Name, IsReadonly, false);
 
             if (Children[2].Type == Types.Void)
                 errors.Add(new SemanticError
@@ -55,10 +55,10 @@ namespace Tiger.AST
                     Node = this
                 });
 
-            if (Children[1] != null && !scope.DefinedTypes.ContainsKey(VariableType))
+            if (Children[1] != null && !scope.DefinedTypes.ContainsKey(Type))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Cannot declare variable of undefined type '{0}'", VariableType),
+                    Message = string.Format("Cannot declare variable of undefined type '{0}'", Type),
                     Node = Children[1]
                 });
 
@@ -73,7 +73,7 @@ namespace Tiger.AST
         public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
-            Type type = generator.GetType(VariableType);
+            Type type = generator.GetType(Type);
 
             Children[2].Generate(generator);
 

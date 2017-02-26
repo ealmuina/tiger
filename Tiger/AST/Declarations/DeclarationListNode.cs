@@ -84,7 +84,6 @@ namespace Tiger.AST
             foreach (var node in Children.Where(n => n is TypeDeclNode).Cast<TypeDeclNode>())
                 generator.Types[node.Name] = generator.Types[node.TypeInfo.Name];
 
-
             foreach (var node in Children)
                 node.Generate(generator);
         }
