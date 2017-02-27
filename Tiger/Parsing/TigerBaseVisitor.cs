@@ -276,8 +276,8 @@ public partial class TigerBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitFieldLValue([NotNull] TigerParser.FieldLValueContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by the <c>TypeDecl</c>
-	/// labeled alternative in <see cref="TigerParser.decl"/>.
+	/// Visit a parse tree produced by the <c>TypeDecls</c>
+	/// labeled alternative in <see cref="TigerParser.decls"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -285,10 +285,10 @@ public partial class TigerBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitTypeDecl([NotNull] TigerParser.TypeDeclContext context) { return VisitChildren(context); }
+	public virtual Result VisitTypeDecls([NotNull] TigerParser.TypeDeclsContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by the <c>VarDecl</c>
-	/// labeled alternative in <see cref="TigerParser.decl"/>.
+	/// labeled alternative in <see cref="TigerParser.decls"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -298,8 +298,19 @@ public partial class TigerBaseVisitor<Result> : AbstractParseTreeVisitor<Result>
 	/// <return>The visitor result.</return>
 	public virtual Result VisitVarDecl([NotNull] TigerParser.VarDeclContext context) { return VisitChildren(context); }
 	/// <summary>
+	/// Visit a parse tree produced by the <c>FuncDecls</c>
+	/// labeled alternative in <see cref="TigerParser.decls"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitFuncDecls([NotNull] TigerParser.FuncDeclsContext context) { return VisitChildren(context); }
+	/// <summary>
 	/// Visit a parse tree produced by the <c>FuncDecl</c>
-	/// labeled alternative in <see cref="TigerParser.decl"/>.
+	/// labeled alternative in <see cref="TigerParser.func_decl"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.

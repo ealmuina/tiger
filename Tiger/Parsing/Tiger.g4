@@ -24,7 +24,7 @@ expr
 	|	lvalue ':=' expr													# Assign
 	|	ID '(' (expr (',' expr)*)? ')'										# Call
 	|	'(' (expr (';' expr)*)? ')'											# ParenExprs
-	|	typeID=ID	'{' (ID '=' expr (',' ID '=' expr)*)? '}'				# Record
+	|	typeID=ID '{' (ID '=' expr (',' ID '=' expr)*)? '}'					# Record
 	|	ID '[' expr ']' 'of' expr											# Array	
 
 	|	'if' expr 'then' expr ('else' expr)?								# If
@@ -32,7 +32,7 @@ expr
 	|	'for' ID ':=' expr 'to' expr 'do' expr								# For			
 	|	'break'																# Break
 	
-	|	'let' decl* 'in' (expr (';' expr)*)? 'end'							# Let
+	|	'let' decls* 'in' (expr (';' expr)*)? 'end'							# Let
 	;
 
 lvalue
@@ -41,10 +41,14 @@ lvalue
 	|	lvalue '[' expr ']'													# IndexLValue
 	;
 
-decl
-	:	'type' ID '=' type													# TypeDecl
+decls
+	:	('type' ID '=' type)+												# TypeDecls
 	|	'var' id=ID (':' typeId=ID)? ':=' expr								# VarDecl
-	|	'function' id=ID '(' type_fields? ')' (':' typeId=ID)? '=' expr		# FuncDecl
+	|	func_decl+															# FuncDecls
+	;
+
+func_decl
+	:	'function' id=ID '(' type_fields? ')' (':' typeId=ID)? '=' expr		# FuncDecl
 	;
 
 type

@@ -157,13 +157,19 @@ namespace Tiger.Parsing
         {
             var node = new LetNode(context);
 
-            TigerParser.DeclContext[] decls = context.decl();
+            TigerParser.DeclsContext[] decls = context.decls();
             var declarations = new DeclarationListNode(decls[0]);
-            declarations.Children.AddRange(from decl in decls select Visit(decl));
+            declarations.Children.AddRange(from d in decls select Visit(d));
             node.Children.Add(declarations);
 
             TigerParser.ExprContext[] exprs = context.expr();
-            var expressions = new ExpressionSeqNode(exprs[0]);
+
+            ExpressionSeqNode expressions;
+            if (exprs.Length > 0)
+                expressions = new ExpressionSeqNode(exprs[0]);
+            else
+                expressions = new ExpressionSeqNode(-1, -1);
+
             expressions.Children.AddRange(from e in exprs select Visit(e));
             node.Children.Add(expressions);
 
@@ -297,28 +303,32 @@ namespace Tiger.Parsing
         #endregion
 
         #region Declarations
+
         #region Functions
+        public override Node VisitFuncDecls([NotNull] TigerParser.FuncDeclsContext context)
+        {
+            var node = new FuncDeclListNode(context);
+            node.Children.AddRange(from funcDecl in context.func_decl() select Visit(funcDecl));
+            return node;            
+        }
+
         public override Node VisitFuncDecl([NotNull] TigerParser.FuncDeclContext context)
         {
             var node = new FuncDeclNode(context);
 
-            IToken id = context.id;
             node.Children.Add(
-                new IdNode(id.Line, id.Column, id.Text));
+                new IdNode(context.id.Line, context.id.Column, context.id.Text));
+
+            TigerParser.Type_fieldsContext typeFields = context.type_fields();
+            node.Children.Add(
+                typeFields == null ?
+                null :
+                Visit(typeFields));
 
             node.Children.Add(
-                context.type_fields() == null ?
+                context.typeId == null ?
                 null :
-                Visit(context.type_fields()));
-
-            IToken typeId = context.typeId;
-            node.Children.Add(
-                typeId == null ?
-                null :
-                new IdNode(
-                    typeId.Line,
-                    typeId.Column,
-                    typeId.Text));
+                new IdNode(context.typeId.Line, context.typeId.Column, context.typeId.Text));
 
             node.Children.Add(Visit(context.expr()));
 
@@ -327,18 +337,22 @@ namespace Tiger.Parsing
         #endregion
 
         #region Types
-        public override Node VisitTypeDecl([NotNull] TigerParser.TypeDeclContext context)
+        public override Node VisitTypeDecls([NotNull] TigerParser.TypeDeclsContext context)
         {
-            var node = new TypeDeclNode(context);
+            var node = new TypeDeclListNode(context);
+            for (int i = 0; i < context.type().Length; i++)
+            {
+                ITerminalNode id = context.ID(i);
+                TigerParser.TypeContext type = context.type(i);
 
-            ITerminalNode id = context.ID();
-            node.Children.Add(
-                new IdNode(
-                    id.Symbol.Line,
-                    id.Symbol.Column,
-                    id.GetText()));
-            node.Children.Add(Visit(context.type()));
+                var decl = new TypeDeclNode(id.Symbol.Line, id.Symbol.Column);
+                decl.Children.Add(
+                    new IdNode(id.Symbol.Line, id.Symbol.Column, id.GetText()));
+                decl.Children.Add(
+                    Visit(type));
 
+                node.Children.Add(decl);
+            }
             return node;
         }
 
@@ -389,20 +403,18 @@ namespace Tiger.Parsing
         {
             var node = new VarDeclNode(context);
 
-            IToken id = context.id;
             node.Children.Add(
                 new IdNode(
-                    id.Line,
-                    id.Column,
-                    id.Text));
+                    context.id.Line,
+                    context.id.Column,
+                    context.id.Text));
 
-            IToken typeId = context.typeId;
-            node.Children.Add(typeId == null ?
+            node.Children.Add(context.typeId == null ?
                 null :
                 new IdNode(
-                    typeId.Line,
-                    typeId.Column,
-                    typeId.Text));
+                    context.typeId.Line,
+                    context.typeId.Column,
+                    context.typeId.Text));
 
             node.Children.Add(Visit(context.expr()));
             return node;

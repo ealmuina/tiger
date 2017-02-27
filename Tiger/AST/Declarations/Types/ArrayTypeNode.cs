@@ -13,19 +13,27 @@ namespace Tiger.AST
     {
         public ArrayTypeNode(ParserRuleContext context) : base(context) { }
 
-        public override void CheckSemantics(Scope scope, List<SemanticError> errors)
+        public override string Type
         {
-            throw new NotImplementedException();
+            get { return (Children[0] as IdNode).Name; }
         }
 
-        public void Define(CodeGenerator generator)
+        public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            throw new NotImplementedException();
+            if (!scope.Types.ContainsKey(Type))
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Unknown type '{0}' on array declaration", Type),
+                    Node = this
+                });
+
+            foreach (var node in Children)
+                node.CheckSemantics(scope, errors);
         }
 
         public override void Generate(CodeGenerator generator)
         {
-            throw new NotImplementedException();
+            //pass
         }
     }
 }

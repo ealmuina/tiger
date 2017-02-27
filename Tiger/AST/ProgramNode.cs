@@ -20,7 +20,7 @@ namespace Tiger.AST
         {
             Expression.CheckSemantics(scope, errors);
 
-            if (errors.Count == 0 && !scope.DefinedTypes.ContainsKey(Expression.Type))
+            if (errors.Count == 0 && !scope.Types.ContainsKey(Expression.Type))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Type '{0}' returned by the expression isn't visible in its context", Expression.Type),

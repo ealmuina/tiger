@@ -44,7 +44,7 @@ namespace Tiger.AST
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             foreignVariables = (VariableInfo[])scope.Variables.Clone();
-            scope = (Scope)scope.Clone();
+            scope = new Scope(scope);
             var info = (FunctionInfo)scope[Name];
 
             foreach (var fv in foreignVariables)
@@ -52,6 +52,13 @@ namespace Tiger.AST
                 scope.DefineVariable(fv.Name, fv.Type, (scope[fv.Name] as VariableInfo).IsReadOnly, true);
                 info.ForeignVars.Add(fv.Name);
             }
+
+            if (scope.Stdl.Where(n => n.Name == Name).Count() > 0)
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Standard library function {0} can not be redefined", Name),
+                    Node = this
+                });
 
             if (Arguments != null)
             {
@@ -91,7 +98,7 @@ namespace Tiger.AST
             func.SetReturnType(generator.Types[FunctionType]);
             generator.Functions[Name] = func;
 
-            this.generator = (CodeGenerator)generator.Clone();
+            this.generator = new CodeGenerator(generator);
             this.generator.Functions = generator.Functions;
             generator = this.generator;
             generator.Method = func;

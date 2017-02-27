@@ -42,10 +42,10 @@ public partial class TigerParser : Parser {
 		T__31=32, T__32=33, T__33=34, T__34=35, T__35=36, T__36=37, T__37=38, 
 		T__38=39, T__39=40, STRING=41, INTEGER=42, ID=43, COMMENT=44, WS=45;
 	public const int
-		RULE_compileUnit = 0, RULE_expr = 1, RULE_lvalue = 2, RULE_decl = 3, RULE_type = 4, 
-		RULE_type_fields = 5;
+		RULE_compileUnit = 0, RULE_expr = 1, RULE_lvalue = 2, RULE_decls = 3, 
+		RULE_func_decl = 4, RULE_type = 5, RULE_type_fields = 6;
 	public static readonly string[] ruleNames = {
-		"compileUnit", "expr", "lvalue", "decl", "type", "type_fields"
+		"compileUnit", "expr", "lvalue", "decls", "func_decl", "type", "type_fields"
 	};
 
 	private static readonly string[] _LiteralNames = {
@@ -123,8 +123,8 @@ public partial class TigerParser : Parser {
 			_localctx = new ProgramContext(_localctx);
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 12; expr(0);
-			State = 13; Match(Eof);
+			State = 14; expr(0);
+			State = 15; Match(Eof);
 			}
 		}
 		catch (RecognitionException re) {
@@ -332,11 +332,11 @@ public partial class TigerParser : Parser {
 		}
 	}
 	public partial class LetContext : ExprContext {
-		public DeclContext[] decl() {
-			return GetRuleContexts<DeclContext>();
+		public DeclsContext[] decls() {
+			return GetRuleContexts<DeclsContext>();
 		}
-		public DeclContext decl(int i) {
-			return GetRuleContext<DeclContext>(i);
+		public DeclsContext decls(int i) {
+			return GetRuleContext<DeclsContext>(i);
 		}
 		public ExprContext[] expr() {
 			return GetRuleContexts<ExprContext>();
@@ -409,7 +409,7 @@ public partial class TigerParser : Parser {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 117;
+			State = 119;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,10,Context) ) {
 			case 1:
@@ -418,7 +418,7 @@ public partial class TigerParser : Parser {
 				Context = _localctx;
 				_prevctx = _localctx;
 
-				State = 16; Match(STRING);
+				State = 18; Match(STRING);
 				}
 				break;
 			case 2:
@@ -426,7 +426,7 @@ public partial class TigerParser : Parser {
 				_localctx = new IntegerContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 17; Match(INTEGER);
+				State = 19; Match(INTEGER);
 				}
 				break;
 			case 3:
@@ -434,7 +434,7 @@ public partial class TigerParser : Parser {
 				_localctx = new NilContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 18; Match(T__0);
+				State = 20; Match(T__0);
 				}
 				break;
 			case 4:
@@ -442,7 +442,7 @@ public partial class TigerParser : Parser {
 				_localctx = new LValueContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 19; lvalue(0);
+				State = 21; lvalue(0);
 				}
 				break;
 			case 5:
@@ -450,8 +450,8 @@ public partial class TigerParser : Parser {
 				_localctx = new UnaryMinusContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 20; Match(T__1);
-				State = 21; expr(16);
+				State = 22; Match(T__1);
+				State = 23; expr(16);
 				}
 				break;
 			case 6:
@@ -459,9 +459,9 @@ public partial class TigerParser : Parser {
 				_localctx = new AssignContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 22; lvalue(0);
-				State = 23; Match(T__13);
-				State = 24; expr(10);
+				State = 24; lvalue(0);
+				State = 25; Match(T__13);
+				State = 26; expr(10);
 				}
 				break;
 			case 7:
@@ -469,32 +469,32 @@ public partial class TigerParser : Parser {
 				_localctx = new CallContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 26; Match(ID);
-				State = 27; Match(T__14);
-				State = 36;
+				State = 28; Match(ID);
+				State = 29; Match(T__14);
+				State = 38;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__14) | (1L << T__23) | (1L << T__26) | (1L << T__28) | (1L << T__30) | (1L << T__31) | (1L << STRING) | (1L << INTEGER) | (1L << ID))) != 0)) {
 					{
-					State = 28; expr(0);
-					State = 33;
+					State = 30; expr(0);
+					State = 35;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
 					while (_la==T__15) {
 						{
 						{
-						State = 29; Match(T__15);
-						State = 30; expr(0);
+						State = 31; Match(T__15);
+						State = 32; expr(0);
 						}
 						}
-						State = 35;
+						State = 37;
 						ErrorHandler.Sync(this);
 						_la = TokenStream.LA(1);
 					}
 					}
 				}
 
-				State = 38; Match(T__16);
+				State = 40; Match(T__16);
 				}
 				break;
 			case 8:
@@ -502,31 +502,31 @@ public partial class TigerParser : Parser {
 				_localctx = new ParenExprsContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 39; Match(T__14);
-				State = 48;
+				State = 41; Match(T__14);
+				State = 50;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__14) | (1L << T__23) | (1L << T__26) | (1L << T__28) | (1L << T__30) | (1L << T__31) | (1L << STRING) | (1L << INTEGER) | (1L << ID))) != 0)) {
 					{
-					State = 40; expr(0);
-					State = 45;
+					State = 42; expr(0);
+					State = 47;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
 					while (_la==T__17) {
 						{
 						{
-						State = 41; Match(T__17);
-						State = 42; expr(0);
+						State = 43; Match(T__17);
+						State = 44; expr(0);
 						}
 						}
-						State = 47;
+						State = 49;
 						ErrorHandler.Sync(this);
 						_la = TokenStream.LA(1);
 					}
 					}
 				}
 
-				State = 50; Match(T__16);
+				State = 52; Match(T__16);
 				}
 				break;
 			case 9:
@@ -534,36 +534,36 @@ public partial class TigerParser : Parser {
 				_localctx = new RecordContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 51; ((RecordContext)_localctx).typeID = Match(ID);
-				State = 52; Match(T__18);
-				State = 65;
+				State = 53; ((RecordContext)_localctx).typeID = Match(ID);
+				State = 54; Match(T__18);
+				State = 67;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if (_la==ID) {
 					{
-					State = 53; Match(ID);
-					State = 54; Match(T__6);
-					State = 55; expr(0);
-					State = 62;
+					State = 55; Match(ID);
+					State = 56; Match(T__6);
+					State = 57; expr(0);
+					State = 64;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
 					while (_la==T__15) {
 						{
 						{
-						State = 56; Match(T__15);
-						State = 57; Match(ID);
-						State = 58; Match(T__6);
-						State = 59; expr(0);
+						State = 58; Match(T__15);
+						State = 59; Match(ID);
+						State = 60; Match(T__6);
+						State = 61; expr(0);
 						}
 						}
-						State = 64;
+						State = 66;
 						ErrorHandler.Sync(this);
 						_la = TokenStream.LA(1);
 					}
 					}
 				}
 
-				State = 67; Match(T__19);
+				State = 69; Match(T__19);
 				}
 				break;
 			case 10:
@@ -571,12 +571,12 @@ public partial class TigerParser : Parser {
 				_localctx = new ArrayContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 68; Match(ID);
-				State = 69; Match(T__20);
-				State = 70; expr(0);
-				State = 71; Match(T__21);
-				State = 72; Match(T__22);
-				State = 73; expr(6);
+				State = 70; Match(ID);
+				State = 71; Match(T__20);
+				State = 72; expr(0);
+				State = 73; Match(T__21);
+				State = 74; Match(T__22);
+				State = 75; expr(6);
 				}
 				break;
 			case 11:
@@ -584,17 +584,17 @@ public partial class TigerParser : Parser {
 				_localctx = new IfContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 75; Match(T__23);
-				State = 76; expr(0);
-				State = 77; Match(T__24);
+				State = 77; Match(T__23);
 				State = 78; expr(0);
-				State = 81;
+				State = 79; Match(T__24);
+				State = 80; expr(0);
+				State = 83;
 				ErrorHandler.Sync(this);
 				switch ( Interpreter.AdaptivePredict(TokenStream,6,Context) ) {
 				case 1:
 					{
-					State = 79; Match(T__25);
-					State = 80; expr(0);
+					State = 81; Match(T__25);
+					State = 82; expr(0);
 					}
 					break;
 				}
@@ -605,10 +605,10 @@ public partial class TigerParser : Parser {
 				_localctx = new WhileContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 83; Match(T__26);
-				State = 84; expr(0);
-				State = 85; Match(T__27);
-				State = 86; expr(4);
+				State = 85; Match(T__26);
+				State = 86; expr(0);
+				State = 87; Match(T__27);
+				State = 88; expr(4);
 				}
 				break;
 			case 13:
@@ -616,14 +616,14 @@ public partial class TigerParser : Parser {
 				_localctx = new ForContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 88; Match(T__28);
-				State = 89; Match(ID);
-				State = 90; Match(T__13);
-				State = 91; expr(0);
-				State = 92; Match(T__29);
+				State = 90; Match(T__28);
+				State = 91; Match(ID);
+				State = 92; Match(T__13);
 				State = 93; expr(0);
-				State = 94; Match(T__27);
-				State = 95; expr(3);
+				State = 94; Match(T__29);
+				State = 95; expr(0);
+				State = 96; Match(T__27);
+				State = 97; expr(3);
 				}
 				break;
 			case 14:
@@ -631,7 +631,7 @@ public partial class TigerParser : Parser {
 				_localctx = new BreakContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 97; Match(T__30);
+				State = 99; Match(T__30);
 				}
 				break;
 			case 15:
@@ -639,50 +639,50 @@ public partial class TigerParser : Parser {
 				_localctx = new LetContext(_localctx);
 				Context = _localctx;
 				_prevctx = _localctx;
-				State = 98; Match(T__31);
-				State = 102;
+				State = 100; Match(T__31);
+				State = 104;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__35) | (1L << T__36) | (1L << T__38))) != 0)) {
 					{
 					{
-					State = 99; decl();
+					State = 101; decls();
 					}
 					}
-					State = 104;
+					State = 106;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
 				}
-				State = 105; Match(T__32);
-				State = 114;
+				State = 107; Match(T__32);
+				State = 116;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__14) | (1L << T__23) | (1L << T__26) | (1L << T__28) | (1L << T__30) | (1L << T__31) | (1L << STRING) | (1L << INTEGER) | (1L << ID))) != 0)) {
 					{
-					State = 106; expr(0);
-					State = 111;
+					State = 108; expr(0);
+					State = 113;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.LA(1);
 					while (_la==T__17) {
 						{
 						{
-						State = 107; Match(T__17);
-						State = 108; expr(0);
+						State = 109; Match(T__17);
+						State = 110; expr(0);
 						}
 						}
-						State = 113;
+						State = 115;
 						ErrorHandler.Sync(this);
 						_la = TokenStream.LA(1);
 					}
 					}
 				}
 
-				State = 116; Match(T__33);
+				State = 118; Match(T__33);
 				}
 				break;
 			}
 			Context.Stop = TokenStream.LT(-1);
-			State = 136;
+			State = 138;
 			ErrorHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(TokenStream,12,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
@@ -691,16 +691,16 @@ public partial class TigerParser : Parser {
 						TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					State = 134;
+					State = 136;
 					ErrorHandler.Sync(this);
 					switch ( Interpreter.AdaptivePredict(TokenStream,11,Context) ) {
 					case 1:
 						{
 						_localctx = new ArithmeticContext(new ExprContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expr);
-						State = 119;
+						State = 121;
 						if (!(Precpred(Context, 15))) throw new FailedPredicateException(this, "Precpred(Context, 15)");
-						State = 120;
+						State = 122;
 						((ArithmeticContext)_localctx).op = TokenStream.LT(1);
 						_la = TokenStream.LA(1);
 						if ( !(_la==T__2 || _la==T__3) ) {
@@ -710,16 +710,16 @@ public partial class TigerParser : Parser {
 							ErrorHandler.ReportMatch(this);
 						    Consume();
 						}
-						State = 121; expr(16);
+						State = 123; expr(16);
 						}
 						break;
 					case 2:
 						{
 						_localctx = new ArithmeticContext(new ExprContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expr);
-						State = 122;
+						State = 124;
 						if (!(Precpred(Context, 14))) throw new FailedPredicateException(this, "Precpred(Context, 14)");
-						State = 123;
+						State = 125;
 						((ArithmeticContext)_localctx).op = TokenStream.LT(1);
 						_la = TokenStream.LA(1);
 						if ( !(_la==T__1 || _la==T__4) ) {
@@ -729,16 +729,16 @@ public partial class TigerParser : Parser {
 							ErrorHandler.ReportMatch(this);
 						    Consume();
 						}
-						State = 124; expr(15);
+						State = 126; expr(15);
 						}
 						break;
 					case 3:
 						{
 						_localctx = new ComparisonContext(new ExprContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expr);
-						State = 125;
+						State = 127;
 						if (!(Precpred(Context, 13))) throw new FailedPredicateException(this, "Precpred(Context, 13)");
-						State = 126;
+						State = 128;
 						((ComparisonContext)_localctx).op = TokenStream.LT(1);
 						_la = TokenStream.LA(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << T__8) | (1L << T__9) | (1L << T__10))) != 0)) ) {
@@ -748,33 +748,33 @@ public partial class TigerParser : Parser {
 							ErrorHandler.ReportMatch(this);
 						    Consume();
 						}
-						State = 127; expr(14);
+						State = 129; expr(14);
 						}
 						break;
 					case 4:
 						{
 						_localctx = new LogicalContext(new ExprContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expr);
-						State = 128;
+						State = 130;
 						if (!(Precpred(Context, 12))) throw new FailedPredicateException(this, "Precpred(Context, 12)");
-						State = 129; ((LogicalContext)_localctx).op = Match(T__11);
-						State = 130; expr(13);
+						State = 131; ((LogicalContext)_localctx).op = Match(T__11);
+						State = 132; expr(13);
 						}
 						break;
 					case 5:
 						{
 						_localctx = new LogicalContext(new ExprContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_expr);
-						State = 131;
+						State = 133;
 						if (!(Precpred(Context, 11))) throw new FailedPredicateException(this, "Precpred(Context, 11)");
-						State = 132; ((LogicalContext)_localctx).op = Match(T__12);
-						State = 133; expr(12);
+						State = 134; ((LogicalContext)_localctx).op = Match(T__12);
+						State = 135; expr(12);
 						}
 						break;
 					}
 					} 
 				}
-				State = 138;
+				State = 140;
 				ErrorHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(TokenStream,12,Context);
 			}
@@ -860,10 +860,10 @@ public partial class TigerParser : Parser {
 			Context = _localctx;
 			_prevctx = _localctx;
 
-			State = 140; Match(ID);
+			State = 142; Match(ID);
 			}
 			Context.Stop = TokenStream.LT(-1);
-			State = 152;
+			State = 154;
 			ErrorHandler.Sync(this);
 			_alt = Interpreter.AdaptivePredict(TokenStream,14,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
@@ -872,34 +872,34 @@ public partial class TigerParser : Parser {
 						TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					State = 150;
+					State = 152;
 					ErrorHandler.Sync(this);
 					switch ( Interpreter.AdaptivePredict(TokenStream,13,Context) ) {
 					case 1:
 						{
 						_localctx = new FieldLValueContext(new LvalueContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lvalue);
-						State = 142;
+						State = 144;
 						if (!(Precpred(Context, 2))) throw new FailedPredicateException(this, "Precpred(Context, 2)");
-						State = 143; Match(T__34);
-						State = 144; Match(ID);
+						State = 145; Match(T__34);
+						State = 146; Match(ID);
 						}
 						break;
 					case 2:
 						{
 						_localctx = new IndexLValueContext(new LvalueContext(_parentctx, _parentState));
 						PushNewRecursionContext(_localctx, _startState, RULE_lvalue);
-						State = 145;
+						State = 147;
 						if (!(Precpred(Context, 1))) throw new FailedPredicateException(this, "Precpred(Context, 1)");
-						State = 146; Match(T__20);
-						State = 147; expr(0);
-						State = 148; Match(T__21);
+						State = 148; Match(T__20);
+						State = 149; expr(0);
+						State = 150; Match(T__21);
 						}
 						break;
 					}
 					} 
 				}
-				State = 154;
+				State = 156;
 				ErrorHandler.Sync(this);
 				_alt = Interpreter.AdaptivePredict(TokenStream,14,Context);
 			}
@@ -916,19 +916,19 @@ public partial class TigerParser : Parser {
 		return _localctx;
 	}
 
-	public partial class DeclContext : ParserRuleContext {
-		public DeclContext(ParserRuleContext parent, int invokingState)
+	public partial class DeclsContext : ParserRuleContext {
+		public DeclsContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_decl; } }
+		public override int RuleIndex { get { return RULE_decls; } }
 	 
-		public DeclContext() { }
-		public virtual void CopyFrom(DeclContext context) {
+		public DeclsContext() { }
+		public virtual void CopyFrom(DeclsContext context) {
 			base.CopyFrom(context);
 		}
 	}
-	public partial class VarDeclContext : DeclContext {
+	public partial class VarDeclContext : DeclsContext {
 		public IToken id;
 		public IToken typeId;
 		public ExprContext expr() {
@@ -938,26 +938,157 @@ public partial class TigerParser : Parser {
 		public ITerminalNode ID(int i) {
 			return GetToken(TigerParser.ID, i);
 		}
-		public VarDeclContext(DeclContext context) { CopyFrom(context); }
+		public VarDeclContext(DeclsContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ITigerVisitor<TResult> typedVisitor = visitor as ITigerVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitVarDecl(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class TypeDeclContext : DeclContext {
-		public ITerminalNode ID() { return GetToken(TigerParser.ID, 0); }
-		public TypeContext type() {
-			return GetRuleContext<TypeContext>(0);
+	public partial class TypeDeclsContext : DeclsContext {
+		public ITerminalNode[] ID() { return GetTokens(TigerParser.ID); }
+		public ITerminalNode ID(int i) {
+			return GetToken(TigerParser.ID, i);
 		}
-		public TypeDeclContext(DeclContext context) { CopyFrom(context); }
+		public TypeContext[] type() {
+			return GetRuleContexts<TypeContext>();
+		}
+		public TypeContext type(int i) {
+			return GetRuleContext<TypeContext>(i);
+		}
+		public TypeDeclsContext(DeclsContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ITigerVisitor<TResult> typedVisitor = visitor as ITigerVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitTypeDecl(this);
+			if (typedVisitor != null) return typedVisitor.VisitTypeDecls(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class FuncDeclContext : DeclContext {
+	public partial class FuncDeclsContext : DeclsContext {
+		public Func_declContext[] func_decl() {
+			return GetRuleContexts<Func_declContext>();
+		}
+		public Func_declContext func_decl(int i) {
+			return GetRuleContext<Func_declContext>(i);
+		}
+		public FuncDeclsContext(DeclsContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ITigerVisitor<TResult> typedVisitor = visitor as ITigerVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFuncDecls(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public DeclsContext decls() {
+		DeclsContext _localctx = new DeclsContext(Context, State);
+		EnterRule(_localctx, 6, RULE_decls);
+		int _la;
+		try {
+			int _alt;
+			State = 178;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case T__35:
+				_localctx = new TypeDeclsContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 161;
+				ErrorHandler.Sync(this);
+				_alt = 1;
+				do {
+					switch (_alt) {
+					case 1:
+						{
+						{
+						State = 157; Match(T__35);
+						State = 158; Match(ID);
+						State = 159; Match(T__6);
+						State = 160; type();
+						}
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					State = 163;
+					ErrorHandler.Sync(this);
+					_alt = Interpreter.AdaptivePredict(TokenStream,15,Context);
+				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER );
+				}
+				break;
+			case T__36:
+				_localctx = new VarDeclContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 165; Match(T__36);
+				State = 166; ((VarDeclContext)_localctx).id = Match(ID);
+				State = 169;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==T__37) {
+					{
+					State = 167; Match(T__37);
+					State = 168; ((VarDeclContext)_localctx).typeId = Match(ID);
+					}
+				}
+
+				State = 171; Match(T__13);
+				State = 172; expr(0);
+				}
+				break;
+			case T__38:
+				_localctx = new FuncDeclsContext(_localctx);
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 174;
+				ErrorHandler.Sync(this);
+				_alt = 1;
+				do {
+					switch (_alt) {
+					case 1:
+						{
+						{
+						State = 173; func_decl();
+						}
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					State = 176;
+					ErrorHandler.Sync(this);
+					_alt = Interpreter.AdaptivePredict(TokenStream,17,Context);
+				} while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER );
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class Func_declContext : ParserRuleContext {
+		public Func_declContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_func_decl; } }
+	 
+		public Func_declContext() { }
+		public virtual void CopyFrom(Func_declContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class FuncDeclContext : Func_declContext {
 		public IToken id;
 		public IToken typeId;
 		public ExprContext expr() {
@@ -970,7 +1101,7 @@ public partial class TigerParser : Parser {
 		public Type_fieldsContext type_fields() {
 			return GetRuleContext<Type_fieldsContext>(0);
 		}
-		public FuncDeclContext(DeclContext context) { CopyFrom(context); }
+		public FuncDeclContext(Func_declContext context) { CopyFrom(context); }
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			ITigerVisitor<TResult> typedVisitor = visitor as ITigerVisitor<TResult>;
 			if (typedVisitor != null) return typedVisitor.VisitFuncDecl(this);
@@ -979,77 +1110,39 @@ public partial class TigerParser : Parser {
 	}
 
 	[RuleVersion(0)]
-	public DeclContext decl() {
-		DeclContext _localctx = new DeclContext(Context, State);
-		EnterRule(_localctx, 6, RULE_decl);
+	public Func_declContext func_decl() {
+		Func_declContext _localctx = new Func_declContext(Context, State);
+		EnterRule(_localctx, 8, RULE_func_decl);
 		int _la;
 		try {
-			State = 180;
+			_localctx = new FuncDeclContext(_localctx);
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 180; Match(T__38);
+			State = 181; ((FuncDeclContext)_localctx).id = Match(ID);
+			State = 182; Match(T__14);
+			State = 184;
 			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case T__35:
-				_localctx = new TypeDeclContext(_localctx);
-				EnterOuterAlt(_localctx, 1);
+			_la = TokenStream.LA(1);
+			if (_la==ID) {
 				{
-				State = 155; Match(T__35);
-				State = 156; Match(ID);
-				State = 157; Match(T__6);
-				State = 158; type();
+				State = 183; type_fields();
 				}
-				break;
-			case T__36:
-				_localctx = new VarDeclContext(_localctx);
-				EnterOuterAlt(_localctx, 2);
+			}
+
+			State = 186; Match(T__16);
+			State = 189;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==T__37) {
 				{
-				State = 159; Match(T__36);
-				State = 160; ((VarDeclContext)_localctx).id = Match(ID);
-				State = 163;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-				if (_la==T__37) {
-					{
-					State = 161; Match(T__37);
-					State = 162; ((VarDeclContext)_localctx).typeId = Match(ID);
-					}
+				State = 187; Match(T__37);
+				State = 188; ((FuncDeclContext)_localctx).typeId = Match(ID);
 				}
+			}
 
-				State = 165; Match(T__13);
-				State = 166; expr(0);
-				}
-				break;
-			case T__38:
-				_localctx = new FuncDeclContext(_localctx);
-				EnterOuterAlt(_localctx, 3);
-				{
-				State = 167; Match(T__38);
-				State = 168; ((FuncDeclContext)_localctx).id = Match(ID);
-				State = 169; Match(T__14);
-				State = 171;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-				if (_la==ID) {
-					{
-					State = 170; type_fields();
-					}
-				}
-
-				State = 173; Match(T__16);
-				State = 176;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-				if (_la==T__37) {
-					{
-					State = 174; Match(T__37);
-					State = 175; ((FuncDeclContext)_localctx).typeId = Match(ID);
-					}
-				}
-
-				State = 178; Match(T__6);
-				State = 179; expr(0);
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+			State = 191; Match(T__6);
+			State = 192; expr(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1108,43 +1201,43 @@ public partial class TigerParser : Parser {
 	[RuleVersion(0)]
 	public TypeContext type() {
 		TypeContext _localctx = new TypeContext(Context, State);
-		EnterRule(_localctx, 8, RULE_type);
+		EnterRule(_localctx, 10, RULE_type);
 		int _la;
 		try {
-			State = 191;
+			State = 203;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case ID:
 				_localctx = new IdTypeContext(_localctx);
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 182; Match(ID);
+				State = 194; Match(ID);
 				}
 				break;
 			case T__18:
 				_localctx = new RecordTypeContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 183; Match(T__18);
-				State = 185;
+				State = 195; Match(T__18);
+				State = 197;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 				if (_la==ID) {
 					{
-					State = 184; type_fields();
+					State = 196; type_fields();
 					}
 				}
 
-				State = 187; Match(T__19);
+				State = 199; Match(T__19);
 				}
 				break;
 			case T__39:
 				_localctx = new ArrayTypeContext(_localctx);
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 188; Match(T__39);
-				State = 189; Match(T__22);
-				State = 190; Match(ID);
+				State = 200; Match(T__39);
+				State = 201; Match(T__22);
+				State = 202; Match(ID);
 				}
 				break;
 			default:
@@ -1190,28 +1283,28 @@ public partial class TigerParser : Parser {
 	[RuleVersion(0)]
 	public Type_fieldsContext type_fields() {
 		Type_fieldsContext _localctx = new Type_fieldsContext(Context, State);
-		EnterRule(_localctx, 10, RULE_type_fields);
+		EnterRule(_localctx, 12, RULE_type_fields);
 		int _la;
 		try {
 			_localctx = new TypeFieldsContext(_localctx);
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 193; Match(ID);
-			State = 194; Match(T__37);
-			State = 195; Match(ID);
-			State = 202;
+			State = 205; Match(ID);
+			State = 206; Match(T__37);
+			State = 207; Match(ID);
+			State = 214;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==T__15) {
 				{
 				{
-				State = 196; Match(T__15);
-				State = 197; Match(ID);
-				State = 198; Match(T__37);
-				State = 199; Match(ID);
+				State = 208; Match(T__15);
+				State = 209; Match(ID);
+				State = 210; Match(T__37);
+				State = 211; Match(ID);
 				}
 				}
-				State = 204;
+				State = 216;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -1257,98 +1350,104 @@ public partial class TigerParser : Parser {
 	private static string _serializeATN()
 	{
 	    StringBuilder sb = new StringBuilder();
-	    sb.Append("\x3\x430\xD6D1\x8206\xAD2D\x4417\xAEF1\x8D80\xAADD\x3/\xD0");
+	    sb.Append("\x3\x430\xD6D1\x8206\xAD2D\x4417\xAEF1\x8D80\xAADD\x3/\xDC");
 		sb.Append("\x4\x2\t\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a");
-		sb.Append("\t\a\x3\x2\x3\x2\x3\x2\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3");
-		sb.Append("\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\a");
-		sb.Append("\x3\"\n\x3\f\x3\xE\x3%\v\x3\x5\x3\'\n\x3\x3\x3\x3\x3\x3\x3\x3");
-		sb.Append("\x3\x3\x3\a\x3.\n\x3\f\x3\xE\x3\x31\v\x3\x5\x3\x33\n\x3\x3\x3");
-		sb.Append("\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\a\x3");
-		sb.Append("?\n\x3\f\x3\xE\x3\x42\v\x3\x5\x3\x44\n\x3\x3\x3\x3\x3\x3\x3");
+		sb.Append("\t\a\x4\b\t\b\x3\x2\x3\x2\x3\x2\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3");
 		sb.Append("\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3");
-		sb.Append("\x3\x3\x5\x3T\n\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3");
+		sb.Append("\x3\x3\a\x3$\n\x3\f\x3\xE\x3\'\v\x3\x5\x3)\n\x3\x3\x3\x3\x3");
+		sb.Append("\x3\x3\x3\x3\x3\x3\a\x3\x30\n\x3\f\x3\xE\x3\x33\v\x3\x5\x3\x35");
+		sb.Append("\n\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3");
+		sb.Append("\x3\x3\a\x3\x41\n\x3\f\x3\xE\x3\x44\v\x3\x5\x3\x46\n\x3\x3\x3");
 		sb.Append("\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3");
-		sb.Append("\a\x3g\n\x3\f\x3\xE\x3j\v\x3\x3\x3\x3\x3\x3\x3\x3\x3\a\x3p\n");
-		sb.Append("\x3\f\x3\xE\x3s\v\x3\x5\x3u\n\x3\x3\x3\x5\x3x\n\x3\x3\x3\x3");
+		sb.Append("\x3\x3\x3\x3\x3\x3\x5\x3V\n\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3");
 		sb.Append("\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3");
-		sb.Append("\x3\x3\x3\x3\x3\x3\x3\a\x3\x89\n\x3\f\x3\xE\x3\x8C\v\x3\x3\x4");
-		sb.Append("\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4");
-		sb.Append("\a\x4\x99\n\x4\f\x4\xE\x4\x9C\v\x4\x3\x5\x3\x5\x3\x5\x3\x5\x3");
-		sb.Append("\x5\x3\x5\x3\x5\x3\x5\x5\x5\xA6\n\x5\x3\x5\x3\x5\x3\x5\x3\x5");
-		sb.Append("\x3\x5\x3\x5\x5\x5\xAE\n\x5\x3\x5\x3\x5\x3\x5\x5\x5\xB3\n\x5");
-		sb.Append("\x3\x5\x3\x5\x5\x5\xB7\n\x5\x3\x6\x3\x6\x3\x6\x5\x6\xBC\n\x6");
-		sb.Append("\x3\x6\x3\x6\x3\x6\x3\x6\x5\x6\xC2\n\x6\x3\a\x3\a\x3\a\x3\a");
-		sb.Append("\x3\a\x3\a\x3\a\a\a\xCB\n\a\f\a\xE\a\xCE\v\a\x3\a\x2\x4\x4\x6");
-		sb.Append("\b\x2\x4\x6\b\n\f\x2\x5\x3\x2\x5\x6\x4\x2\x4\x4\a\a\x3\x2\b");
-		sb.Append("\r\xF1\x2\xE\x3\x2\x2\x2\x4w\x3\x2\x2\x2\x6\x8D\x3\x2\x2\x2");
-		sb.Append("\b\xB6\x3\x2\x2\x2\n\xC1\x3\x2\x2\x2\f\xC3\x3\x2\x2\x2\xE\xF");
-		sb.Append("\x5\x4\x3\x2\xF\x10\a\x2\x2\x3\x10\x3\x3\x2\x2\x2\x11\x12\b");
-		sb.Append("\x3\x1\x2\x12x\a+\x2\x2\x13x\a,\x2\x2\x14x\a\x3\x2\x2\x15x\x5");
-		sb.Append("\x6\x4\x2\x16\x17\a\x4\x2\x2\x17x\x5\x4\x3\x12\x18\x19\x5\x6");
-		sb.Append("\x4\x2\x19\x1A\a\x10\x2\x2\x1A\x1B\x5\x4\x3\f\x1Bx\x3\x2\x2");
-		sb.Append("\x2\x1C\x1D\a-\x2\x2\x1D&\a\x11\x2\x2\x1E#\x5\x4\x3\x2\x1F ");
-		sb.Append("\a\x12\x2\x2 \"\x5\x4\x3\x2!\x1F\x3\x2\x2\x2\"%\x3\x2\x2\x2");
-		sb.Append("#!\x3\x2\x2\x2#$\x3\x2\x2\x2$\'\x3\x2\x2\x2%#\x3\x2\x2\x2&\x1E");
-		sb.Append("\x3\x2\x2\x2&\'\x3\x2\x2\x2\'(\x3\x2\x2\x2(x\a\x13\x2\x2)\x32");
-		sb.Append("\a\x11\x2\x2*/\x5\x4\x3\x2+,\a\x14\x2\x2,.\x5\x4\x3\x2-+\x3");
-		sb.Append("\x2\x2\x2.\x31\x3\x2\x2\x2/-\x3\x2\x2\x2/\x30\x3\x2\x2\x2\x30");
-		sb.Append("\x33\x3\x2\x2\x2\x31/\x3\x2\x2\x2\x32*\x3\x2\x2\x2\x32\x33\x3");
-		sb.Append("\x2\x2\x2\x33\x34\x3\x2\x2\x2\x34x\a\x13\x2\x2\x35\x36\a-\x2");
-		sb.Append("\x2\x36\x43\a\x15\x2\x2\x37\x38\a-\x2\x2\x38\x39\a\t\x2\x2\x39");
-		sb.Append("@\x5\x4\x3\x2:;\a\x12\x2\x2;<\a-\x2\x2<=\a\t\x2\x2=?\x5\x4\x3");
-		sb.Append("\x2>:\x3\x2\x2\x2?\x42\x3\x2\x2\x2@>\x3\x2\x2\x2@\x41\x3\x2");
-		sb.Append("\x2\x2\x41\x44\x3\x2\x2\x2\x42@\x3\x2\x2\x2\x43\x37\x3\x2\x2");
-		sb.Append("\x2\x43\x44\x3\x2\x2\x2\x44\x45\x3\x2\x2\x2\x45x\a\x16\x2\x2");
-		sb.Append("\x46G\a-\x2\x2GH\a\x17\x2\x2HI\x5\x4\x3\x2IJ\a\x18\x2\x2JK\a");
-		sb.Append("\x19\x2\x2KL\x5\x4\x3\bLx\x3\x2\x2\x2MN\a\x1A\x2\x2NO\x5\x4");
-		sb.Append("\x3\x2OP\a\x1B\x2\x2PS\x5\x4\x3\x2QR\a\x1C\x2\x2RT\x5\x4\x3");
-		sb.Append("\x2SQ\x3\x2\x2\x2ST\x3\x2\x2\x2Tx\x3\x2\x2\x2UV\a\x1D\x2\x2");
-		sb.Append("VW\x5\x4\x3\x2WX\a\x1E\x2\x2XY\x5\x4\x3\x6Yx\x3\x2\x2\x2Z[\a");
-		sb.Append("\x1F\x2\x2[\\\a-\x2\x2\\]\a\x10\x2\x2]^\x5\x4\x3\x2^_\a \x2");
-		sb.Append("\x2_`\x5\x4\x3\x2`\x61\a\x1E\x2\x2\x61\x62\x5\x4\x3\x5\x62x");
-		sb.Append("\x3\x2\x2\x2\x63x\a!\x2\x2\x64h\a\"\x2\x2\x65g\x5\b\x5\x2\x66");
-		sb.Append("\x65\x3\x2\x2\x2gj\x3\x2\x2\x2h\x66\x3\x2\x2\x2hi\x3\x2\x2\x2");
-		sb.Append("ik\x3\x2\x2\x2jh\x3\x2\x2\x2kt\a#\x2\x2lq\x5\x4\x3\x2mn\a\x14");
-		sb.Append("\x2\x2np\x5\x4\x3\x2om\x3\x2\x2\x2ps\x3\x2\x2\x2qo\x3\x2\x2");
-		sb.Append("\x2qr\x3\x2\x2\x2ru\x3\x2\x2\x2sq\x3\x2\x2\x2tl\x3\x2\x2\x2");
-		sb.Append("tu\x3\x2\x2\x2uv\x3\x2\x2\x2vx\a$\x2\x2w\x11\x3\x2\x2\x2w\x13");
-		sb.Append("\x3\x2\x2\x2w\x14\x3\x2\x2\x2w\x15\x3\x2\x2\x2w\x16\x3\x2\x2");
-		sb.Append("\x2w\x18\x3\x2\x2\x2w\x1C\x3\x2\x2\x2w)\x3\x2\x2\x2w\x35\x3");
-		sb.Append("\x2\x2\x2w\x46\x3\x2\x2\x2wM\x3\x2\x2\x2wU\x3\x2\x2\x2wZ\x3");
-		sb.Append("\x2\x2\x2w\x63\x3\x2\x2\x2w\x64\x3\x2\x2\x2x\x8A\x3\x2\x2\x2");
-		sb.Append("yz\f\x11\x2\x2z{\t\x2\x2\x2{\x89\x5\x4\x3\x12|}\f\x10\x2\x2");
-		sb.Append("}~\t\x3\x2\x2~\x89\x5\x4\x3\x11\x7F\x80\f\xF\x2\x2\x80\x81\t");
-		sb.Append("\x4\x2\x2\x81\x89\x5\x4\x3\x10\x82\x83\f\xE\x2\x2\x83\x84\a");
-		sb.Append("\xE\x2\x2\x84\x89\x5\x4\x3\xF\x85\x86\f\r\x2\x2\x86\x87\a\xF");
-		sb.Append("\x2\x2\x87\x89\x5\x4\x3\xE\x88y\x3\x2\x2\x2\x88|\x3\x2\x2\x2");
-		sb.Append("\x88\x7F\x3\x2\x2\x2\x88\x82\x3\x2\x2\x2\x88\x85\x3\x2\x2\x2");
-		sb.Append("\x89\x8C\x3\x2\x2\x2\x8A\x88\x3\x2\x2\x2\x8A\x8B\x3\x2\x2\x2");
-		sb.Append("\x8B\x5\x3\x2\x2\x2\x8C\x8A\x3\x2\x2\x2\x8D\x8E\b\x4\x1\x2\x8E");
-		sb.Append("\x8F\a-\x2\x2\x8F\x9A\x3\x2\x2\x2\x90\x91\f\x4\x2\x2\x91\x92");
-		sb.Append("\a%\x2\x2\x92\x99\a-\x2\x2\x93\x94\f\x3\x2\x2\x94\x95\a\x17");
-		sb.Append("\x2\x2\x95\x96\x5\x4\x3\x2\x96\x97\a\x18\x2\x2\x97\x99\x3\x2");
-		sb.Append("\x2\x2\x98\x90\x3\x2\x2\x2\x98\x93\x3\x2\x2\x2\x99\x9C\x3\x2");
-		sb.Append("\x2\x2\x9A\x98\x3\x2\x2\x2\x9A\x9B\x3\x2\x2\x2\x9B\a\x3\x2\x2");
-		sb.Append("\x2\x9C\x9A\x3\x2\x2\x2\x9D\x9E\a&\x2\x2\x9E\x9F\a-\x2\x2\x9F");
-		sb.Append("\xA0\a\t\x2\x2\xA0\xB7\x5\n\x6\x2\xA1\xA2\a\'\x2\x2\xA2\xA5");
-		sb.Append("\a-\x2\x2\xA3\xA4\a(\x2\x2\xA4\xA6\a-\x2\x2\xA5\xA3\x3\x2\x2");
-		sb.Append("\x2\xA5\xA6\x3\x2\x2\x2\xA6\xA7\x3\x2\x2\x2\xA7\xA8\a\x10\x2");
-		sb.Append("\x2\xA8\xB7\x5\x4\x3\x2\xA9\xAA\a)\x2\x2\xAA\xAB\a-\x2\x2\xAB");
-		sb.Append("\xAD\a\x11\x2\x2\xAC\xAE\x5\f\a\x2\xAD\xAC\x3\x2\x2\x2\xAD\xAE");
-		sb.Append("\x3\x2\x2\x2\xAE\xAF\x3\x2\x2\x2\xAF\xB2\a\x13\x2\x2\xB0\xB1");
-		sb.Append("\a(\x2\x2\xB1\xB3\a-\x2\x2\xB2\xB0\x3\x2\x2\x2\xB2\xB3\x3\x2");
-		sb.Append("\x2\x2\xB3\xB4\x3\x2\x2\x2\xB4\xB5\a\t\x2\x2\xB5\xB7\x5\x4\x3");
-		sb.Append("\x2\xB6\x9D\x3\x2\x2\x2\xB6\xA1\x3\x2\x2\x2\xB6\xA9\x3\x2\x2");
-		sb.Append("\x2\xB7\t\x3\x2\x2\x2\xB8\xC2\a-\x2\x2\xB9\xBB\a\x15\x2\x2\xBA");
-		sb.Append("\xBC\x5\f\a\x2\xBB\xBA\x3\x2\x2\x2\xBB\xBC\x3\x2\x2\x2\xBC\xBD");
-		sb.Append("\x3\x2\x2\x2\xBD\xC2\a\x16\x2\x2\xBE\xBF\a*\x2\x2\xBF\xC0\a");
-		sb.Append("\x19\x2\x2\xC0\xC2\a-\x2\x2\xC1\xB8\x3\x2\x2\x2\xC1\xB9\x3\x2");
-		sb.Append("\x2\x2\xC1\xBE\x3\x2\x2\x2\xC2\v\x3\x2\x2\x2\xC3\xC4\a-\x2\x2");
-		sb.Append("\xC4\xC5\a(\x2\x2\xC5\xCC\a-\x2\x2\xC6\xC7\a\x12\x2\x2\xC7\xC8");
-		sb.Append("\a-\x2\x2\xC8\xC9\a(\x2\x2\xC9\xCB\a-\x2\x2\xCA\xC6\x3\x2\x2");
-		sb.Append("\x2\xCB\xCE\x3\x2\x2\x2\xCC\xCA\x3\x2\x2\x2\xCC\xCD\x3\x2\x2");
-		sb.Append("\x2\xCD\r\x3\x2\x2\x2\xCE\xCC\x3\x2\x2\x2\x18#&/\x32@\x43Sh");
-		sb.Append("qtw\x88\x8A\x98\x9A\xA5\xAD\xB2\xB6\xBB\xC1\xCC");
+		sb.Append("\x3\x3\x3\x3\a\x3i\n\x3\f\x3\xE\x3l\v\x3\x3\x3\x3\x3\x3\x3\x3");
+		sb.Append("\x3\a\x3r\n\x3\f\x3\xE\x3u\v\x3\x5\x3w\n\x3\x3\x3\x5\x3z\n\x3");
+		sb.Append("\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3");
+		sb.Append("\x3\x3\x3\x3\x3\x3\x3\x3\x3\x3\a\x3\x8B\n\x3\f\x3\xE\x3\x8E");
+		sb.Append("\v\x3\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4");
+		sb.Append("\x3\x4\x3\x4\a\x4\x9B\n\x4\f\x4\xE\x4\x9E\v\x4\x3\x5\x3\x5\x3");
+		sb.Append("\x5\x3\x5\x6\x5\xA4\n\x5\r\x5\xE\x5\xA5\x3\x5\x3\x5\x3\x5\x3");
+		sb.Append("\x5\x5\x5\xAC\n\x5\x3\x5\x3\x5\x3\x5\x6\x5\xB1\n\x5\r\x5\xE");
+		sb.Append("\x5\xB2\x5\x5\xB5\n\x5\x3\x6\x3\x6\x3\x6\x3\x6\x5\x6\xBB\n\x6");
+		sb.Append("\x3\x6\x3\x6\x3\x6\x5\x6\xC0\n\x6\x3\x6\x3\x6\x3\x6\x3\a\x3");
+		sb.Append("\a\x3\a\x5\a\xC8\n\a\x3\a\x3\a\x3\a\x3\a\x5\a\xCE\n\a\x3\b\x3");
+		sb.Append("\b\x3\b\x3\b\x3\b\x3\b\x3\b\a\b\xD7\n\b\f\b\xE\b\xDA\v\b\x3");
+		sb.Append("\b\x2\x4\x4\x6\t\x2\x4\x6\b\n\f\xE\x2\x5\x3\x2\x5\x6\x4\x2\x4");
+		sb.Append("\x4\a\a\x3\x2\b\r\xFE\x2\x10\x3\x2\x2\x2\x4y\x3\x2\x2\x2\x6");
+		sb.Append("\x8F\x3\x2\x2\x2\b\xB4\x3\x2\x2\x2\n\xB6\x3\x2\x2\x2\f\xCD\x3");
+		sb.Append("\x2\x2\x2\xE\xCF\x3\x2\x2\x2\x10\x11\x5\x4\x3\x2\x11\x12\a\x2");
+		sb.Append("\x2\x3\x12\x3\x3\x2\x2\x2\x13\x14\b\x3\x1\x2\x14z\a+\x2\x2\x15");
+		sb.Append("z\a,\x2\x2\x16z\a\x3\x2\x2\x17z\x5\x6\x4\x2\x18\x19\a\x4\x2");
+		sb.Append("\x2\x19z\x5\x4\x3\x12\x1A\x1B\x5\x6\x4\x2\x1B\x1C\a\x10\x2\x2");
+		sb.Append("\x1C\x1D\x5\x4\x3\f\x1Dz\x3\x2\x2\x2\x1E\x1F\a-\x2\x2\x1F(\a");
+		sb.Append("\x11\x2\x2 %\x5\x4\x3\x2!\"\a\x12\x2\x2\"$\x5\x4\x3\x2#!\x3");
+		sb.Append("\x2\x2\x2$\'\x3\x2\x2\x2%#\x3\x2\x2\x2%&\x3\x2\x2\x2&)\x3\x2");
+		sb.Append("\x2\x2\'%\x3\x2\x2\x2( \x3\x2\x2\x2()\x3\x2\x2\x2)*\x3\x2\x2");
+		sb.Append("\x2*z\a\x13\x2\x2+\x34\a\x11\x2\x2,\x31\x5\x4\x3\x2-.\a\x14");
+		sb.Append("\x2\x2.\x30\x5\x4\x3\x2/-\x3\x2\x2\x2\x30\x33\x3\x2\x2\x2\x31");
+		sb.Append("/\x3\x2\x2\x2\x31\x32\x3\x2\x2\x2\x32\x35\x3\x2\x2\x2\x33\x31");
+		sb.Append("\x3\x2\x2\x2\x34,\x3\x2\x2\x2\x34\x35\x3\x2\x2\x2\x35\x36\x3");
+		sb.Append("\x2\x2\x2\x36z\a\x13\x2\x2\x37\x38\a-\x2\x2\x38\x45\a\x15\x2");
+		sb.Append("\x2\x39:\a-\x2\x2:;\a\t\x2\x2;\x42\x5\x4\x3\x2<=\a\x12\x2\x2");
+		sb.Append("=>\a-\x2\x2>?\a\t\x2\x2?\x41\x5\x4\x3\x2@<\x3\x2\x2\x2\x41\x44");
+		sb.Append("\x3\x2\x2\x2\x42@\x3\x2\x2\x2\x42\x43\x3\x2\x2\x2\x43\x46\x3");
+		sb.Append("\x2\x2\x2\x44\x42\x3\x2\x2\x2\x45\x39\x3\x2\x2\x2\x45\x46\x3");
+		sb.Append("\x2\x2\x2\x46G\x3\x2\x2\x2Gz\a\x16\x2\x2HI\a-\x2\x2IJ\a\x17");
+		sb.Append("\x2\x2JK\x5\x4\x3\x2KL\a\x18\x2\x2LM\a\x19\x2\x2MN\x5\x4\x3");
+		sb.Append("\bNz\x3\x2\x2\x2OP\a\x1A\x2\x2PQ\x5\x4\x3\x2QR\a\x1B\x2\x2R");
+		sb.Append("U\x5\x4\x3\x2ST\a\x1C\x2\x2TV\x5\x4\x3\x2US\x3\x2\x2\x2UV\x3");
+		sb.Append("\x2\x2\x2Vz\x3\x2\x2\x2WX\a\x1D\x2\x2XY\x5\x4\x3\x2YZ\a\x1E");
+		sb.Append("\x2\x2Z[\x5\x4\x3\x6[z\x3\x2\x2\x2\\]\a\x1F\x2\x2]^\a-\x2\x2");
+		sb.Append("^_\a\x10\x2\x2_`\x5\x4\x3\x2`\x61\a \x2\x2\x61\x62\x5\x4\x3");
+		sb.Append("\x2\x62\x63\a\x1E\x2\x2\x63\x64\x5\x4\x3\x5\x64z\x3\x2\x2\x2");
+		sb.Append("\x65z\a!\x2\x2\x66j\a\"\x2\x2gi\x5\b\x5\x2hg\x3\x2\x2\x2il\x3");
+		sb.Append("\x2\x2\x2jh\x3\x2\x2\x2jk\x3\x2\x2\x2km\x3\x2\x2\x2lj\x3\x2");
+		sb.Append("\x2\x2mv\a#\x2\x2ns\x5\x4\x3\x2op\a\x14\x2\x2pr\x5\x4\x3\x2");
+		sb.Append("qo\x3\x2\x2\x2ru\x3\x2\x2\x2sq\x3\x2\x2\x2st\x3\x2\x2\x2tw\x3");
+		sb.Append("\x2\x2\x2us\x3\x2\x2\x2vn\x3\x2\x2\x2vw\x3\x2\x2\x2wx\x3\x2");
+		sb.Append("\x2\x2xz\a$\x2\x2y\x13\x3\x2\x2\x2y\x15\x3\x2\x2\x2y\x16\x3");
+		sb.Append("\x2\x2\x2y\x17\x3\x2\x2\x2y\x18\x3\x2\x2\x2y\x1A\x3\x2\x2\x2");
+		sb.Append("y\x1E\x3\x2\x2\x2y+\x3\x2\x2\x2y\x37\x3\x2\x2\x2yH\x3\x2\x2");
+		sb.Append("\x2yO\x3\x2\x2\x2yW\x3\x2\x2\x2y\\\x3\x2\x2\x2y\x65\x3\x2\x2");
+		sb.Append("\x2y\x66\x3\x2\x2\x2z\x8C\x3\x2\x2\x2{|\f\x11\x2\x2|}\t\x2\x2");
+		sb.Append("\x2}\x8B\x5\x4\x3\x12~\x7F\f\x10\x2\x2\x7F\x80\t\x3\x2\x2\x80");
+		sb.Append("\x8B\x5\x4\x3\x11\x81\x82\f\xF\x2\x2\x82\x83\t\x4\x2\x2\x83");
+		sb.Append("\x8B\x5\x4\x3\x10\x84\x85\f\xE\x2\x2\x85\x86\a\xE\x2\x2\x86");
+		sb.Append("\x8B\x5\x4\x3\xF\x87\x88\f\r\x2\x2\x88\x89\a\xF\x2\x2\x89\x8B");
+		sb.Append("\x5\x4\x3\xE\x8A{\x3\x2\x2\x2\x8A~\x3\x2\x2\x2\x8A\x81\x3\x2");
+		sb.Append("\x2\x2\x8A\x84\x3\x2\x2\x2\x8A\x87\x3\x2\x2\x2\x8B\x8E\x3\x2");
+		sb.Append("\x2\x2\x8C\x8A\x3\x2\x2\x2\x8C\x8D\x3\x2\x2\x2\x8D\x5\x3\x2");
+		sb.Append("\x2\x2\x8E\x8C\x3\x2\x2\x2\x8F\x90\b\x4\x1\x2\x90\x91\a-\x2");
+		sb.Append("\x2\x91\x9C\x3\x2\x2\x2\x92\x93\f\x4\x2\x2\x93\x94\a%\x2\x2");
+		sb.Append("\x94\x9B\a-\x2\x2\x95\x96\f\x3\x2\x2\x96\x97\a\x17\x2\x2\x97");
+		sb.Append("\x98\x5\x4\x3\x2\x98\x99\a\x18\x2\x2\x99\x9B\x3\x2\x2\x2\x9A");
+		sb.Append("\x92\x3\x2\x2\x2\x9A\x95\x3\x2\x2\x2\x9B\x9E\x3\x2\x2\x2\x9C");
+		sb.Append("\x9A\x3\x2\x2\x2\x9C\x9D\x3\x2\x2\x2\x9D\a\x3\x2\x2\x2\x9E\x9C");
+		sb.Append("\x3\x2\x2\x2\x9F\xA0\a&\x2\x2\xA0\xA1\a-\x2\x2\xA1\xA2\a\t\x2");
+		sb.Append("\x2\xA2\xA4\x5\f\a\x2\xA3\x9F\x3\x2\x2\x2\xA4\xA5\x3\x2\x2\x2");
+		sb.Append("\xA5\xA3\x3\x2\x2\x2\xA5\xA6\x3\x2\x2\x2\xA6\xB5\x3\x2\x2\x2");
+		sb.Append("\xA7\xA8\a\'\x2\x2\xA8\xAB\a-\x2\x2\xA9\xAA\a(\x2\x2\xAA\xAC");
+		sb.Append("\a-\x2\x2\xAB\xA9\x3\x2\x2\x2\xAB\xAC\x3\x2\x2\x2\xAC\xAD\x3");
+		sb.Append("\x2\x2\x2\xAD\xAE\a\x10\x2\x2\xAE\xB5\x5\x4\x3\x2\xAF\xB1\x5");
+		sb.Append("\n\x6\x2\xB0\xAF\x3\x2\x2\x2\xB1\xB2\x3\x2\x2\x2\xB2\xB0\x3");
+		sb.Append("\x2\x2\x2\xB2\xB3\x3\x2\x2\x2\xB3\xB5\x3\x2\x2\x2\xB4\xA3\x3");
+		sb.Append("\x2\x2\x2\xB4\xA7\x3\x2\x2\x2\xB4\xB0\x3\x2\x2\x2\xB5\t\x3\x2");
+		sb.Append("\x2\x2\xB6\xB7\a)\x2\x2\xB7\xB8\a-\x2\x2\xB8\xBA\a\x11\x2\x2");
+		sb.Append("\xB9\xBB\x5\xE\b\x2\xBA\xB9\x3\x2\x2\x2\xBA\xBB\x3\x2\x2\x2");
+		sb.Append("\xBB\xBC\x3\x2\x2\x2\xBC\xBF\a\x13\x2\x2\xBD\xBE\a(\x2\x2\xBE");
+		sb.Append("\xC0\a-\x2\x2\xBF\xBD\x3\x2\x2\x2\xBF\xC0\x3\x2\x2\x2\xC0\xC1");
+		sb.Append("\x3\x2\x2\x2\xC1\xC2\a\t\x2\x2\xC2\xC3\x5\x4\x3\x2\xC3\v\x3");
+		sb.Append("\x2\x2\x2\xC4\xCE\a-\x2\x2\xC5\xC7\a\x15\x2\x2\xC6\xC8\x5\xE");
+		sb.Append("\b\x2\xC7\xC6\x3\x2\x2\x2\xC7\xC8\x3\x2\x2\x2\xC8\xC9\x3\x2");
+		sb.Append("\x2\x2\xC9\xCE\a\x16\x2\x2\xCA\xCB\a*\x2\x2\xCB\xCC\a\x19\x2");
+		sb.Append("\x2\xCC\xCE\a-\x2\x2\xCD\xC4\x3\x2\x2\x2\xCD\xC5\x3\x2\x2\x2");
+		sb.Append("\xCD\xCA\x3\x2\x2\x2\xCE\r\x3\x2\x2\x2\xCF\xD0\a-\x2\x2\xD0");
+		sb.Append("\xD1\a(\x2\x2\xD1\xD8\a-\x2\x2\xD2\xD3\a\x12\x2\x2\xD3\xD4\a");
+		sb.Append("-\x2\x2\xD4\xD5\a(\x2\x2\xD5\xD7\a-\x2\x2\xD6\xD2\x3\x2\x2\x2");
+		sb.Append("\xD7\xDA\x3\x2\x2\x2\xD8\xD6\x3\x2\x2\x2\xD8\xD9\x3\x2\x2\x2");
+		sb.Append("\xD9\xF\x3\x2\x2\x2\xDA\xD8\x3\x2\x2\x2\x1A%(\x31\x34\x42\x45");
+		sb.Append("Ujsvy\x8A\x8C\x9A\x9C\xA5\xAB\xB2\xB4\xBA\xBF\xC7\xCD\xD8");
 	    return sb.ToString();
 	}
 

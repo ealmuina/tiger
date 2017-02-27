@@ -39,8 +39,6 @@ namespace Tiger.AST
             foreach (var node in Children.Where(n => n != null))
                 node.CheckSemantics(scope, errors);
 
-            scope.DefineVariable(Name, scope.GetItem<Semantics.TypeInfo>(Type).Name, IsReadonly, false);
-
             if (Children[2].Type == Types.Void)
                 errors.Add(new SemanticError
                 {
@@ -55,7 +53,7 @@ namespace Tiger.AST
                     Node = this
                 });
 
-            if (Children[1] != null && !scope.DefinedTypes.ContainsKey(Type))
+            if (Children[1] != null && !scope.Types.ContainsKey(Type))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Cannot declare variable of undefined type '{0}'", Type),
@@ -68,6 +66,9 @@ namespace Tiger.AST
                     Message = string.Format("Expression assigned to variable does not match with its type"),
                     Node = this
                 });
+
+            if (errors.Count == 0)
+                scope.DefineVariable(Name, scope.GetItem<Semantics.TypeInfo>(Type).Name, IsReadonly, false);
         }
 
         public override void Generate(CodeGenerator generator)

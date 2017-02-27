@@ -19,71 +19,12 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            IEnumerable<DeclarationNode> varsAndFunctions = Children.Where(n => !(n is TypeDeclNode)).Cast<DeclarationNode>();
-            IEnumerable<TypeDeclNode> decls = Children.Where(n => n is TypeDeclNode).Cast<TypeDeclNode>();
-
-            foreach (var node in varsAndFunctions)
-                if (varsAndFunctions.Count(n => n.Name == node.Name) > 1)
-                    errors.Add(new SemanticError
-                    {
-                        Message = string.Format("{0} '{1}' is declared directly in a 'let' expression several times",
-                                                (node is VarDeclNode) ? "Variable" : "Function",
-                                                node.Name),
-                        Node = this
-                    });
-
-            foreach (var node in decls)
-                if (varsAndFunctions.Count(n => n.Name == node.Name) > 1)
-                    errors.Add(new SemanticError
-                    {
-                        Message = string.Format("Type '{0}' is declared directly in a 'let' expression several times", node.Name),
-                        Node = this
-                    });
-
-            //Define Functions and Types at the start of their scopes
             foreach (var node in Children)
-            {
-                if (node is FuncDeclNode)
-                {
-                    var func = (FuncDeclNode)node;
-                    if (scope.Stdl.Where(n => n.Name == func.Name).Count() > 0)
-                        errors.Add(new SemanticError
-                        {
-                            Message = string.Format("Standard library function {0} can not be redefined", func.Name),
-                            Node = Children[0]
-                        });
-                    else
-                        scope.DefineFunction(func.Name, func.FunctionType,
-                            func.Arguments != null ? func.Arguments.Types : new string[] { });
-                }
-
-                if (node is TypeDeclNode)
-                    (node as TypeDeclNode).DefineType(scope, errors);
-            }
-
-            foreach (var node in Children)
-            {
-                if (errors.Count > 0) break;
                 node.CheckSemantics(scope, errors);
-            }
         }
 
         public override void Generate(CodeGenerator generator)
         {
-            //Define Functions and Types at the start of their scopes
-            foreach (var node in Children)
-            {
-                if (node is FuncDeclNode)
-                    (node as FuncDeclNode).Define(generator);
-
-                if (node is TypeDeclNode)
-                    (node as TypeDeclNode).Define(generator);
-            }
-
-            //Store real types for aliases
-            foreach (var node in Children.Where(n => n is TypeDeclNode).Cast<TypeDeclNode>())
-                generator.Types[node.Name] = generator.Types[node.TypeInfo.Name];
-
             foreach (var node in Children)
                 node.Generate(generator);
         }

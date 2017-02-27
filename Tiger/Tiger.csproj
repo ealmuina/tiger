@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AST\Declarations\Functions\FuncDeclListNode.cs" />
+    <Compile Include="AST\Declarations\Types\TypeDeclListNode.cs" />
     <Compile Include="AST\Declarations\Types\TypeNode.cs" />
     <Compile Include="AST\Expressions\Auxiliary\AuxiliaryNode.cs" />
     <Compile Include="AST\Expressions\Containers\ArrayNode.cs" />

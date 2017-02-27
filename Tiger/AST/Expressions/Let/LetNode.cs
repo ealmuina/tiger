@@ -27,14 +27,14 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            scope = (Scope)scope.Clone();
+            scope = new Scope(scope);
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
         }
 
         public override void Generate(CodeGenerator generator)
         {
-            generator = (CodeGenerator)generator.Clone();
+            generator = new CodeGenerator(generator);
             foreach (var node in Children)
                 node.Generate(generator);
         }

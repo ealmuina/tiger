@@ -14,9 +14,7 @@ namespace Tiger.AST
 {
     class TypeDeclNode : DeclarationNode
     {
-        CodeGenerator generator;
-
-        public TypeDeclNode(ParserRuleContext context) : base(context) { }
+        public TypeDeclNode(int line, int column) : base(line, column) { }
 
         public bool IsAlias
         {
@@ -37,9 +35,10 @@ namespace Tiger.AST
                 var record = (RecordTypeNode)Children[1];
                 scope.DefineType(Name, record.Names, record.Types);
             }
-            else
+            else //Children[1] is ArrayTypeNode
             {
-                //TODO Implement
+                var array = (ArrayTypeNode)Children[1];
+                scope.DefineType(Name, new string[] { "Array" }, new string[] { array.Type }, true);
             }
         }
 
@@ -60,32 +59,27 @@ namespace Tiger.AST
 
         public void Define(CodeGenerator generator)
         {
-            if (IsAlias)
-                return;
-
             if (Children[1] is RecordTypeNode)
             {
-                this.generator = (CodeGenerator)generator.Clone();
-                this.generator.Type = this.generator.Module.DefineType(Name, TypeAttributes.Public);
-                this.generator.Type.DefineDefaultConstructor(MethodAttributes.Public);
-                this.generator.Types[Name] = this.generator.Type;
-                Dictionary<string, FieldBuilder> fields = (Children[1] as RecordTypeNode).Define(this.generator);
-
-                generator.Types[Name] = this.generator.Type.CreateType();
-                generator.Fields[Name] = fields;
-            }
-
-            else //Children[1] is ArrayTypeNode
-            {
-
+                TypeBuilder typeBuilder = generator.Module.DefineType(Name, TypeAttributes.Public);
+                typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
+                generator.Types[Name] = typeBuilder;
             }
         }
 
-
-
         public override void Generate(CodeGenerator generator)
         {
-            //pass
+            if (Children[1] is RecordTypeNode)
+            {
+                var typeBuilder = (TypeBuilder)generator.Types[Name];
+
+                var clone = new CodeGenerator(generator);
+                clone.Type = typeBuilder;
+                Dictionary<string, FieldBuilder> fields = (Children[1] as RecordTypeNode).Define(clone);
+                generator.Fields[Name] = fields;
+
+                generator.Types[Name] = typeBuilder.CreateType();
+            }
         }
     }
 }

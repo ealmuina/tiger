@@ -14,6 +14,8 @@ namespace Tiger.AST
     {
         public ExpressionSeqNode(ParserRuleContext context) : base(context) { }
 
+        public ExpressionSeqNode(int line, int column) : base(line, column) { }
+
         bool MayCauseBreak(Node node)
         {
             return node != null && (node is BreakNode || node.Children.Exists(n => MayCauseBreak(n)));
@@ -40,7 +42,7 @@ namespace Tiger.AST
                 int errorsCount = errors.Count;
                 expr.CheckSemantics(scope, errors);
 
-                if (errorsCount == errors.Count && !scope.DefinedTypes.ContainsKey(expr.Type))
+                if (errorsCount == errors.Count && !scope.Types.ContainsKey(expr.Type))
                     errors.Add(new SemanticError
                     {
                         Message = string.Format("Type '{0}' returned by the expression isn't visible in its context", expr.Type),

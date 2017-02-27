@@ -186,22 +186,29 @@ public interface ITigerVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFieldLValue([NotNull] TigerParser.FieldLValueContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>TypeDecl</c>
-	/// labeled alternative in <see cref="TigerParser.decl"/>.
+	/// Visit a parse tree produced by the <c>TypeDecls</c>
+	/// labeled alternative in <see cref="TigerParser.decls"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitTypeDecl([NotNull] TigerParser.TypeDeclContext context);
+	Result VisitTypeDecls([NotNull] TigerParser.TypeDeclsContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>VarDecl</c>
-	/// labeled alternative in <see cref="TigerParser.decl"/>.
+	/// labeled alternative in <see cref="TigerParser.decls"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitVarDecl([NotNull] TigerParser.VarDeclContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>FuncDecls</c>
+	/// labeled alternative in <see cref="TigerParser.decls"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFuncDecls([NotNull] TigerParser.FuncDeclsContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>FuncDecl</c>
-	/// labeled alternative in <see cref="TigerParser.decl"/>.
+	/// labeled alternative in <see cref="TigerParser.func_decl"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>

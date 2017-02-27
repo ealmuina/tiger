@@ -66,7 +66,7 @@ namespace Tiger
 
         static Node ParseInput(string inputPath)
         {
-            try
+            //try
             {
                 var input = new AntlrFileStream(inputPath);
                 var lexer = new TigerLexer(input);
@@ -95,10 +95,10 @@ namespace Tiger
                 Node ast = astBuilder.Visit(tree);
                 return ast;
             }
-            catch (Exception)
-            {
-                return null;
-            }
+            //catch (Exception)
+            //{
+            //    return null;
+            //}
         }
 
         static bool CheckSemantics(Node root, Scope scope)

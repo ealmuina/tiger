@@ -26,7 +26,7 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            var clone = (Scope)scope.Clone();
+            var clone = new Scope(scope);
             clone.InsideLoop = true;
 
             Children[0].CheckSemantics(clone, errors);
@@ -57,7 +57,7 @@ namespace Tiger.AST
 
         public override void Generate(CodeGenerator generator)
         {
-            generator = (CodeGenerator)generator.Clone();
+            generator = new CodeGenerator(generator);
             ILGenerator il = generator.Generator;
 
             Children[0].Generate(generator);

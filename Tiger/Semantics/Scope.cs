@@ -8,14 +8,14 @@ using Tiger.CodeGeneration;
 
 namespace Tiger.Semantics
 {
-    class Scope : ICloneable
+    class Scope
     {
         Dictionary<string, ItemInfo> symbols;
 
         public Scope()
         {
             symbols = new Dictionary<string, ItemInfo>();
-            DefinedTypes = new Dictionary<string, TypeInfo>();
+            Types = new Dictionary<string, TypeInfo>();
 
             UsedStdlFunctions = new HashSet<string>();
 
@@ -23,22 +23,31 @@ namespace Tiger.Semantics
             SetTypes();
         }
 
+        public Scope(Scope other)
+        {
+            symbols = new Dictionary<string, ItemInfo>(other.symbols);
+            Types = new Dictionary<string, TypeInfo>(other.Types);
+            InsideLoop = other.InsideLoop;
+            UsedStdlFunctions = other.UsedStdlFunctions;
+            Stdl = other.Stdl;
+        }
+
         void SetStdl()
         {
             Stdl = new[]
             {
-                new FunctionInfo("printi", true, Types.Void, Types.Int),
-                new FunctionInfo("print", true, Types.Void, Types.String),
-                new FunctionInfo("getline", true, Types.String),
-                new FunctionInfo("printline", true, Types.Void, Types.String),
-                new FunctionInfo("printiline", true, Types.Void, Types.Int),
-                new FunctionInfo("ord", true, Types.Int, Types.String),
-                new FunctionInfo("chr", true, Types.String, Types.Int),
-                new FunctionInfo("size", true, Types.Int, Types.String),
-                new FunctionInfo("substring", true, Types.String, Types.String, Types.Int, Types.Int),
-                new FunctionInfo("concat", true, Types.String, Types.String, Types.String),
-                new FunctionInfo("not", true, Types.Int, Types.Int),
-                new FunctionInfo("exit", true, Types.Void, Types.Int),
+                new FunctionInfo("printi", true, Semantics.Types.Void, Semantics.Types.Int),
+                new FunctionInfo("print", true, Semantics.Types.Void, Semantics.Types.String),
+                new FunctionInfo("getline", true, Semantics.Types.String),
+                new FunctionInfo("printline", true, Semantics.Types.Void, Semantics.Types.String),
+                new FunctionInfo("printiline", true, Semantics.Types.Void, Semantics.Types.Int),
+                new FunctionInfo("ord", true, Semantics.Types.Int, Semantics.Types.String),
+                new FunctionInfo("chr", true, Semantics.Types.String, Semantics.Types.Int),
+                new FunctionInfo("size", true, Semantics.Types.Int, Semantics.Types.String),
+                new FunctionInfo("substring", true, Semantics.Types.String, Semantics.Types.String, Semantics.Types.Int, Semantics.Types.Int),
+                new FunctionInfo("concat", true, Semantics.Types.String, Semantics.Types.String, Semantics.Types.String),
+                new FunctionInfo("not", true, Semantics.Types.Int, Semantics.Types.Int),
+                new FunctionInfo("exit", true, Semantics.Types.Void, Semantics.Types.Int),
             };
 
             foreach (var func in Stdl)
@@ -47,10 +56,10 @@ namespace Tiger.Semantics
 
         void SetTypes()
         {
-            DefinedTypes[Types.Int] = new TypeInfo(Types.Int, new string[] { }, new string[] { });
-            DefinedTypes[Types.String] = new TypeInfo(Types.String, new string[] { }, new string[] { });
-            DefinedTypes[Types.Void] = new TypeInfo(Types.Void, new string[] { }, new string[] { });
-            DefinedTypes[Types.Nil] = new TypeInfo(Types.Nil, new string[] { }, new string[] { });
+            Types[Semantics.Types.Int] = new TypeInfo(Semantics.Types.Int, new string[] { }, new string[] { });
+            Types[Semantics.Types.String] = new TypeInfo(Semantics.Types.String, new string[] { }, new string[] { });
+            Types[Semantics.Types.Void] = new TypeInfo(Semantics.Types.Void, new string[] { }, new string[] { });
+            Types[Semantics.Types.Nil] = new TypeInfo(Semantics.Types.Nil, new string[] { }, new string[] { });
         }
 
         public FunctionInfo[] Stdl { get; protected set; }
@@ -71,7 +80,7 @@ namespace Tiger.Semantics
         {
             if (typeof(TInfo) == typeof(TypeInfo))
             {
-                return DefinedTypes.ContainsKey(name);
+                return Types.ContainsKey(name);
             }
             else
             {
@@ -86,7 +95,7 @@ namespace Tiger.Semantics
 
         public HashSet<string> UsedStdlFunctions { get; protected set; }
 
-        public Dictionary<string, TypeInfo> DefinedTypes { get; protected set; }
+        public Dictionary<string, TypeInfo> Types { get; protected set; }
 
         public ItemInfo this[string name]
         {
@@ -101,10 +110,10 @@ namespace Tiger.Semantics
             if (typeof(TInfo) == typeof(TypeInfo))
             {
                 TypeInfo item = null;
-                if (DefinedTypes.TryGetValue(name, out item))
+                if (Types.TryGetValue(name, out item))
                 {
                     while (item is TypeAlias)
-                        item = DefinedTypes[(item as TypeAlias).Aliased];
+                        item = Types[(item as TypeAlias).Aliased];
                     return item as TInfo;
                 }
             }
@@ -131,17 +140,17 @@ namespace Tiger.Semantics
             return result;
         }
 
-        public TypeInfo DefineType(string name, string[] fieldNames, string[] fieldTypes)
+        public TypeInfo DefineType(string name, string[] fieldNames, string[] fieldTypes, bool isArray=false)
         {
-            var result = new TypeInfo(name, fieldNames, fieldTypes);
-            DefinedTypes[name] = result;
+            var result = new TypeInfo(name, fieldNames, fieldTypes, isArray);
+            Types[name] = result;
             return result;
         }
 
         public TypeInfo DefineType(string name, string aliased)
         {
             var result = new TypeAlias(name, aliased);
-            DefinedTypes[name] = result;
+            Types[name] = result;
             return result;
         }
 
@@ -154,29 +163,19 @@ namespace Tiger.Semantics
 
         public bool BadAlias(string name)
         {
-            TypeInfo item = DefinedTypes[name];
+            TypeInfo item = Types[name];
             var visited = new HashSet<TypeInfo>();
             while (item is TypeAlias)
             {
                 string next = (item as TypeAlias).Aliased;
 
-                if (!DefinedTypes.ContainsKey(next) || visited.Contains(item))
+                if (!Types.ContainsKey(next) || visited.Contains(item))
                     return true;
 
                 visited.Add(item);
-                item = DefinedTypes[next];
+                item = Types[next];
             }
             return false;
-        }
-
-        public object Clone()
-        {
-            var clone = new Scope();
-            clone.symbols = new Dictionary<string, ItemInfo>(symbols);
-            clone.DefinedTypes = new Dictionary<string, TypeInfo>(DefinedTypes);
-            clone.InsideLoop = InsideLoop;
-            clone.UsedStdlFunctions = UsedStdlFunctions;
-            return clone;
         }
     }
 }

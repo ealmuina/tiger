@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Tiger.CodeGeneration
 {
-    class CodeGenerator : ICloneable
+    class CodeGenerator
     {
         public CodeGenerator(string path)
         {
@@ -23,7 +23,7 @@ namespace Tiger.CodeGeneration
             Fields = new Dictionary<string, Dictionary<string, FieldBuilder>>();
         }
 
-        protected CodeGenerator(CodeGenerator other)
+        public CodeGenerator(CodeGenerator other)
         {
             Module = other.Module;
             Type = other.Type;
@@ -82,11 +82,6 @@ namespace Tiger.CodeGeneration
         public Type GetType(string type)
         {
             return Types[type];
-        }
-
-        public object Clone()
-        {
-            return new CodeGenerator(this);
         }
     }   
 }
