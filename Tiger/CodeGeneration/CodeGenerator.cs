@@ -75,10 +75,5 @@ namespace Tiger.CodeGeneration
         public Dictionary<string, Dictionary<string, FieldBuilder>> Fields { get; protected set; }
 
         public Label LoopEnd { get; set; }
-
-        public Type GetType(string type)
-        {
-            return Types[type];
-        }
     }   
 }

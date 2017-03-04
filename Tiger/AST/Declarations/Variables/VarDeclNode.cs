@@ -65,13 +65,13 @@ namespace Tiger.AST
                 });
 
             if (errors.Count == 0)
-                scope.DefineVariable(Name, scope.GetItem<Semantics.TypeInfo>(Type).Name, IsReadonly, false);
+                scope.DefineVariable(Name, scope.GetItem<TypeInfo>(Type).Name, IsReadonly, false);
         }
 
         public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
-            Type type = generator.GetType(Type);
+            Type type = generator.Types[Type];
 
             Children[2].Generate(generator);
 

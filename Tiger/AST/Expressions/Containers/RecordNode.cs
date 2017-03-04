@@ -23,7 +23,7 @@ namespace Tiger.AST
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
 
-            if (!scope.IsDefined<TypeInfo>(Type) || scope.Types[Type].IsArray)
+            if (!scope.IsDefined<TypeInfo>(Type))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Cannot instantiate the undefined record type '{0}'", Type),

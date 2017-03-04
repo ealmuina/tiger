@@ -287,7 +287,11 @@ namespace Tiger.Parsing
         public override Node VisitIndexLValue([NotNull] TigerParser.IndexLValueContext context)
         {
             var node = new IndexNode(context);
-            node.Children.Add(Visit(context.lvalue()));
+
+            var lvalue = (LValueNode)Visit(context.lvalue());
+            lvalue.ByValue = true;
+            node.Children.Add(lvalue);
+            
             node.Children.Add(Visit(context.expr()));
             return node;
         }

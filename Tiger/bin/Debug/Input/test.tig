@@ -1,7 +1,8 @@
 let
-	type Entero = int
-	var x : Entero := 10
-	function f(x : Entero) = (printi(x))
+    type arrayint = array of rectype
 in
-	f(x)
 end
+
+/*
+Semantic Error: Undefined type rectype in the array arrayint declaration at line 2.
+*/

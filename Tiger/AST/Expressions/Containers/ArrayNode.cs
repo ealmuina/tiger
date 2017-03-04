@@ -29,8 +29,13 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
+            foreach (var node in Children)
+                node.CheckSemantics(scope, errors);
+
+            if (errors.Count > 0) return;
+
             TypeInfo info;
-            if (!scope.Types.TryGetValue(Type, out info) || !info.IsArray)
+            if (!scope.Types.TryGetValue(Type, out info) || !(info is TypeAlias) || !(info as TypeAlias).IsArray)
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Undefined array type '{0}'", Type),
@@ -38,7 +43,7 @@ namespace Tiger.AST
                 });
             else
             {
-                if (!scope.SameType(InitExpr.Type, info.FieldTypes[0]))
+                if (!scope.SameType(InitExpr.Type, (info as TypeAlias).Aliased))
                     errors.Add(new SemanticError
                     {
                         Message = string.Format("Array elements initial value type is '{0}' which isn't an alias for expected '{1}'",
@@ -52,10 +57,7 @@ namespace Tiger.AST
                 {
                     Message = string.Format("Array size expression type is '{0}' which isn't an alias for 'Int'", SizeExpr.Type),
                     Node = this
-                });
-
-            foreach (var node in Children)
-                node.CheckSemantics(scope, errors);
+                });            
 
             Info = info;
         }
@@ -63,37 +65,40 @@ namespace Tiger.AST
         public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
+
             Label loop = il.DefineLabel();
             Label end = il.DefineLabel();
-            LocalBuilder initExpr = il.DeclareLocal(generator.Types[InitExpr.Type]);
+
+            LocalBuilder size = il.DeclareLocal(generator.Types[Types.Int]);
+            LocalBuilder initVal = il.DeclareLocal(generator.Types[InitExpr.Type]);
             LocalBuilder array = il.DeclareLocal(generator.Types[Type]);
 
             SizeExpr.Generate(generator);
+            il.Emit(OpCodes.Stloc, size);
             InitExpr.Generate(generator);
-            il.Emit(OpCodes.Stloc, initExpr);
+            il.Emit(OpCodes.Stloc, initVal);
 
-            il.Emit(OpCodes.Dup);
-            il.Emit(OpCodes.Newarr, generator.Types[Type]);
+            il.Emit(OpCodes.Ldloc, size);
+            il.Emit(OpCodes.Newarr, generator.Types[InitExpr.Type]);
             il.Emit(OpCodes.Stloc, array);
 
             il.MarkLabel(loop);
+            il.Emit(OpCodes.Ldloc, size);
             il.Emit(OpCodes.Ldc_I4_1);
             il.Emit(OpCodes.Sub);
             il.Emit(OpCodes.Dup);
+            il.Emit(OpCodes.Stloc, size);
             il.Emit(OpCodes.Ldc_I4_0);
             il.Emit(OpCodes.Blt, end);
 
-            il.
+            il.Emit(OpCodes.Ldloc, array);
+            il.Emit(OpCodes.Ldloc, size);
+            il.Emit(OpCodes.Ldloc, initVal);
+            il.Emit(OpCodes.Stelem, generator.Types[InitExpr.Type]);
+            il.Emit(OpCodes.Br, loop);
 
-            for (int i = 1; i < Children.Count; i++)
-            {
-                var field = (FieldNode)Children[i];
-                il.Emit(OpCodes.Dup);
-                field.Generate(generator);
-                il.Emit(OpCodes.Stfld, generator.Fields[Type][field.Name]);
-            }
-            il.Emit(OpCodes.Pop);
-            il.Emit(OpCodes.Ldloc, record);
+            il.MarkLabel(end);
+            il.Emit(OpCodes.Ldloc, array);
         }
     }
 }

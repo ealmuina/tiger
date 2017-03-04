@@ -136,16 +136,16 @@ namespace Tiger.Semantics
             return result;
         }
 
-        public TypeInfo DefineType(string name, string[] fieldNames, string[] fieldTypes, bool isArray=false)
+        public TypeInfo DefineType(string name, string[] fieldNames, string[] fieldTypes)
         {
-            var result = new TypeInfo(name, fieldNames, fieldTypes, isArray);
+            var result = new TypeInfo(name, fieldNames, fieldTypes);
             Types[name] = result;
             return result;
         }
 
-        public TypeInfo DefineType(string name, string aliased)
+        public TypeInfo DefineType(string name, string aliased, bool isArray = false)
         {
-            var result = new TypeAlias(name, aliased);
+            var result = new TypeAlias(name, aliased, isArray);
             Types[name] = result;
             return result;
         }

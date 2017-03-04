@@ -32,7 +32,7 @@ namespace Tiger.AST
             else //Children[1] is ArrayTypeNode
             {
                 var array = (ArrayTypeNode)Children[1];
-                scope.DefineType(Name, new string[] { "Array" }, new string[] { array.Type }, true);
+                scope.DefineType(Name, array.Type, true);
             }
         }
 
@@ -41,7 +41,7 @@ namespace Tiger.AST
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
 
-            if (IsAlias && scope.BadAlias(Name))
+            if ((IsAlias || Children[1] is ArrayTypeNode) && scope.BadAlias(Name))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Type '{0}' is part of an invalid alias cycle", Name),
@@ -73,6 +73,10 @@ namespace Tiger.AST
                 generator.Fields[Name] = fields;
 
                 generator.Types[Name] = typeBuilder.CreateType();
+            }
+            else if (Children[1] is ArrayTypeNode)
+            {
+                generator.Types[Name] = generator.Types[Name].MakeArrayType();
             }
         }
     }
