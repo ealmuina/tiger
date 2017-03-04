@@ -31,16 +31,24 @@ namespace Tiger.AST
                 });
             else
             {
-                TypeInfo info = scope.GetItem<TypeInfo>(Type);
-                for (int i = 1; i < Children.Count; i++)
-                    if (Children[i].Type != Types.Nil && !scope.SameType(Children[i].Type, info.FieldTypes[i - 1]))
-                        errors.Add(new SemanticError
-                        {
-                            Message = string.Format("Expression of type '{0}' cannot be assigned to field '{1}' with type '{2}'",
-                                                    Children[i].Type, info.FieldNames[i - 1], info.FieldTypes[i - 1]),
-                            Node = Children[i]
-                        });
+                var info = scope.GetItem<TypeInfo>(Type);
                 RecordType = info;
+
+                if (Children.Count - 1 != info.FieldNames.Length)
+                    errors.Add(new SemanticError
+                    {
+                        Message = string.Format("Invalid number of fields in record literal"),
+                        Node = this
+                    });
+                else
+                    for (int i = 1; i < Children.Count; i++)
+                        if (Children[i].Type != Types.Nil && !scope.SameType(Children[i].Type, info.FieldTypes[i - 1]))
+                            errors.Add(new SemanticError
+                            {
+                                Message = string.Format("Expression of type '{0}' cannot be assigned to field '{1}' with type '{2}'",
+                                                        Children[i].Type, info.FieldNames[i - 1], info.FieldTypes[i - 1]),
+                                Node = Children[i]
+                            });
             }
         }
 

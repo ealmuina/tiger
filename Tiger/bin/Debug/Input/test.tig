@@ -1,8 +1,15 @@
-let
-    type arrayint = array of rectype
-in
-end
-
-/*
-Semantic Error: Undefined type rectype in the array arrayint declaration at line 2.
-*/
+/* if-then-else debe retornar valores del mismo tipo */
+if ( 1 ) then
+	let
+		type x = {  }
+		var x := x { }
+	in
+		x
+	end
+else
+	let
+		type y = {  }
+		var y := y { }
+	in
+		y
+	end

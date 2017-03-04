@@ -291,7 +291,7 @@ namespace Tiger.Parsing
             var lvalue = (LValueNode)Visit(context.lvalue());
             lvalue.ByValue = true;
             node.Children.Add(lvalue);
-            
+
             node.Children.Add(Visit(context.expr()));
             return node;
         }
@@ -312,7 +312,7 @@ namespace Tiger.Parsing
         {
             var node = new FuncDeclListNode(context);
             node.Children.AddRange(from funcDecl in context.func_decl() select Visit(funcDecl));
-            return node;            
+            return node;
         }
 
         public override Node VisitFuncDecl([NotNull] TigerParser.FuncDeclContext context)
@@ -366,7 +366,14 @@ namespace Tiger.Parsing
 
         public override Node VisitRecordType([NotNull] TigerParser.RecordTypeContext context)
         {
-            return Visit(context.type_fields());
+            try
+            {
+                return Visit(context.type_fields());
+            }
+            catch (Exception)
+            {
+                return new RecordTypeNode(context, new string[] { }, new string[] { });
+            }
         }
 
         public override Node VisitArrayType([NotNull] TigerParser.ArrayTypeContext context)

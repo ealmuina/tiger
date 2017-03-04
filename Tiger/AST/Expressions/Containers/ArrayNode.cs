@@ -25,8 +25,6 @@ namespace Tiger.AST
             get { return Children[2] as ExpressionNode; }
         }
 
-        public TypeInfo Info { get; protected set; }
-
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             foreach (var node in Children)
@@ -34,8 +32,7 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            TypeInfo info;
-            if (!scope.Types.TryGetValue(Type, out info) || !(info is TypeAlias) || !(info as TypeAlias).IsArray)
+            if (!scope.IsDefined<TypeInfo>(Type) || !scope.IsArrayType(Type))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Undefined array type '{0}'", Type),
@@ -43,11 +40,12 @@ namespace Tiger.AST
                 });
             else
             {
-                if (!scope.SameType(InitExpr.Type, (info as TypeAlias).Aliased))
+                var info = scope.GetItem<TypeInfo>(Type);
+                if (!scope.SameType(InitExpr.Type, info.Name))
                     errors.Add(new SemanticError
                     {
                         Message = string.Format("Array elements initial value type is '{0}' which isn't an alias for expected '{1}'",
-                                                InitExpr.Type, info.FieldTypes[0]),
+                                                InitExpr.Type, info.Name),
                         Node = this
                     });
             }
@@ -57,9 +55,7 @@ namespace Tiger.AST
                 {
                     Message = string.Format("Array size expression type is '{0}' which isn't an alias for 'Int'", SizeExpr.Type),
                     Node = this
-                });            
-
-            Info = info;
+                });
         }
 
         public override void Generate(CodeGenerator generator)

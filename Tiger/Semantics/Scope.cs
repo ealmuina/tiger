@@ -173,5 +173,23 @@ namespace Tiger.Semantics
             }
             return false;
         }
+
+        public bool IsArrayType(string name)
+        {
+            if (BadAlias(name)) return false;
+
+            TypeInfo item = Types[name];
+            while (item is TypeAlias)
+            {
+                var alias = (TypeAlias)item;
+
+                if (alias.IsArray)
+                    return true;
+
+                string next = alias.Aliased;
+                item = Types[next];
+            }
+            return false;
+        }
     }
 }
