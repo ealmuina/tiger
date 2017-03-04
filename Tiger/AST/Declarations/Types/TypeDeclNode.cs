@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Antlr4.Runtime;
+﻿using System.Collections.Generic;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
 using System.Reflection.Emit;
 using System.Reflection;
-using System.Threading;
 
 namespace Tiger.AST
 {

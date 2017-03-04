@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -12,8 +9,6 @@ using Tiger.CodeGeneration;
 using Tiger.Parsing;
 using Tiger.Semantics;
 using Tiger.AST;
-using Antlr4.Runtime.Atn;
-using System.Threading;
 
 namespace Tiger
 {

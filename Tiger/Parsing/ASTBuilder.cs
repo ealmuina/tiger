@@ -4,7 +4,6 @@ using System.Linq;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Tiger.AST;
-using Antlr4.Runtime;
 
 namespace Tiger.Parsing
 {

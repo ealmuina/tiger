@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using System.Reflection.Emit;
-
-namespace Tiger.Semantics
+﻿namespace Tiger.Semantics
 {
     abstract class ItemInfo
     {

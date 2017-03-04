@@ -1,11 +1,5 @@
 ﻿using Antlr4.Runtime;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
 
@@ -20,7 +14,10 @@ namespace Tiger.AST
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             foreach (var node in Children)
+            {
+                if (errors.Count > 0) break;
                 node.CheckSemantics(scope, errors);
+            }
         }
 
         public override void Generate(CodeGenerator generator)
