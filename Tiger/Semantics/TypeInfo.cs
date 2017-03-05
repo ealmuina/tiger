@@ -2,9 +2,12 @@
 {
     class TypeInfo : ItemInfo
     {
-        public TypeInfo(string name) : base(name, Types.Void) { }
+        public TypeInfo(string name) : base(name, Types.Void) { }              
+    }
 
-        public TypeInfo(string name, string[] fieldNames, string[] fieldTypes) : base(name, Types.Void)
+    class RecordInfo : TypeInfo
+    {
+        public RecordInfo(string name, string[] fieldNames, string[] fieldTypes) : base(name)
         {
             FieldNames = fieldNames;
             FieldTypes = fieldTypes;
@@ -15,16 +18,23 @@
         public string[] FieldTypes { get; protected set; }
     }
 
-    class TypeAlias : TypeInfo
+    class AliasInfo : TypeInfo
     {
-        public TypeAlias(string name, string aliased, bool isArray=false) : base(name)
+        public AliasInfo(string name, string aliased) : base(name)
         {
             Aliased = aliased;
-            IsArray = isArray;
         }
 
         public string Aliased { get; protected set; }
+    }
 
-        public bool IsArray { get; protected set; }
+    class ArrayInfo : TypeInfo
+    {
+        public ArrayInfo(string name, string elementsType) : base(name)
+        {
+            ElementsType = elementsType;
+        }
+
+        public string ElementsType { get; protected set; }
     }
 }

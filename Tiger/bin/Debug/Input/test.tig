@@ -1,15 +1,14 @@
-/* if-then-else debe retornar valores del mismo tipo */
-if ( 1 ) then
-	let
-		type x = {  }
-		var x := x { }
-	in
-		x
-	end
-else
-	let
-		type y = {  }
-		var y := y { }
-	in
-		y
-	end
+/* Este programa no es válido. Obsérvese que en la sección let-in aparecen declarados
+directamente dos tipos con el mismo nombre (T), y una variable y una función con el mismo
+nombre (f). Note, sin embargo, que el hecho de que existan un tipo y una variable con el
+mismo nombre (T) no es problema. */
+let
+	type T = { field : int }
+	var f : string := "string"
+	type T = { field : string }
+	var a : string := nil
+	function f(x : int) : int = x + 1
+	var T : int := 33
+in
+	/* ... */
+end

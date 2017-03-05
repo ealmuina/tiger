@@ -52,10 +52,10 @@ namespace Tiger.Semantics
 
         void SetTypes()
         {
-            Types[Semantics.Types.Int] = new TypeInfo(Semantics.Types.Int, new string[] { }, new string[] { });
-            Types[Semantics.Types.String] = new TypeInfo(Semantics.Types.String, new string[] { }, new string[] { });
-            Types[Semantics.Types.Void] = new TypeInfo(Semantics.Types.Void, new string[] { }, new string[] { });
-            Types[Semantics.Types.Nil] = new TypeInfo(Semantics.Types.Nil, new string[] { }, new string[] { });
+            Types[Semantics.Types.Int] = new RecordInfo(Semantics.Types.Int, new string[] { }, new string[] { });
+            Types[Semantics.Types.String] = new RecordInfo(Semantics.Types.String, new string[] { }, new string[] { });
+            Types[Semantics.Types.Void] = new RecordInfo(Semantics.Types.Void, new string[] { }, new string[] { });
+            Types[Semantics.Types.Nil] = new RecordInfo(Semantics.Types.Nil, new string[] { }, new string[] { });
         }
 
         public FunctionInfo[] Stdl { get; protected set; }
@@ -108,8 +108,8 @@ namespace Tiger.Semantics
                 TypeInfo item = null;
                 if (Types.TryGetValue(name, out item))
                 {
-                    while (item is TypeAlias)
-                        item = Types[(item as TypeAlias).Aliased];
+                    while (item is AliasInfo)
+                        item = Types[(item as AliasInfo).Aliased];
                     return item as TInfo;
                 }
             }
@@ -136,16 +136,23 @@ namespace Tiger.Semantics
             return result;
         }
 
-        public TypeInfo DefineType(string name, string[] fieldNames, string[] fieldTypes)
+        public RecordInfo DefineRecordType(string name, string[] fieldNames, string[] fieldTypes)
         {
-            var result = new TypeInfo(name, fieldNames, fieldTypes);
+            var result = new RecordInfo(name, fieldNames, fieldTypes);
             Types[name] = result;
             return result;
         }
 
-        public TypeInfo DefineType(string name, string aliased, bool isArray = false)
+        public AliasInfo DefineAliasType(string name, string aliased)
         {
-            var result = new TypeAlias(name, aliased, isArray);
+            var result = new AliasInfo(name, aliased);
+            Types[name] = result;
+            return result;
+        }
+
+        public ArrayInfo DefineArrayType(string name, string elementsType)
+        {
+            var result = new ArrayInfo(name, elementsType);
             Types[name] = result;
             return result;
         }
@@ -161,32 +168,16 @@ namespace Tiger.Semantics
         {
             TypeInfo item = Types[name];
             var visited = new HashSet<TypeInfo>();
-            while (item is TypeAlias)
+            while (item is AliasInfo || item is ArrayInfo)
             {
-                string next = (item as TypeAlias).Aliased;
+                string next = (item is AliasInfo)?
+                    (item as AliasInfo).Aliased:
+                    (item as ArrayInfo).ElementsType;
 
                 if (!Types.ContainsKey(next) || visited.Contains(item))
                     return true;
 
                 visited.Add(item);
-                item = Types[next];
-            }
-            return false;
-        }
-
-        public bool IsArrayType(string name)
-        {
-            if (BadAlias(name)) return false;
-
-            TypeInfo item = Types[name];
-            while (item is TypeAlias)
-            {
-                var alias = (TypeAlias)item;
-
-                if (alias.IsArray)
-                    return true;
-
-                string next = alias.Aliased;
                 item = Types[next];
             }
             return false;

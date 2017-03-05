@@ -32,7 +32,7 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            if (!scope.IsDefined<TypeInfo>(Type) || !scope.IsArrayType(Type))
+            if (!scope.IsDefined<TypeInfo>(Type) || !(scope.GetItem<TypeInfo>(Type) is ArrayInfo))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Undefined array type '{0}'", Type),
@@ -40,12 +40,12 @@ namespace Tiger.AST
                 });
             else
             {
-                var info = scope.GetItem<TypeInfo>(Type);
-                if (!scope.SameType(InitExpr.Type, info.Name))
+                var info = (ArrayInfo)scope.GetItem<TypeInfo>(Type);
+                if (!scope.SameType(InitExpr.Type, info.ElementsType))
                     errors.Add(new SemanticError
                     {
                         Message = string.Format("Array elements initial value type is '{0}' which isn't an alias for expected '{1}'",
-                                                InitExpr.Type, info.Name),
+                                                InitExpr.Type, info.ElementsType),
                         Node = this
                     });
             }
@@ -65,32 +65,34 @@ namespace Tiger.AST
             Label loop = il.DefineLabel();
             Label end = il.DefineLabel();
 
+            LocalBuilder index = il.DeclareLocal(generator.Types[Types.Int]);
             LocalBuilder size = il.DeclareLocal(generator.Types[Types.Int]);
-            LocalBuilder initVal = il.DeclareLocal(generator.Types[InitExpr.Type]);
             LocalBuilder array = il.DeclareLocal(generator.Types[Type]);
 
             SizeExpr.Generate(generator);
             il.Emit(OpCodes.Stloc, size);
-            InitExpr.Generate(generator);
-            il.Emit(OpCodes.Stloc, initVal);
 
             il.Emit(OpCodes.Ldloc, size);
             il.Emit(OpCodes.Newarr, generator.Types[InitExpr.Type]);
             il.Emit(OpCodes.Stloc, array);
 
-            il.MarkLabel(loop);
-            il.Emit(OpCodes.Ldloc, size);
-            il.Emit(OpCodes.Ldc_I4_1);
-            il.Emit(OpCodes.Sub);
-            il.Emit(OpCodes.Dup);
-            il.Emit(OpCodes.Stloc, size);
             il.Emit(OpCodes.Ldc_I4_0);
-            il.Emit(OpCodes.Blt, end);
+            il.Emit(OpCodes.Stloc, index);
+
+            il.MarkLabel(loop);
+            il.Emit(OpCodes.Ldloc, index);
+            il.Emit(OpCodes.Ldloc, size);
+            il.Emit(OpCodes.Bge, end);
 
             il.Emit(OpCodes.Ldloc, array);
-            il.Emit(OpCodes.Ldloc, size);
-            il.Emit(OpCodes.Ldloc, initVal);
+            il.Emit(OpCodes.Ldloc, index);
+            InitExpr.Generate(generator);
             il.Emit(OpCodes.Stelem, generator.Types[InitExpr.Type]);
+
+            il.Emit(OpCodes.Ldloc, index);
+            il.Emit(OpCodes.Ldc_I4_1);
+            il.Emit(OpCodes.Add);
+            il.Emit(OpCodes.Stloc, index);
             il.Emit(OpCodes.Br, loop);
 
             il.MarkLabel(end);

@@ -16,14 +16,14 @@ namespace Tiger.AST
             get { return (Children[0] as IdNode).Name; }
         }
 
-        public TypeInfo RecordType { get; protected set; }
+        public RecordInfo RecordInfo { get; protected set; }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
 
-            if (!scope.IsDefined<TypeInfo>(Type))
+            if (!scope.IsDefined<TypeInfo>(Type) || !(scope.GetItem<TypeInfo>(Type) is RecordInfo))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Cannot instantiate the undefined record type '{0}'", Type),
@@ -32,9 +32,9 @@ namespace Tiger.AST
             else
             {
                 var info = scope.GetItem<TypeInfo>(Type);
-                RecordType = info;
+                RecordInfo = (RecordInfo)info;
 
-                if (Children.Count - 1 != info.FieldNames.Length)
+                if (Children.Count - 1 != RecordInfo.FieldNames.Length)
                     errors.Add(new SemanticError
                     {
                         Message = string.Format("Invalid number of fields in record literal"),
@@ -42,11 +42,11 @@ namespace Tiger.AST
                     });
                 else
                     for (int i = 1; i < Children.Count; i++)
-                        if (Children[i].Type != Types.Nil && !scope.SameType(Children[i].Type, info.FieldTypes[i - 1]))
+                        if (Children[i].Type != Types.Nil && !scope.SameType(Children[i].Type, RecordInfo.FieldTypes[i - 1]))
                             errors.Add(new SemanticError
                             {
                                 Message = string.Format("Expression of type '{0}' cannot be assigned to field '{1}' with type '{2}'",
-                                                        Children[i].Type, info.FieldNames[i - 1], info.FieldTypes[i - 1]),
+                                                        Children[i].Type, RecordInfo.FieldNames[i - 1], RecordInfo.FieldTypes[i - 1]),
                                 Node = Children[i]
                             });
             }
@@ -55,7 +55,7 @@ namespace Tiger.AST
         public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
-            LocalBuilder record = il.DeclareLocal(generator.Types[RecordType.Name]);
+            LocalBuilder record = il.DeclareLocal(generator.Types[RecordInfo.Name]);
 
             il.Emit(OpCodes.Newobj, generator.Types[Type].GetConstructor(new Type[] { }));
             il.Emit(OpCodes.Stloc, record);

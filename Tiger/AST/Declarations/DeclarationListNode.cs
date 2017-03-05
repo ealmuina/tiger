@@ -13,6 +13,8 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
+            //TODO Chequear que en la misma secuencia de declaraciones no se redefinan tipos o funciones/variables
+
             foreach (var node in Children)
             {
                 if (errors.Count > 0) break;

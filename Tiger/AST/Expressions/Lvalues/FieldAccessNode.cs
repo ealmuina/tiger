@@ -24,31 +24,39 @@ namespace Tiger.AST
             get { return (Children[1] as IdNode).Name; }
         }
 
-        public TypeInfo ContainerType { get; protected set; }
+        public RecordInfo RecordInfo { get; protected set; }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
 
-            var info = scope.GetItem<TypeInfo>(Children[0].Type);
+            if (errors.Count > 0) return;
 
-            if (!info.FieldNames.Contains(FieldName))
+            var info = scope.GetItem<TypeInfo>(Children[0].Type);
+            if (!(info is RecordInfo))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Type '{0}' doesn't have a field named '{1}'", info.Name, FieldName),
+                    Message = string.Format("Type '{0}' isn't a record type", info.Name),
+                    Node = Children[1]
+                });
+
+            RecordInfo = (RecordInfo)info;
+
+            if (!RecordInfo.FieldNames.Contains(FieldName))
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Type '{0}' doesn't have a field named '{1}'", RecordInfo.Name, FieldName),
                     Node = Children[1]
                 });
             else
-                type = info.FieldTypes[Array.IndexOf(info.FieldNames, FieldName)];
-
-            ContainerType = info;
+                type = RecordInfo.FieldTypes[Array.IndexOf(RecordInfo.FieldNames, FieldName)];
         }
 
         public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
-            FieldBuilder field = generator.Fields[ContainerType.Name][FieldName];
+            FieldBuilder field = generator.Fields[RecordInfo.Name][FieldName];
 
             Children[0].Generate(generator);
 

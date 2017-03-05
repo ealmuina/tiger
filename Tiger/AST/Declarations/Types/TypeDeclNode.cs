@@ -3,6 +3,7 @@ using Tiger.CodeGeneration;
 using Tiger.Semantics;
 using System.Reflection.Emit;
 using System.Reflection;
+using System.Linq;
 
 namespace Tiger.AST
 {
@@ -22,17 +23,17 @@ namespace Tiger.AST
             if (IsAlias)
             {
                 var alias = (IdNode)Children[1];
-                scope.DefineType(Name, alias.Name);
+                scope.DefineAliasType(Name, alias.Name);
             }
             else if (Children[1] is RecordTypeNode)
             {
                 var record = (RecordTypeNode)Children[1];
-                scope.DefineType(Name, record.Names, record.Types);
+                scope.DefineRecordType(Name, record.Names, record.Types);
             }
             else //Children[1] is ArrayTypeNode
             {
                 var array = (ArrayTypeNode)Children[1];
-                scope.DefineType(Name, array.Type, true);
+                scope.DefineArrayType(Name, array.Type);
             }
         }
 
@@ -40,6 +41,13 @@ namespace Tiger.AST
         {
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
+
+            if (new string[] { Types.Int, Types.String}.Contains(Name))
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Builtin type '{0}' cannot be redefined", Name),
+                    Node = this
+                });
 
             if ((IsAlias || Children[1] is ArrayTypeNode) && scope.BadAlias(Name))
                 errors.Add(new SemanticError
@@ -73,10 +81,6 @@ namespace Tiger.AST
                 generator.Fields[Name] = fields;
 
                 generator.Types[Name] = typeBuilder.CreateType();
-            }
-            else if (Children[1] is ArrayTypeNode)
-            {
-                generator.Types[Name] = generator.Types[Name].MakeArrayType();
             }
         }
     }

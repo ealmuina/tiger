@@ -30,8 +30,8 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            var info = scope.GetItem<TypeInfo>(Children[0].Type);
-            type = info.Name;
+            var info = (ArrayInfo)scope.GetItem<TypeInfo>(Children[0].Type);
+            type = info.ElementsType;
 
             if (!scope.SameType(Expression.Type, Types.Int))
                 errors.Add(new SemanticError
