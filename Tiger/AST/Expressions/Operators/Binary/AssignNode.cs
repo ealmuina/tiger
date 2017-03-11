@@ -29,6 +29,8 @@ namespace Tiger.AST
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
 
+            if (errors.Count > 0) return;
+
             if (Expression.Type == Types.Void)
                 errors.Add(new SemanticError
                 {

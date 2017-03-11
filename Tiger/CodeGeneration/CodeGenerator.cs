@@ -8,6 +8,8 @@ namespace Tiger.CodeGeneration
 {
     class CodeGenerator
     {
+        public static int TypeId { get; set; }
+
         public CodeGenerator(string path)
         {
             FileName = Path.GetFileName(Path.ChangeExtension(path, "exe"));
@@ -61,8 +63,6 @@ namespace Tiger.CodeGeneration
         public string Name { get; set; }
 
         public string FileName { get; set; }
-
-        public int TypeId { get; set; }
 
         public ILGenerator Generator { get; set; }
 

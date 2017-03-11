@@ -42,7 +42,7 @@ namespace Tiger.AST
             if (Expression.Type != Types.Void)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("while used with an expression with return value"),
+                    Message = string.Format("'while' used with an expression with return value"),
                     Node = Expression
                 });
 

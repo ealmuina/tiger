@@ -30,8 +30,16 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            var info = (ArrayInfo)scope.GetItem<TypeInfo>(Children[0].Type);
-            type = info.ElementsType;
+            var info = scope.GetItem<TypeInfo>(Children[0].Type);
+
+            if (!(info is ArrayInfo))
+                errors.Add(new SemanticError
+                {
+                    Message = string.Format("Indexing operation requires Array type"),
+                    Node = this
+                });
+            else
+                type = (info as ArrayInfo).ElementsType;
 
             if (!scope.SameType(Expression.Type, Types.Int))
                 errors.Add(new SemanticError

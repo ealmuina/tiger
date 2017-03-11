@@ -43,6 +43,7 @@ namespace Tiger.AST
         {
             foreignVariables = (VariableInfo[])scope.Variables.Clone();
             scope = new Scope(scope);
+            scope.InsideLoop = false;
             var info = (FunctionInfo)scope[Name];
 
             foreach (var fv in foreignVariables)

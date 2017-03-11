@@ -32,7 +32,7 @@ expr
 	|	'for' ID ':=' expr 'to' expr 'do' expr								# For			
 	|	'break'																# Break
 	
-	|	'let' decls* 'in' (expr (';' expr)*)? 'end'							# Let
+	|	'let' decls+ 'in' (expr (';' expr)*)? 'end'							# Let
 	;
 
 lvalue

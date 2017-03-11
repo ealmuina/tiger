@@ -63,7 +63,7 @@ namespace Tiger.AST
         {
             if (Children[1] is RecordTypeNode)
             {
-                TypeBuilder typeBuilder = generator.Module.DefineType(Name + "_" + generator.TypeId++, TypeAttributes.Public);
+                TypeBuilder typeBuilder = generator.Module.DefineType(Name + "_" + CodeGenerator.TypeId++, TypeAttributes.Public);
                 typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
                 generator.Types[Name] = typeBuilder;
             }

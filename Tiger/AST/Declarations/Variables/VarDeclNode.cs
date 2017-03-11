@@ -41,6 +41,8 @@ namespace Tiger.AST
             foreach (var node in Children.Where(n => n != null))
                 node.CheckSemantics(scope, errors);
 
+            if (errors.Count > 0) return;
+
             if (Children[2].Type == Types.Void)
                 errors.Add(new SemanticError
                 {
@@ -48,7 +50,7 @@ namespace Tiger.AST
                     Node = this
                 });
 
-            if (Children[1] == null && Children[2].Type == Types.Nil)
+            if (Children[1] == null && scope.SameType(Children[2].Type, Types.Nil))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Variable type cannot be infered from an expression which returns nil"),

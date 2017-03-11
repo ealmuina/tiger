@@ -34,6 +34,8 @@ namespace Tiger.AST
             LeftOperand.CheckSemantics(scope, errors);
             RightOperand.CheckSemantics(scope, errors);
 
+            if (errors.Count > 0) return;
+
             if (!SupportType(LeftOperand.Type))
                 errors.Add(SemanticError.InvalidUseOfOperator("binary relational", "valid", "left", LeftOperand));
 
