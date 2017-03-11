@@ -1,14 +1,44 @@
-/* Este programa no es válido. Obsérvese que en la sección let-in aparecen declarados
-directamente dos tipos con el mismo nombre (T), y una variable y una función con el mismo
-nombre (f). Note, sin embargo, que el hecho de que existan un tipo y una variable con el
-mismo nombre (T) no es problema. */
 let
-	type T = { field : int }
-	var f : string := "string"
-	type T = { field : string }
-	var a : string := nil
-	function f(x : int) : int = x + 1
-	var T : int := 33
+	type linked_list = { node : int, next : linked_list }
+	var list := linked_list { node = -1, next = nil }
+	var head := list
+	var it : linked_list := nil
+	var n:= 0
+	
+	function read_int() : int =
+		let 
+			var i := 0
+			var buffer := getline()
+			
+			function is_digit(s : string) : int = 
+				ord(buffer)>=ord("0") & ord(buffer)<=ord("9")
+			
+			function skipto() =
+				while buffer=" " | buffer="\n" | buffer=""
+				do buffer := getline()
+		in 
+				skipto();
+				while is_digit(buffer)
+				do (
+					i := i*10+ord(buffer)-ord("0"); 
+					buffer := getline()
+				);
+				i
+		end
+	
 in
-	/* ... */
+	n:= read_int();
+	while n <> 16 do
+	(
+		list.next:= linked_list { node = n, next = nil };
+		list:= list.next;
+		n:= read_int()
+	);
+	it:= head.next;
+	while it <> nil do
+	(
+		printi(it.node);
+		print("\n");
+		it:= it.next
+	)
 end

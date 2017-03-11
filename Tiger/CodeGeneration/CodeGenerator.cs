@@ -62,6 +62,8 @@ namespace Tiger.CodeGeneration
 
         public string FileName { get; set; }
 
+        public int TypeId { get; set; }
+
         public ILGenerator Generator { get; set; }
 
         public Dictionary<string, MethodInfo> Functions { get; set; }

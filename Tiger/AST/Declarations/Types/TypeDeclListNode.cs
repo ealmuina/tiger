@@ -3,11 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
+using System;
 
 namespace Tiger.AST
 {
-    class TypeDeclListNode : Node
+    class TypeDeclListNode : Node, IDeclarationList
     {
+        public string[] DeclaredNames
+        {
+            get
+            {
+                return (from f in Children.Cast<TypeDeclNode>()
+                        select f.Name).ToArray();
+            }
+        }
+
         public TypeDeclListNode(ParserRuleContext context) : base(context) { }
 
         private void FixArrayType(TypeDeclNode type, CodeGenerator generator)
@@ -22,17 +32,7 @@ namespace Tiger.AST
             var types = Children.Cast<TypeDeclNode>();
 
             foreach (var type in types)
-            {
-                //if (types.Count(t => t.Name == type.Name) > 1)
-                if (scope.IsDefined<TypeInfo>(type.Name))
-                    errors.Add(new SemanticError
-                    {
-                        Message = string.Format("Type '{0}' is already declared", type.Name),
-                        Node = this
-                    });
-
                 type.DefineType(scope, errors);
-            }
 
             foreach (var type in types)
                 type.CheckSemantics(scope, errors);

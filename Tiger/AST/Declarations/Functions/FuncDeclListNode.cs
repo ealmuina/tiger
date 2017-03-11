@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
+using System;
 
 namespace Tiger.AST
 {
-    class FuncDeclListNode : Node
+    class FuncDeclListNode : Node, IDeclarationList
     {
         public FuncDeclListNode(ParserRuleContext context) : base(context) { }
+
+        public string[] DeclaredNames
+        {
+            get
+            {
+                return (from f in Children.Cast<FuncDeclNode>()
+                        select f.Name).ToArray();
+            }
+        }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
@@ -16,13 +26,6 @@ namespace Tiger.AST
 
             foreach (var func in functions)
             {
-                if (functions.Count(f => f.Name == func.Name) > 1)
-                    errors.Add(new SemanticError
-                    {
-                        Message = string.Format("Function '{0}' is declared in a functions declaration sequence several times", func.Name),
-                        Node = this
-                    });
-
                 scope.DefineFunction(func.Name, func.FunctionType,
                     func.Arguments != null ? func.Arguments.Types : new string[] { });
             }

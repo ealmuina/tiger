@@ -42,7 +42,7 @@ namespace Tiger.AST
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
 
-            if (new string[] { Types.Int, Types.String}.Contains(Name))
+            if (new string[] { Types.Int, Types.String }.Contains(Name))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Builtin type '{0}' cannot be redefined", Name),
@@ -63,7 +63,7 @@ namespace Tiger.AST
         {
             if (Children[1] is RecordTypeNode)
             {
-                TypeBuilder typeBuilder = generator.Module.DefineType(Name, TypeAttributes.Public);
+                TypeBuilder typeBuilder = generator.Module.DefineType(Name + "_" + generator.TypeId++, TypeAttributes.Public);
                 typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
                 generator.Types[Name] = typeBuilder;
             }

@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 
 namespace Tiger.AST
 {
-    class VarDeclNode : DeclarationNode
+    class VarDeclNode : DeclarationNode, IDeclarationList
     {
         public VarDeclNode(ParserRuleContext context, bool readOnly = false) : base(context)
         {
@@ -18,6 +18,11 @@ namespace Tiger.AST
         public VarDeclNode(int line, int column, bool readOnly = false) : base(line, column)
         {
             IsReadonly = readOnly;
+        }
+
+        public string[] DeclaredNames
+        {
+            get { return new[] { Name }; }
         }
 
         public bool IsReadonly { get; protected set; }
