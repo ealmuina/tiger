@@ -54,10 +54,12 @@ namespace Tiger.AST
 
         public override void Generate(CodeGenerator generator)
         {
-            ILGenerator il = generator.Generator;
-            LocalBuilder record = il.DeclareLocal(generator.Types[RecordInfo.Name]);
+            string type = RecordInfo.Name;
 
-            il.Emit(OpCodes.Newobj, generator.Types[Type].GetConstructor(new Type[] { }));
+            ILGenerator il = generator.Generator;
+            LocalBuilder record = il.DeclareLocal(generator.Types[type]);
+
+            il.Emit(OpCodes.Newobj, generator.Types[type].GetConstructor(new Type[] { }));
             il.Emit(OpCodes.Stloc, record);
             il.Emit(OpCodes.Ldloc, record);
 
@@ -66,7 +68,7 @@ namespace Tiger.AST
                 var field = (FieldNode)Children[i];
                 il.Emit(OpCodes.Dup);
                 field.Generate(generator);
-                il.Emit(OpCodes.Stfld, generator.Fields[Type][field.Name]);
+                il.Emit(OpCodes.Stfld, generator.Fields[type][field.Name]);
             }
             il.Emit(OpCodes.Pop);
             il.Emit(OpCodes.Ldloc, record);
