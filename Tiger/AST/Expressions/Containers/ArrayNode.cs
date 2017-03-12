@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using Tiger.CodeGeneration;
@@ -69,11 +70,13 @@ namespace Tiger.AST
             LocalBuilder size = il.DeclareLocal(generator.Types[Types.Int]);
             LocalBuilder array = il.DeclareLocal(generator.Types[Type]);
 
+            Type type = generator.Types[Type].GetElementType();
+
             SizeExpr.Generate(generator);
             il.Emit(OpCodes.Stloc, size);
 
             il.Emit(OpCodes.Ldloc, size);
-            il.Emit(OpCodes.Newarr, generator.Types[InitExpr.Type]);
+            il.Emit(OpCodes.Newarr, type);
             il.Emit(OpCodes.Stloc, array);
 
             il.Emit(OpCodes.Ldc_I4_0);
@@ -87,7 +90,7 @@ namespace Tiger.AST
             il.Emit(OpCodes.Ldloc, array);
             il.Emit(OpCodes.Ldloc, index);
             InitExpr.Generate(generator);
-            il.Emit(OpCodes.Stelem, generator.Types[InitExpr.Type]);
+            il.Emit(OpCodes.Stelem, type);
 
             il.Emit(OpCodes.Ldloc, index);
             il.Emit(OpCodes.Ldc_I4_1);

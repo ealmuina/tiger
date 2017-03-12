@@ -25,6 +25,8 @@ namespace Tiger.AST
             foreach (var expr in Children.Where(e => e != null))
                 expr.CheckSemantics(scope, errors);
 
+            if (errors.Count > 0) return;
+
             if (Children[0].Type != Types.Int)
                 errors.Add(new SemanticError
                 {

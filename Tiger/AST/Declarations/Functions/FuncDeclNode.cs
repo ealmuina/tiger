@@ -55,7 +55,7 @@ namespace Tiger.AST
             if (scope.Stdl.Where(n => n.Name == Name).Count() > 0)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Standard library function {0} can not be redefined", Name),
+                    Message = string.Format("Standard library function '{0}' cannot be redefined", Name),
                     Node = this
                 });
 

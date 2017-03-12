@@ -1,4 +1,7 @@
 let
-	function pepe():string = (print = 3; printline(pepe()))
+    var s := "Tiger allows string constants to \\ span multiple lines by ending and \
+	\starting each line with a backslash."
 in
+    print(s);
+    print("\n")
 end

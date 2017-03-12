@@ -161,7 +161,7 @@ namespace Tiger.Semantics
         {
             var info1 = GetItem<TypeInfo>(t1);
             var info2 = GetItem<TypeInfo>(t2);
-            return info1 == info2;
+            return info1 == info2 || info1.Name == Semantics.Types.Nil || info2.Name == Semantics.Types.Nil;
         }
 
         public bool BadAlias(string name)

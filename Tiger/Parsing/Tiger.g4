@@ -72,7 +72,7 @@ fragment ASCII		:	'0' DIGIT DIGIT
 					|	'1' ([0-1] DIGIT | '2' [0-7])
 					;
 
-fragment ESCAPE_SEQ	:	'\\' ('n' | 'r' | 't' | '"' | EMPTY+ '\\' | ASCII)		; 
+fragment ESCAPE_SEQ	:	'\\' ('n' | 'r' | 't' | '"' | EMPTY* '\\' | ASCII)		; 
 fragment CHAR		:	([ -!] | [#-[] | [\]-~]) | ESCAPE_SEQ					;
 fragment EMPTY		:	[ \t\n\r]												;
 

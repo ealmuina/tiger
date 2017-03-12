@@ -38,7 +38,7 @@ namespace Tiger.AST
                     Node = Expression
                 });
 
-            else if (LValue.Type != Expression.Type && Expression.Type != Types.Nil)
+            else if (!scope.SameType(LValue.Type, Expression.Type))
                 errors.Add(new SemanticError
                 {
                     Message = string.Format("Incompatible types for assignation"),
