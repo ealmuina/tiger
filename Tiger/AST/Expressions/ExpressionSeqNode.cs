@@ -42,7 +42,7 @@ namespace Tiger.AST
                 if (errorsCount == errors.Count && !scope.Types.ContainsKey(expr.Type))
                     errors.Add(new SemanticError
                     {
-                        Message = string.Format("Type '{0}' returned by the expression isn't visible in its context", expr.Type),
+                        Message = $"Type '{expr.Type}' returned by the expression isn't visible in its context",
                         Node = expr
                     });
             }

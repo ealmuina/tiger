@@ -33,14 +33,14 @@ namespace Tiger.AST
             {
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Undefined variable {0}", Name),
+                    Message = $"Undefined variable {Name}",
                     Node = this
                 });
 
                 if (scope.IsDefined(Name))
                     errors.Add(new SemanticError
                     {
-                        Message = string.Format("Function '{0}' used as variable", Name),
+                        Message = $"Function '{Name}' used as variable",
                         Node = this
                     });
             }
@@ -51,7 +51,7 @@ namespace Tiger.AST
                 if (info.IsReadOnly && !ByValue)
                     errors.Add(new SemanticError
                     {
-                        Message = string.Format("Invalid use of assignment to a readonly variable"),
+                        Message = $"Invalid use of assignment to a readonly variable",
                         Node = this
                     });
 

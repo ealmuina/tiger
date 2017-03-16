@@ -34,14 +34,14 @@ namespace Tiger.AST
             if (Expression.Type == Types.Void)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Expression being assigned does not return a value"),
+                    Message = "Expression being assigned does not return a value",
                     Node = Expression
                 });
 
             else if (!scope.SameType(LValue.Type, Expression.Type))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Incompatible types for assignation"),
+                    Message = "Incompatible types for assignation",
                     Node = this
                 });
         }

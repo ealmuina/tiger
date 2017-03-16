@@ -45,14 +45,14 @@ namespace Tiger.AST
             if (new string[] { Types.Int, Types.String }.Contains(Name))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Builtin type '{0}' cannot be redefined", Name),
+                    Message = $"Builtin type '{Name}' cannot be redefined",
                     Node = this
                 });
 
             if ((IsAlias || Children[1] is ArrayTypeNode) && scope.BadAlias(Name))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Type '{0}' is part of an invalid alias cycle", Name),
+                    Message = $"Type '{Name}' is part of an invalid alias cycle",
                     Node = this
                 });
             else

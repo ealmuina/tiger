@@ -25,7 +25,7 @@ namespace Tiger.AST
             if (Names.GroupBy(n => n).Count() != Names.Length)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("At least two fields have the same name"),
+                    Message = $"At least two fields have the same name",
                     Node = this
                 });
 
@@ -33,7 +33,7 @@ namespace Tiger.AST
                 if (!scope.IsDefined<Semantics.TypeInfo>(type))
                     errors.Add(new SemanticError
                     {
-                        Message = string.Format("Undefined field type '{0}'", type),
+                        Message = $"Undefined field type '{type}'",
                         Node = this
                     });
         }

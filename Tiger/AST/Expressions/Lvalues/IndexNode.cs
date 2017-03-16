@@ -35,7 +35,7 @@ namespace Tiger.AST
             if (!(info is ArrayInfo))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Indexing operation requires Array type"),
+                    Message = $"Indexing operation requires Array type",
                     Node = this
                 });
             else
@@ -44,8 +44,7 @@ namespace Tiger.AST
             if (!scope.SameType(Expression.Type, Types.Int))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Invalid array indexing expression of type '{0}', it should be '{1}'",
-                                            Expression.Type, Types.Int),
+                    Message = $"Invalid array indexing expression of type '{Expression.Type}', it should be '{Types.Int}'",
                     Node = this
                 });
         }

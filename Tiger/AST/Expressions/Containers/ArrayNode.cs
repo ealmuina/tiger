@@ -36,7 +36,7 @@ namespace Tiger.AST
             if (!scope.IsDefined<TypeInfo>(Type) || !(scope.GetItem<TypeInfo>(Type) is ArrayInfo))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Undefined array type '{0}'", Type),
+                    Message = $"Undefined array type '{Type}'",
                     Node = this
                 });
             else
@@ -45,8 +45,7 @@ namespace Tiger.AST
                 if (!scope.SameType(InitExpr.Type, info.ElementsType))
                     errors.Add(new SemanticError
                     {
-                        Message = string.Format("Array elements initial value type is '{0}' which isn't an alias for expected '{1}'",
-                                                InitExpr.Type, info.ElementsType),
+                        Message = $"Array elements initial value type is '{InitExpr.Type}' which isn't an alias for expected '{info.ElementsType}'",
                         Node = this
                     });
             }
@@ -54,7 +53,7 @@ namespace Tiger.AST
             if (!scope.SameType(SizeExpr.Type, Types.Int))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Array size expression type is '{0}' which isn't an alias for 'Int'", SizeExpr.Type),
+                    Message = $"Array size expression type is '{SizeExpr.Type}' which isn't an alias for 'Int'",
                     Node = this
                 });
         }

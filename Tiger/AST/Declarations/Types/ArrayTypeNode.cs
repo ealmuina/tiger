@@ -19,7 +19,7 @@ namespace Tiger.AST
             if (!scope.Types.ContainsKey(Type))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Unknown type '{0}' on array declaration", Type),
+                    Message = $"Unknown type '{Type}' on array declaration",
                     Node = this
                 });
 

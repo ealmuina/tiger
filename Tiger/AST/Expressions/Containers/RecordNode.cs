@@ -26,7 +26,7 @@ namespace Tiger.AST
             if (!scope.IsDefined<TypeInfo>(Type) || !(scope.GetItem<TypeInfo>(Type) is RecordInfo))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Cannot instantiate the undefined record type '{0}'", Type),
+                    Message = $"Cannot instantiate the undefined record type '{Type}'",
                     Node = this
                 });
             else
@@ -37,7 +37,7 @@ namespace Tiger.AST
                 if (Children.Count - 1 != RecordInfo.FieldNames.Length)
                     errors.Add(new SemanticError
                     {
-                        Message = string.Format("Invalid number of fields in record literal"),
+                        Message = $"Invalid number of fields in record literal",
                         Node = this
                     });
                 else
@@ -45,8 +45,8 @@ namespace Tiger.AST
                         if (Children[i].Type != Types.Nil && !scope.SameType(Children[i].Type, RecordInfo.FieldTypes[i - 1]))
                             errors.Add(new SemanticError
                             {
-                                Message = string.Format("Expression of type '{0}' cannot be assigned to field '{1}' with type '{2}'",
-                                                        Children[i].Type, RecordInfo.FieldNames[i - 1], RecordInfo.FieldTypes[i - 1]),
+                                Message = $"Expression of type '{Children[i].Type}' cannot be assigned to field " +
+                                          $"'{RecordInfo.FieldNames[i - 1]}' with type '{RecordInfo.FieldTypes[i - 1]}'",
                                 Node = Children[i]
                             });
             }

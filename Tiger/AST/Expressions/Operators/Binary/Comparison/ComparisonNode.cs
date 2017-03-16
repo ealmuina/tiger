@@ -45,21 +45,21 @@ namespace Tiger.AST
             if (!scope.SameType(RightOperand.Type, LeftOperand.Type) && LeftOperand.Type != Types.Nil && RightOperand.Type != Types.Nil)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Types of left and right operands of the binary relational operator do not match"),
+                    Message = $"Types of left and right operands of the binary relational operator do not match",
                     Node = this
                 });
 
             if (LeftOperand.Type == Types.Nil && RightOperand.Type == Types.Nil)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Types of left and right operands of the binary relational operator can't be both 'nil'"),
+                    Message = $"Types of left and right operands of the binary relational operator can't be both 'nil'",
                     Node = this
                 });
 
             if (LeftOperand is ComparisonNode || RightOperand is ComparisonNode)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Comparison operators do not associate"),
+                    Message = $"Comparison operators do not associate",
                     Node = this
                 });
         }

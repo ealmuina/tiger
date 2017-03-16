@@ -19,7 +19,7 @@ namespace Tiger.AST
             if (errors.Count == 0 && !scope.Types.ContainsKey(Expression.Type))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Type '{0}' returned by the expression isn't visible in its context", Expression.Type),
+                    Message = $"Type '{Expression.Type}' returned by the expression isn't visible in its context",
                     Node = Expression
                 });
         }

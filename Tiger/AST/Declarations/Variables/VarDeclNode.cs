@@ -46,35 +46,35 @@ namespace Tiger.AST
             if (scope.Stdl.Where(n => n.Name == Name).Count() > 0)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Standard library function '{0}' cannot be redefined", Name),
+                    Message = $"Standard library function '{Name}' cannot be redefined",
                     Node = this
                 });
 
             if (Children[2].Type == Types.Void)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Expression assigned to variable does not return a value"),
+                    Message = $"Expression assigned to variable does not return a value",
                     Node = this
                 });
 
             if (Children[1] == null && Children[2].Type == Types.Nil)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Variable type cannot be infered from an expression which returns nil"),
+                    Message = $"Variable type cannot be infered from an expression which returns nil",
                     Node = this
                 });
 
             if (Children[1] != null && !scope.Types.ContainsKey(Type))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Cannot declare variable of undefined type '{0}'", Type),
+                    Message = $"Cannot declare variable of undefined type '{Type}'",
                     Node = Children[1]
                 });
 
             else if (Children[1] != null && Children[2].Type != Types.Nil && !scope.SameType((Children[1] as IdNode).Name, Children[2].Type))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Expression assigned to variable does not match with its type"),
+                    Message = $"Expression assigned to variable does not match with its type",
                     Node = this
                 });
 

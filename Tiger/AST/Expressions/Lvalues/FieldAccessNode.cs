@@ -37,7 +37,7 @@ namespace Tiger.AST
             if (!(info is RecordInfo))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Type '{0}' isn't a record type", info.Name),
+                    Message = $"Type '{info.Name}' isn't a record type",
                     Node = Children[1]
                 });
 
@@ -46,7 +46,7 @@ namespace Tiger.AST
             if (!RecordInfo.FieldNames.Contains(FieldName))
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Type '{0}' doesn't have a field named '{1}'", RecordInfo.Name, FieldName),
+                    Message = $"Type '{RecordInfo.Name}' doesn't have a field named '{FieldName}'",
                     Node = Children[1]
                 });
             else

@@ -32,21 +32,21 @@ namespace Tiger.AST
             if ((Children[0] as VarDeclNode).Type != Types.Int)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("The return type of the expression for the lower bound of the 'for' loop is not integer"),
+                    Message = $"The return type of the expression for the lower bound of the 'for' loop is not integer",
                     Node = Children[0]
                 });
 
             if (Children[1].Type != Types.Int)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("The expression for the upper bound of the 'for' loop does not return a value"),
+                    Message = $"The expression for the upper bound of the 'for' loop does not return a value",
                     Node = Children[1]
                 });
 
             if (Children[2].Type != Types.Void)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("The body expression of the 'for' loop may not produce a result"),
+                    Message = $"The body expression of the 'for' loop may not produce a result",
                     Node = Children[2]
                 });
         }

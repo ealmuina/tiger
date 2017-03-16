@@ -55,7 +55,7 @@ namespace Tiger.AST
             if (scope.Stdl.Where(n => n.Name == Name).Count() > 0)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Standard library function '{0}' cannot be redefined", Name),
+                    Message = $"Standard library function '{Name}' cannot be redefined",
                     Node = this
                 });
 
@@ -71,7 +71,7 @@ namespace Tiger.AST
                     if (names[i] == Name)
                         errors.Add(new SemanticError
                         {
-                            Message = string.Format("There is an argument named as the function"),
+                            Message = $"There is an argument named as the function",
                             Node = this
                         });
 
@@ -85,8 +85,7 @@ namespace Tiger.AST
             if (Expression.Type != Types.Nil && FunctionType != Expression.Type)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("The expression assigned to function '{0}' returns '{1}' and doesn't match with the expected '{2}'",
-                                            Name, Expression.Type, FunctionType),
+                    Message = $"The expression assigned to function '{Name}' returns '{Expression.Type}' and doesn't match with the expected '{FunctionType}'",
                     Node = this
                 });
         }

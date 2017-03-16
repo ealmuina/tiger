@@ -30,21 +30,21 @@ namespace Tiger.AST
             if (Children[0].Type != Types.Int)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("The condition of the 'if-then-else' statement does not return an integer value"),
+                    Message = $"The condition of the 'if-then-else' statement does not return an integer value",
                     Node = Children[0]
                 });
 
             if (Children[2] == null && Children[1].Type != Types.Void) //if-then
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("The 'then' expression of the 'if-then' statement should not return a value"),
+                    Message = $"The 'then' expression of the 'if-then' statement should not return a value",
                     Node = Children[1]
                 });
 
             if (Children[2] != null && Children[1].Type != Children[2].Type) //if-then-else
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("The return types of the expressions of the 'if-then-else' statement are not the same"),
+                    Message = $"The return types of the expressions of the 'if-then-else' statement are not the same",
                     Node = this
                 });
         }

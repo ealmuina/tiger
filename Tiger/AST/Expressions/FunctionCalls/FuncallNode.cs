@@ -40,7 +40,7 @@ namespace Tiger.AST
             {
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Function '{0}' does not exist", FunctionName),
+                    Message = $"Function '{FunctionName}' does not exist",
                     Node = this
                 });
                 return;
@@ -51,7 +51,7 @@ namespace Tiger.AST
             {
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Variable or constant '{0}' is being used as a function", FunctionName),
+                    Message = $"Variable or constant '{FunctionName}' is being used as a function",
                     Node = this
                 });
                 return;
@@ -64,7 +64,7 @@ namespace Tiger.AST
             {
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Function '{0}' takes {1} arguments, got {2} instead", FunctionName, parameterCount, argumentCount),
+                    Message = $"Function '{FunctionName}' takes {parameterCount} arguments, got {argumentCount} instead",
                     Node = this
                 });
                 return;
@@ -79,7 +79,7 @@ namespace Tiger.AST
                 if (exprT != Types.Nil && !scope.SameType(exprT, expectedT))
                     errors.Add(new SemanticError
                     {
-                        Message = string.Format("Called function {0} with argument type '{1}' when expecting '{2}'", FunctionName, exprT, expectedT),
+                        Message = $"Called function {FunctionName} with argument type '{exprT}' when expecting '{expectedT}'",
                         Node = arguments[i]
                     });
             }

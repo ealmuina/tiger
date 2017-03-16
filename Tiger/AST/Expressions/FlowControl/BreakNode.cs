@@ -15,7 +15,7 @@ namespace Tiger.AST
             if (!scope.InsideLoop)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("break used out of a while or for statement"),
+                    Message = $"'break' used out of a 'while' or 'for' statement",
                     Node = this
                 });
         }

@@ -35,14 +35,14 @@ namespace Tiger.AST
             if (Condition.Type != Types.Int)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("Invalid type of condition of the while statement"),
+                    Message = $"Invalid type of condition of the while statement",
                     Node = Condition
                 });
 
             if (Expression.Type != Types.Void)
                 errors.Add(new SemanticError
                 {
-                    Message = string.Format("'while' used with an expression with return value"),
+                    Message = $"'while' used with an expression with return value",
                     Node = Expression
                 });
 
