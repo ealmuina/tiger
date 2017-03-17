@@ -9,16 +9,12 @@ namespace Tiger.AST
 {
     class TypeDeclListNode : Node, IDeclarationList
     {
+        public TypeDeclListNode(ParserRuleContext context) : base(context) { }
+
         public string[] DeclaredNames
         {
-            get
-            {
-                return (from f in Children.Cast<TypeDeclNode>()
-                        select f.Name).ToArray();
-            }
+            get => (from f in Children.Cast<TypeDeclNode>() select f.Name).ToArray();
         }
-
-        public TypeDeclListNode(ParserRuleContext context) : base(context) { }
 
         private void FixArrayType(TypeDeclNode type, CodeGenerator generator)
         {

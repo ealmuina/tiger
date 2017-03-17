@@ -6,9 +6,6 @@ namespace Tiger.AST
     {
         public UnaryNode(ParserRuleContext context) : base(context) { }
 
-        public ExpressionNode Operand
-        {
-            get { return Children[0] as ExpressionNode; }
-        }
+        public ExpressionNode Operand => Children[0] as ExpressionNode;
     }
 }

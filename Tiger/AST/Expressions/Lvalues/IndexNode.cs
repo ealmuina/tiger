@@ -13,14 +13,11 @@ namespace Tiger.AST
 
         public IndexNode(ParserRuleContext context) : base(context) { }
 
-        public override string Type
-        {
-            get { return type; }
-        }
+        public override string Type => type;
 
         public ExpressionNode Expression
         {
-            get { return Children[1] as ExpressionNode; }
+            get => Children[1] as ExpressionNode;
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
@@ -32,14 +29,14 @@ namespace Tiger.AST
 
             var info = scope.GetItem<TypeInfo>(Children[0].Type);
 
-            if (!(info is ArrayInfo))
+            if (!(info is ArrayInfo arrayInfo))
                 errors.Add(new SemanticError
                 {
                     Message = $"Indexing operation requires Array type",
                     Node = this
                 });
             else
-                type = (info as ArrayInfo).ElementsType;
+                type = arrayInfo.ElementsType;
 
             if (!scope.SameType(Expression.Type, Types.Int))
                 errors.Add(new SemanticError

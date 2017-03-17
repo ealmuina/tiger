@@ -13,7 +13,7 @@ namespace Tiger.AST
 
         public bool IsAlias
         {
-            get { return Children[1] is IdNode; }
+            get => Children[1] is IdNode;
         }
 
         public Semantics.TypeInfo TypeInfo { get; protected set; }
@@ -25,9 +25,8 @@ namespace Tiger.AST
                 var alias = (IdNode)Children[1];
                 scope.DefineAliasType(Name, alias.Name);
             }
-            else if (Children[1] is RecordTypeNode)
+            else if (Children[1] is RecordTypeNode record)
             {
-                var record = (RecordTypeNode)Children[1];
                 scope.DefineRecordType(Name, record.Names, record.Types);
             }
             else //Children[1] is ArrayTypeNode
@@ -71,13 +70,13 @@ namespace Tiger.AST
 
         public override void Generate(CodeGenerator generator)
         {
-            if (Children[1] is RecordTypeNode)
+            if (Children[1] is RecordTypeNode record)
             {
                 var typeBuilder = (TypeBuilder)generator.Types[Name];
 
                 var clone = new CodeGenerator(generator);
                 clone.Type = typeBuilder;
-                Dictionary<string, FieldBuilder> fields = (Children[1] as RecordTypeNode).Define(clone);
+                Dictionary<string, FieldBuilder> fields = record.Define(clone);
                 generator.Fields[Name] = fields;
 
                 generator.Types[Name] = typeBuilder.CreateType();

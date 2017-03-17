@@ -80,8 +80,7 @@ namespace Tiger.Semantics
             }
             else
             {
-                ItemInfo item = null;
-                if (symbols.TryGetValue(name, out item))
+                if (symbols.TryGetValue(name, out ItemInfo item))
                     return item is TInfo;
                 return false;
             }
@@ -105,8 +104,7 @@ namespace Tiger.Semantics
         {
             if (typeof(TInfo) == typeof(TypeInfo))
             {
-                TypeInfo item = null;
-                if (Types.TryGetValue(name, out item))
+                if (Types.TryGetValue(name, out TypeInfo item))
                 {
                     while (item is AliasInfo)
                         item = Types[(item as AliasInfo).Aliased];
@@ -115,8 +113,7 @@ namespace Tiger.Semantics
             }
             else
             {
-                ItemInfo item = null;
-                if (symbols.TryGetValue(name, out item) && item is TInfo)
+                if (symbols.TryGetValue(name, out ItemInfo item) && item is TInfo)
                     return (TInfo)item;
             }
             throw new Exception(string.Format("Symbol {0} is not defined", name));
@@ -170,8 +167,8 @@ namespace Tiger.Semantics
             var visited = new HashSet<TypeInfo>();
             while (item is AliasInfo || item is ArrayInfo)
             {
-                string next = (item is AliasInfo)?
-                    (item as AliasInfo).Aliased:
+                string next = (item is AliasInfo) ?
+                    (item as AliasInfo).Aliased :
                     (item as ArrayInfo).ElementsType;
 
                 if (!Types.ContainsKey(next) || visited.Contains(item))

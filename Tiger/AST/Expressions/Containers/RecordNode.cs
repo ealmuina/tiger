@@ -13,7 +13,7 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get { return (Children[0] as IdNode).Name; }
+            get => (Children[0] as IdNode).Name;
         }
 
         public RecordInfo RecordInfo { get; protected set; }
@@ -23,7 +23,7 @@ namespace Tiger.AST
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
 
-            if (!scope.IsDefined<TypeInfo>(Type) || !(scope.GetItem<TypeInfo>(Type) is RecordInfo))
+            if (!scope.IsDefined<TypeInfo>(Type) || !(scope.GetItem<TypeInfo>(Type) is RecordInfo info))
                 errors.Add(new SemanticError
                 {
                     Message = $"Cannot instantiate the undefined record type '{Type}'",
@@ -31,10 +31,9 @@ namespace Tiger.AST
                 });
             else
             {
-                var info = scope.GetItem<TypeInfo>(Type);
-                RecordInfo = (RecordInfo)info;
+                RecordInfo = info;
 
-                if (Children.Count - 1 != RecordInfo.FieldNames.Length)
+                if (Children.Count - 1 != info.FieldNames.Length)
                     errors.Add(new SemanticError
                     {
                         Message = $"Invalid number of fields in record literal",
@@ -42,11 +41,11 @@ namespace Tiger.AST
                     });
                 else
                     for (int i = 1; i < Children.Count; i++)
-                        if (Children[i].Type != Types.Nil && !scope.SameType(Children[i].Type, RecordInfo.FieldTypes[i - 1]))
+                        if (Children[i].Type != Types.Nil && !scope.SameType(Children[i].Type, info.FieldTypes[i - 1]))
                             errors.Add(new SemanticError
                             {
                                 Message = $"Expression of type '{Children[i].Type}' cannot be assigned to field " +
-                                          $"'{RecordInfo.FieldNames[i - 1]}' with type '{RecordInfo.FieldTypes[i - 1]}'",
+                                          $"'{info.FieldNames[i - 1]}' with type '{info.FieldTypes[i - 1]}'",
                                 Node = Children[i]
                             });
             }

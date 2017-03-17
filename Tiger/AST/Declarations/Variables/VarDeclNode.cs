@@ -22,18 +22,14 @@ namespace Tiger.AST
 
         public string[] DeclaredNames
         {
-            get { return new[] { Name }; }
+            get => new[] { Name };
         }
 
-        public bool IsReadonly { get; protected set; }
+        public bool IsReadonly { get; }
 
         public override string Type
         {
-            get
-            {
-                return Children[1] != null ?
-                    (Children[1] as IdNode).Name : Children[2].Type;
-            }
+            get => Children[1] != null ? (Children[1] as IdNode).Name : Children[2].Type;
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)

@@ -11,7 +11,7 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get { return (Children[0] as IdNode).Name; }
+            get => (Children[0] as IdNode).Name;
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)

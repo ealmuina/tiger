@@ -11,10 +11,7 @@ namespace Tiger.AST
     {
         public ComparisonNode(ParserRuleContext context) : base(context) { }
 
-        public override string Type
-        {
-            get { return Types.Int; }
-        }
+        public override string Type => Types.Int;
 
         protected abstract bool SupportType(string type);
 
@@ -70,7 +67,8 @@ namespace Tiger.AST
             RightOperand.Generate(generator);
 
             ILGenerator il = generator.Generator;          
-
+            
+            //TODO Chequear si funciona con alias
             if (LeftOperand.Type == Types.Int)
                 CompareInt(generator.Generator);
 

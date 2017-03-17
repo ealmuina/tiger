@@ -19,13 +19,13 @@ namespace Tiger.AST
             Column = column + 1;
         }
 
-        public int Line { get; protected set; }
+        public int Line { get; }
 
-        public int Column { get; protected set; }
+        public int Column { get; }
 
-        public virtual string Type { get { return Types.Void; } }
+        public virtual string Type => Types.Void;
 
-        public List<Node> Children { get; protected set; } = new List<Node>();
+        public List<Node> Children { get; } = new List<Node>();
 
         public abstract void CheckSemantics(Scope scope, List<SemanticError> errors);
 

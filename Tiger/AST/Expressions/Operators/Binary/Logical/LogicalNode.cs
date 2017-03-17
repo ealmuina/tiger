@@ -10,10 +10,7 @@ namespace Tiger.AST
     {
         public LogicalNode(ParserRuleContext context) : base(context) { }
 
-        public override string Type
-        {
-            get { return Types.Int; }
-        }
+        public override string Type => Types.Int;
 
         public abstract OpCode OperatorOpCode { get; }
 
@@ -24,11 +21,11 @@ namespace Tiger.AST
             LeftOperand.CheckSemantics(scope, errors);
             RightOperand.CheckSemantics(scope, errors);
 
-            if (LeftOperand.Type != Type)
+            if (!scope.SameType(LeftOperand.Type, Type))
                 errors.Add(SemanticError.InvalidUseOfOperator(
                     "binary logical", LeftOperand.Type == Types.Nil ? "valued" : "integer", "left", LeftOperand));
 
-            if (RightOperand.Type != Type)
+            if (!scope.SameType(RightOperand.Type, Type))
                 errors.Add(SemanticError.InvalidUseOfOperator(
                     "binary logical", RightOperand.Type == Types.Nil ? "valued" : "integer", "right", RightOperand));
         }

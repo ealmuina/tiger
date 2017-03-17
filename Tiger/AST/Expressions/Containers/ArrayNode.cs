@@ -13,17 +13,17 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get { return (Children[0] as IdNode).Name; }
+            get => (Children[0] as IdNode).Name;
         }
 
         public ExpressionNode SizeExpr
         {
-            get { return Children[1] as ExpressionNode; }
+            get => Children[1] as ExpressionNode;
         }
 
         public ExpressionNode InitExpr
         {
-            get { return Children[2] as ExpressionNode; }
+            get => Children[2] as ExpressionNode;
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
@@ -33,7 +33,7 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            if (!scope.IsDefined<TypeInfo>(Type) || !(scope.GetItem<TypeInfo>(Type) is ArrayInfo))
+            if (!scope.IsDefined<TypeInfo>(Type) || !(scope.GetItem<TypeInfo>(Type) is ArrayInfo info))
                 errors.Add(new SemanticError
                 {
                     Message = $"Undefined array type '{Type}'",
@@ -41,7 +41,6 @@ namespace Tiger.AST
                 });
             else
             {
-                var info = (ArrayInfo)scope.GetItem<TypeInfo>(Type);
                 if (!scope.SameType(InitExpr.Type, info.ElementsType))
                     errors.Add(new SemanticError
                     {

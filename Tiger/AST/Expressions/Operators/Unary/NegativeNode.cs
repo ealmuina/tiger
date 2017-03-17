@@ -10,10 +10,7 @@ namespace Tiger.AST
     {
         public NegativeNode(ParserRuleContext context) : base(context) { }
 
-        public override string Type
-        {
-            get { return Types.Int; }
-        }
+        public override string Type => Types.Int;
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

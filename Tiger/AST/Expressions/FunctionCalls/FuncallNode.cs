@@ -13,19 +13,19 @@ namespace Tiger.AST
 
         public string FunctionName
         {
-            get { return (Children[0] as IdNode).Name; }
+            get => (Children[0] as IdNode).Name;
         }
 
         public IEnumerable<ExpressionNode> Arguments
         {
-            get { return Children.Skip(1).Cast<ExpressionNode>(); }
+            get => Children.Skip(1).Cast<ExpressionNode>();
         }
 
         public FunctionInfo SymbolInfo { get; protected set; }
 
         public override string Type
         {
-            get { return SymbolInfo != null ? SymbolInfo.Type : Types.Void; }
+            get => SymbolInfo != null ? SymbolInfo.Type : Types.Void;
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
@@ -47,7 +47,7 @@ namespace Tiger.AST
             }
 
             ItemInfo info = scope[FunctionName];
-            if (!(info is FunctionInfo))
+            if (!(info is FunctionInfo fInfo))
             {
                 errors.Add(new SemanticError
                 {
@@ -57,7 +57,6 @@ namespace Tiger.AST
                 return;
             }
 
-            var fInfo = (FunctionInfo)info;
             int parameterCount = fInfo.Parameters.Length;
             int argumentCount = Arguments.Count();
             if (parameterCount != argumentCount)

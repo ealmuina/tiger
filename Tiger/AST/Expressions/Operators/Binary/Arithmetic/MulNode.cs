@@ -7,14 +7,8 @@ namespace Tiger.AST
     {
         public MulNode(ParserRuleContext context) : base(context) { }
 
-        public override string OperatorName
-        {
-            get { return "multiply"; }
-        }
+        public override string OperatorName => "multiply";
 
-        public override OpCode OperatorOpCode
-        {
-            get { return OpCodes.Mul; }
-        }
+        public override OpCode OperatorOpCode => OpCodes.Mul;
     }
 }

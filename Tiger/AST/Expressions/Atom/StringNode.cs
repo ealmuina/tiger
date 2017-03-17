@@ -57,16 +57,10 @@ namespace Tiger.AST
             }
         }
 
-        public string Text { get; protected set; }
+        public string Text { get; }
 
-        public override string Type
-        {
-            get { return Types.String; }
-        }
+        public override string Type => Types.String;
 
-        public override void Generate(CodeGenerator generator)
-        {
-            generator.Generator.Emit(OpCodes.Ldstr, Text);
-        }
+        public override void Generate(CodeGenerator generator) => generator.Generator.Emit(OpCodes.Ldstr, Text);
     }
 }

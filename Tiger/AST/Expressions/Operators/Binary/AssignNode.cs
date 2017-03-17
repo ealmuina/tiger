@@ -14,12 +14,12 @@ namespace Tiger.AST
 
         public LValueNode LValue
         {
-            get { return Children[0] as LValueNode; }
+            get => Children[0] as LValueNode;
         }
 
         public ExpressionNode Expression
         {
-            get { return Children[1] as ExpressionNode; }
+            get => Children[1] as ExpressionNode;
         }
 
         public VariableInfo SymbolInfo { get; protected set; }

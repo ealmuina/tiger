@@ -7,14 +7,8 @@ namespace Tiger.AST
     {
         public PlusNode(ParserRuleContext context) : base(context) { }
 
-        public override string OperatorName
-        {
-            get { return "plus"; }
-        }
+        public override string OperatorName => "plus";
 
-        public override OpCode OperatorOpCode
-        {
-            get { return OpCodes.Add; }
-        }
+        public override OpCode OperatorOpCode => OpCodes.Add;
     }
 }

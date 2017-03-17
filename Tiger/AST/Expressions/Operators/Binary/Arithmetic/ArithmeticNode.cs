@@ -14,10 +14,7 @@ namespace Tiger.AST
 
         public abstract string OperatorName { get; }
 
-        public override string Type
-        {
-            get { return Types.Int; }
-        }
+        public override string Type => Types.Int;
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

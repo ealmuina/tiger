@@ -16,9 +16,9 @@ namespace Tiger.AST
             Types = types;
         }
 
-        public string[] Names { get; protected set; }
+        public string[] Names { get; }
 
-        public string[] Types { get; protected set; }
+        public string[] Types { get; }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

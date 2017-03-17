@@ -13,11 +13,7 @@ namespace Tiger.AST
 
         public string[] DeclaredNames
         {
-            get
-            {
-                return (from f in Children.Cast<FuncDeclNode>()
-                        select f.Name).ToArray();
-            }
+            get => (from f in Children.Cast<FuncDeclNode>() select f.Name).ToArray();
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)

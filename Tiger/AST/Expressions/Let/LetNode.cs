@@ -14,11 +14,7 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get
-            {
-                return Children.Count > 1 ?
-                    Children.Last().Type : Types.Void;
-            }
+            get => Children.Last().Type;
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)

@@ -7,14 +7,8 @@ namespace Tiger.AST
     {
         public OrNode(ParserRuleContext context) : base(context) { }
 
-        public override OpCode OperatorOpCode
-        {
-            get { return OpCodes.Or; }
-        }
+        public override OpCode OperatorOpCode => OpCodes.Or;
 
-        public override OpCode ShortCircuitOpCode
-        {
-            get { return OpCodes.Ldc_I4_1; }
-        }
+        public override OpCode ShortCircuitOpCode => OpCodes.Ldc_I4_1;
     }
 }

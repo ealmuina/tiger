@@ -12,13 +12,10 @@ namespace Tiger.AST
 
         public string Cursor
         {
-            get { return (Children[0] as VarDeclNode).Name; }
+            get => (Children[0] as VarDeclNode).Name;
         }
 
-        public override string Type
-        {
-            get { return Types.Void; }
-        }
+        public override string Type => Types.Void;
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

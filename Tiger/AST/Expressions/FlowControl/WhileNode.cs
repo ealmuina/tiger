@@ -10,20 +10,11 @@ namespace Tiger.AST
     {
         public WhileNode(ParserRuleContext context) : base(context) { }
 
-        public ExpressionNode Condition
-        {
-            get { return Children[0] as ExpressionNode; }
-        }
+        public ExpressionNode Condition => Children[0] as ExpressionNode;
 
-        public ExpressionNode Expression
-        {
-            get { return Children[1] as ExpressionNode; }
-        }
+        public ExpressionNode Expression => Children[1] as ExpressionNode;
 
-        public override string Type
-        {
-            get { return Types.Void; }
-        }
+        public override string Type => Types.Void;
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

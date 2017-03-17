@@ -12,16 +12,10 @@ namespace Tiger.AST
             Value = int.Parse(text);
         }
 
-        public override string Type
-        {
-            get { return Types.Int; }
-        }
+        public override string Type => Types.Int;
 
-        public int Value { get; protected set; }
+        public int Value { get; }
 
-        public override void Generate(CodeGenerator generator)
-        {
-            generator.Generator.Emit(OpCodes.Ldc_I4, Value);
-        }
+        public override void Generate(CodeGenerator generator) => generator.Generator.Emit(OpCodes.Ldc_I4, Value);
     }
 }

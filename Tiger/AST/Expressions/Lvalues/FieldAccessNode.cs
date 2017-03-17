@@ -14,14 +14,11 @@ namespace Tiger.AST
 
         public FieldAccessNode(ParserRuleContext context) : base(context) { }
 
-        public override string Type
-        {
-            get { return type; }
-        }
+        public override string Type => type;
 
         public string FieldName
         {
-            get { return (Children[1] as IdNode).Name; }
+            get => (Children[1] as IdNode).Name;
         }
 
         public RecordInfo RecordInfo { get; protected set; }

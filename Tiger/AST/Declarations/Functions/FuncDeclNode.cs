@@ -18,25 +18,17 @@ namespace Tiger.AST
 
         public RecordTypeNode Arguments
         {
-            get
-            {
-                return Children[1] != null ?
-                    (RecordTypeNode)Children[1] : null;
-            }
+            get => Children[1] as RecordTypeNode;
         }
 
         public string FunctionType
         {
-            get
-            {
-                return Children[2] != null ?
-                    (Children[2] as IdNode).Name : Types.Void;
-            }
+            get => Children[2] != null ? (Children[2] as IdNode).Name : Types.Void;
         }
 
         public ExpressionNode Expression
         {
-            get { return (ExpressionNode)Children[3]; }
+            get => (ExpressionNode)Children[3];
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)

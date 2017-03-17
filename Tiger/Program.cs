@@ -14,12 +14,14 @@ namespace Tiger
 {
     class Program
     {
+        static readonly int ErrorCode = 1;
+
         static void Main(string[] args)
         {
             if (args.Length != 1)
             {
                 Console.Error.WriteLine("Wrong parameter number.");
-                Environment.ExitCode = 1;
+                Environment.ExitCode = ErrorCode;
                 PrintHelp();
                 return;
             }
@@ -27,10 +29,10 @@ namespace Tiger
             if (!File.Exists(args[0]))
             {
                 Console.Error.WriteLine("Input file path is not valid, does not exist or user has no sufficient permission to read it.");
-                Environment.ExitCode = 1;
+                Environment.ExitCode = ErrorCode;
                 return;
             }
-            
+
             ProcessFile(args[0], Path.ChangeExtension(args[0], "exe"));
             Console.WriteLine();
         }
@@ -52,7 +54,7 @@ namespace Tiger
 
             if (root == null || !CheckSemantics(root, scope))
             {
-                Environment.ExitCode = 1;
+                Environment.ExitCode = ErrorCode;
                 return;
             }
 
@@ -104,7 +106,7 @@ namespace Tiger
                 return true;
             Console.WriteLine();
             foreach (var error in errors)
-                Console.WriteLine("({1}, {2}): {0}.", error.Message, error.Node.Line, error.Node.Column);
+                Console.WriteLine($"({error.Node.Line}, {error.Node.Column}): {error.Message}.");
             return false;
         }
 

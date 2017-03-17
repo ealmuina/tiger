@@ -20,9 +20,6 @@ namespace Tiger.AST
                 });
         }
 
-        public override void Generate(CodeGenerator generator)
-        {
-            generator.Generator.Emit(OpCodes.Br, generator.LoopEnd);
-        }
+        public override void Generate(CodeGenerator generator) => generator.Generator.Emit(OpCodes.Br, generator.LoopEnd);
     }
 }

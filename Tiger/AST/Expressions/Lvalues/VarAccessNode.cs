@@ -18,14 +18,11 @@ namespace Tiger.AST
             Name = name;
         }
 
-        public string Name { get; protected set; }
+        public string Name { get; }
 
         public VariableInfo Info { get; protected set; }
 
-        public override string Type
-        {
-            get { return Info.Type; }
-        }
+        public override string Type => Info.Type;
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

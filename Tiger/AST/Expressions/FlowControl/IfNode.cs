@@ -13,11 +13,7 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get
-            {
-                return Children[2] == null ? Types.Void : Children[2].Type;
-
-            }
+            get => Children[2] == null ? Types.Void : Children[2].Type;
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)

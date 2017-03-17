@@ -12,10 +12,7 @@ namespace Tiger.AST
 
         public NilNode(ParserRuleContext context) : base(context) { }
 
-        public override string Type
-        {
-            get { return Types.Nil; }
-        }
+        public override string Type => Types.Nil;
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

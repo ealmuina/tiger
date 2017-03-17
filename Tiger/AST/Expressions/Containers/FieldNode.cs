@@ -11,15 +11,9 @@ namespace Tiger.AST
 
         public FieldNode(int line, int column) : base(line, column) { }
 
-        public string Name
-        {
-            get { return (Children[0] as IdNode).Name; }
-        }
+        public string Name => (Children[0] as IdNode).Name;
 
-        public override string Type
-        {
-            get { return Children[1].Type; }
-        }
+        public override string Type => Children[1].Type;
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
