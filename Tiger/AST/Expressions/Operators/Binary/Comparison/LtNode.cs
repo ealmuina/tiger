@@ -9,7 +9,7 @@ namespace Tiger.AST
     {
         public LtNode(ParserRuleContext context) : base(context) { }
 
-        protected override bool SupportType(string type)
+        protected override bool SupportType(TypeInfo type)
         {
             return new[] { Types.Int, Types.String }.Contains(type);
         }

@@ -16,19 +16,47 @@ namespace Tiger.AST
 
         public FuncDeclNode(ParserRuleContext context) : base(context) { }
 
+        public string TypeReturnName
+        {
+            get => (Children[2] == null) ? Types.Void.Name : (Children[2] as IdNode).Name;
+        }
+
         public FieldsListNode Arguments
         {
             get => Children[1] as FieldsListNode;
         }
 
-        public override string Type
-        {
-            get => Children[2] != null ? (Children[2] as IdNode).Name : Types.Void;
-        }
-
         public ExpressionNode Expression
         {
             get => (ExpressionNode)Children[3];
+        }
+
+        public void DefineFunction(Scope scope, List<SemanticError> errors)
+        {
+            if (scope.Stdl.Where(n => n.Name == Name).Count() > 0)
+                errors.Add(new SemanticError
+                {
+                    Message = $"Standard library function '{Name}' cannot be redefined",
+                    Node = this
+                });
+
+            if (!scope.IsDefined<Semantics.TypeInfo>(TypeReturnName))
+            {
+                errors.Add(new SemanticError
+                {
+                    Message = $"Function '{Name}' return type '{TypeReturnName}' is unexistent in its scope",
+                    Node = this
+                });
+                return;
+            }
+
+            if (Arguments != null)
+                Arguments.CheckSemantics(scope, errors);
+
+            if (errors.Count > 0) return;
+
+            scope.DefineFunction(Name, TypeReturnName,
+                Arguments != null ? Arguments.TypesNames : new string[] { });
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
@@ -39,6 +67,7 @@ namespace Tiger.AST
                 InsideLoop = false
             };
             var info = scope.GetItem<FunctionInfo>(Name);
+            Type = scope.GetItem<Semantics.TypeInfo>(TypeReturnName);
 
             // Define foreign variables
             foreach (var fv in foreignVariables)
@@ -47,40 +76,36 @@ namespace Tiger.AST
                 info.ForeignVars.Add(fv.Name);
             }
 
-            if (scope.Stdl.Where(n => n.Name == Name).Count() > 0)
-                errors.Add(new SemanticError
-                {
-                    Message = $"Standard library function '{Name}' cannot be redefined",
-                    Node = this
-                });
-
             if (Arguments != null)
             {
-                Arguments.CheckSemantics(scope, errors);
-
                 string[] names = Arguments.Names;
-                string[] types = Arguments.Types;
+                string[] types = Arguments.TypesNames;
+
+                if (errors.Count > 0) return;
 
                 for (int i = 0; i < names.Length; i++)
                 {
-                    if (names[i] == Name)
-                        errors.Add(new SemanticError
-                        {
-                            Message = "There is an argument named as the function",
-                            Node = this
-                        });
+                    //if (names[i] == Name)
+                    //    errors.Add(new SemanticError
+                    //    {
+                    //        Message = "There is an argument named as the function",
+                    //        Node = this
+                    //    });
 
-                    if (errors.Count > 0) return;
+                    //if (errors.Count > 0) return;
 
                     // Define arguments
                     scope.DefineVariable(names[i], types[i], false, false);
+                    info.Parameters[i] = scope.GetItem<Semantics.TypeInfo>(types[i]);
                     info.ForeignVars.Remove(names[i]); // in case an argument hides a foreign variable
                 }
             }
 
             Expression.CheckSemantics(scope, errors);
 
-            if (Expression.Type != Types.Nil && !scope.SameType(Type, Expression.Type))
+            if (errors.Count > 0) return;
+
+            if (!Expression.Type.Equals(Types.Nil) && info.Type != Expression.Type)
                 errors.Add(new SemanticError
                 {
                     Message = $"The expression assigned to function '{Name}' returns '{Expression.Type}' and doesn't match with the expected '{Type}'",
@@ -96,9 +121,10 @@ namespace Tiger.AST
             generator.Functions[Name] = func;
 
             // Create a clone of the current generator, modify it and save it as the function's own
-            this.generator = new CodeGenerator(generator);
-            this.generator.Functions = generator.Functions;
-
+            this.generator = new CodeGenerator(generator)
+            {
+                Functions = generator.Functions
+            };
             generator = this.generator;
             generator.Method = func;
             generator.Generator = func.GetILGenerator();
@@ -110,7 +136,7 @@ namespace Tiger.AST
             if (Arguments != null)
             {
                 string[] names = Arguments.Names;
-                string[] types = Arguments.Types;
+                Semantics.TypeInfo[] types = Arguments.Types;
 
                 for (int i = 0; i < names.Length; i++)
                 {
@@ -163,7 +189,7 @@ namespace Tiger.AST
             if (Arguments != null)
             {
                 string[] names = Arguments.Names;
-                string[] types = Arguments.Types;
+                Semantics.TypeInfo[] types = Arguments.Types;
 
                 for (int i = 0; i < names.Length; i++)
                 {

@@ -8,9 +8,10 @@ namespace Tiger.AST
 {
     class NegativeNode : UnaryNode
     {
-        public NegativeNode(ParserRuleContext context) : base(context) { }
-
-        public override string Type => Types.Int;
+        public NegativeNode(ParserRuleContext context) : base(context)
+        {
+            Type = Types.Int;
+        }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
@@ -18,7 +19,7 @@ namespace Tiger.AST
 
             if (Operand.Type != Types.Int)
                 errors.Add(SemanticError.InvalidUseOfOperator(
-                    "unary minus", Operand.Type == Types.Nil ? "valued" : "integer", "operand", Operand));
+                    "unary minus", Operand.Type.Equals(Types.Nil) ? "valued" : "integer", "operand", Operand));
         }
 
         public override void Generate(CodeGenerator generator)

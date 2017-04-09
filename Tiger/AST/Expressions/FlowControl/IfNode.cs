@@ -11,11 +11,6 @@ namespace Tiger.AST
     {
         public IfNode(ParserRuleContext context) : base(context) { }
 
-        public override string Type
-        {
-            get => ElseExpression == null ? Types.Void : ElseExpression.Type;
-        }
-
         public ExpressionNode IfExpression
         {
             get => Children[0] as ExpressionNode;
@@ -38,7 +33,7 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            if (!scope.SameType(IfExpression.Type, Types.Int))
+            if (IfExpression.Type != Types.Int)
                 errors.Add(new SemanticError
                 {
                     Message = "The condition of the 'if-then-else' statement does not return an integer value",
@@ -54,32 +49,34 @@ namespace Tiger.AST
 
             bool visibleType = true;
 
-            if (!scope.IsDefined<TypeInfo>(ThenExpression.Type))
-            {
-                errors.Add(new SemanticError
-                {
-                    Message = $"Value returned by the 'then' expression has a type {ThenExpression.Type} that isn't visible in the outer scope",
-                    Node = ThenExpression
-                });
-                visibleType = false;
-            }
+            //if (!scope.IsDefined<TypeInfo>(ThenExpression.Type))
+            //{
+            //    errors.Add(new SemanticError
+            //    {
+            //        Message = $"Value returned by the 'then' expression has a type {ThenExpression.Type} that isn't visible in the outer scope",
+            //        Node = ThenExpression
+            //    });
+            //    visibleType = false;
+            //}
 
-            if (ElseExpression != null && !scope.IsDefined<TypeInfo>(ElseExpression.Type))
-            {
-                errors.Add(new SemanticError
-                {
-                    Message = $"Value returned by the 'else' expression has a type {ElseExpression.Type} that isn't visible in the outer scope",
-                    Node = ElseExpression
-                });
-                visibleType = false;
-            }
+            //if (ElseExpression != null && !scope.IsDefined<TypeInfo>(ElseExpression.Type))
+            //{
+            //    errors.Add(new SemanticError
+            //    {
+            //        Message = $"Value returned by the 'else' expression has a type {ElseExpression.Type} that isn't visible in the outer scope",
+            //        Node = ElseExpression
+            //    });
+            //    visibleType = false;
+            //}
 
-            if (visibleType && ElseExpression != null && !scope.SameType(ThenExpression.Type, ElseExpression.Type)) //if-then-else
+            if (visibleType && ElseExpression != null && ThenExpression.Type != ElseExpression.Type) //if-then-else
                 errors.Add(new SemanticError
                 {
                     Message = "The return types of the expressions of the 'if-then-else' statement are not the same",
                     Node = this
                 });
+
+            Type = ElseExpression == null ? Types.Void : ElseExpression.Type;
         }
 
         public override void Generate(CodeGenerator generator)

@@ -9,21 +9,24 @@ namespace Tiger.AST
     {
         public ArrayTypeNode(ParserRuleContext context) : base(context) { }
 
-        public override string Type
+        public string TypeName
         {
             get => (Children[0] as IdNode).Name;
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            if (!scope.IsDefined<TypeInfo>(Type))
+            if (!scope.IsDefined<TypeInfo>(TypeName))
                 errors.Add(new SemanticError
                 {
-                    Message = $"Unknown type '{Type}' on array declaration",
+                    Message = $"Unknown type '{TypeName}' on array declaration",
                     Node = this
                 });
 
             Children.ForEach(n => n.CheckSemantics(scope, errors));
+            if (errors.Count > 0) return;
+
+            Type = scope.GetItem<TypeInfo>(TypeName);
         }
 
         public override void Generate(CodeGenerator generator)

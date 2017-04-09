@@ -13,12 +13,14 @@ namespace Tiger.AST
         public FieldsListNode(ParserRuleContext context, string[] names, string[] types) : base(context)
         {
             Names = names;
-            Types = types;
+            TypesNames = types;
         }
 
         public string[] Names { get; }
 
-        public string[] Types { get; }
+        public string[] TypesNames { get; }
+
+        public Semantics.TypeInfo[] Types { get; protected set; }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
@@ -29,13 +31,17 @@ namespace Tiger.AST
                     Node = this
                 });
 
-            foreach (var type in Types)
+            foreach (var type in TypesNames)
                 if (!scope.IsDefined<Semantics.TypeInfo>(type))
                     errors.Add(new SemanticError
                     {
                         Message = $"Undefined field type '{type}'",
                         Node = this
                     });
+
+            if (errors.Count > 0) return;
+
+            Types = TypesNames.Select(t => scope.GetItem<Semantics.TypeInfo>(t)).ToArray();
         }
 
         /// <summary>

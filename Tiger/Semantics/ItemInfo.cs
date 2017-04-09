@@ -2,14 +2,14 @@
 {
     abstract class ItemInfo
     {
-        protected ItemInfo(string name, string type)
+        protected ItemInfo(string name, TypeInfo type)
         {
             Name = name;
             Type = type;
         }
 
-        public string Name { get; protected set; }
+        public string Name { get; }
 
-        public string Type { get; protected set; }
+        public TypeInfo Type { get; }
     }  
 }

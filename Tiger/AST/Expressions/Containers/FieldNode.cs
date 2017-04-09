@@ -21,14 +21,10 @@ namespace Tiger.AST
             get => Children[1] as ExpressionNode;
         }
 
-        public override string Type
-        {
-            get => Children[1].Type;
-        }
-
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             Children.ForEach(n => n.CheckSemantics(scope, errors));
+            Type = Children[1].Type;
         }
 
         public override void Generate(CodeGenerator generator)

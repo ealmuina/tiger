@@ -22,7 +22,7 @@ namespace Tiger.AST
         void FixArrayType(TypeDeclNode type, CodeGenerator generator)
         {
             var info = (ArrayInfo)type.TypeInfo;
-            generator.Types[type.Name] = generator.Types.ContainsKey(info.ElementsType) ?
+            generator.Types[info] = generator.Types.ContainsKey(info.ElementsType) ?
                 generator.Types[info.ElementsType].MakeArrayType() : null;
         }
 
@@ -31,6 +31,7 @@ namespace Tiger.AST
             var types = Children.Cast<TypeDeclNode>().ToList();
 
             types.ForEach(t => t.DefineType(scope, errors));
+            types.ForEach(t => t.CheckAlias(scope, errors));
             types.ForEach(t => t.CheckSemantics(scope, errors));
         }
 
@@ -43,9 +44,9 @@ namespace Tiger.AST
                     FixArrayType(type, generator);
             }
 
-            //Store real type for aliases
-            foreach (var type in Children.Cast<TypeDeclNode>().Where(t => !(t.TypeInfo is ArrayInfo)))
-                generator.Types[type.Name] = generator.Types[type.TypeInfo.Name];
+            ////Store real type for aliases
+            //foreach (var type in Children.Cast<TypeDeclNode>().Where(t => !(t.TypeInfo is ArrayInfo)))
+            //    generator.Types[type.TypeInfo] = generator.Types[type.TypeInfo];
 
             // Fix arrays
             while (generator.Types.ContainsValue(null))

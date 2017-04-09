@@ -1,8 +1,25 @@
-﻿namespace Tiger.Semantics
+﻿#pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
+#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+
+namespace Tiger.Semantics
 {
     class TypeInfo : ItemInfo
     {
-        public TypeInfo(string name) : base(name, Types.Void) { }              
+        public TypeInfo(string name) : base(name, Types.Void) { }
+
+        static public bool operator ==(TypeInfo a, TypeInfo b)
+        {
+            return a.Equals(b) ||
+                (!a.Equals(Types.Void) && !b.Equals(Types.Void) &&
+                (a.Equals(Types.Nil) || b.Equals(Types.Nil)));
+        }
+
+        static public bool operator !=(TypeInfo a, TypeInfo b)
+        {
+            return !(a == b);
+        }
+
+        public override string ToString() => Name;
     }
 
     class RecordInfo : TypeInfo
@@ -10,12 +27,14 @@
         public RecordInfo(string name, string[] fieldNames, string[] fieldTypes) : base(name)
         {
             FieldNames = fieldNames;
-            FieldTypes = fieldTypes;
+            FieldTypesNames = fieldTypes;
         }
 
-        public string[] FieldNames { get; protected set; }
+        public string[] FieldNames { get; }
 
-        public string[] FieldTypes { get; protected set; }
+        public string[] FieldTypesNames { get; }
+
+        public TypeInfo[] FieldTypes { get; set; }
     }
 
     class AliasInfo : TypeInfo
@@ -25,16 +44,18 @@
             Aliased = aliased;
         }
 
-        public string Aliased { get; protected set; }
+        public string Aliased { get; }
     }
 
     class ArrayInfo : TypeInfo
     {
         public ArrayInfo(string name, string elementsType) : base(name)
         {
-            ElementsType = elementsType;
+            ElementsTypeName = elementsType;
         }
 
-        public string ElementsType { get; protected set; }
+        public string ElementsTypeName { get; }
+
+        public TypeInfo ElementsType { get; set; }
     }
 }

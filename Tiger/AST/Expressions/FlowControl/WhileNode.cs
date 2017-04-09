@@ -20,11 +20,6 @@ namespace Tiger.AST
             get => Children[1] as ExpressionNode;
         }
 
-        public override string Type
-        {
-            get => Types.Void;
-        }
-
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             Condition.CheckSemantics(scope, errors);
@@ -32,7 +27,7 @@ namespace Tiger.AST
             scope.InsideLoop = true;
             Expression.CheckSemantics(scope, errors);
 
-            if (!scope.SameType(Condition.Type, Types.Int))
+            if (Condition.Type != Types.Int)
                 errors.Add(new SemanticError
                 {
                     Message = "Invalid type of condition of the while statement",

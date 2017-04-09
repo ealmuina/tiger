@@ -1,17 +1,14 @@
+/* Este programa es vÃ¡lido. Este programa imprime los nÃºmeros del 1 al 20. */
 let
-    type output = { value : string, count : int }
-    var a : output := if 1 then output{value = "test", count = 2} else nil
-	var b : output := if 1 then nil else nil
-	var c := if 1 then nil else nil
+	type ComplexArray = array of SimpleArray
+	type SimpleArray = array of int
+	var val := 0
+	var x := ComplexArray[4] of SimpleArray[5] of (val := val + 1 ; val)
 in
-    for i:= 0 to a.count do
-        print(a.value);
-	let
-		type output = {}
-		var a := 10 * 80
-	in
-		printiline(a);
-		output{}
-	end;
-	print("test")
+	for i := 0 to 3 do
+		let
+			var temp := x[i]
+		in
+			for j := 0 to 4 do (printi(temp[j]) ; printline(""))
+		end
 end

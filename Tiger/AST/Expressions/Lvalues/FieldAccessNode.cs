@@ -10,11 +10,7 @@ namespace Tiger.AST
 {
     class FieldAccessNode : LValueNode
     {
-        string type;
-
         public FieldAccessNode(ParserRuleContext context) : base(context) { }
-
-        public override string Type => type;
 
         public string FieldName
         {
@@ -30,7 +26,8 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            var info = scope.GetItem<TypeInfo>(Children[0].Type);
+            var info = Children[0].Type;
+
             if (!(info is RecordInfo recInfo))
                 errors.Add(new SemanticError
                 {
@@ -48,14 +45,14 @@ namespace Tiger.AST
                         Node = Children[1]
                     });
                 else
-                    type = RecordInfo.FieldTypes[Array.IndexOf(RecordInfo.FieldNames, FieldName)];
+                    Type = RecordInfo.FieldTypes[Array.IndexOf(RecordInfo.FieldNames, FieldName)];
             }            
         }
 
         public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
-            FieldBuilder field = generator.Fields[RecordInfo.Name][FieldName];
+            FieldBuilder field = generator.Fields[RecordInfo][FieldName];
 
             Children[0].Generate(generator);
 

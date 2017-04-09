@@ -25,8 +25,6 @@ namespace Tiger.AST
             get => Children[2] as ExpressionNode;
         }
 
-        public override string Type => Types.Void;
-
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             var clone = new Scope(scope)
@@ -40,14 +38,14 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            if (!scope.SameType(Cursor.Type, Types.Int))
+            if (Cursor.Type != Types.Int)
                 errors.Add(new SemanticError
                 {
                     Message = $"The return type '{Cursor.Type}' of the expression for the lower bound of the 'for' loop is not integer",
                     Node = Children[0]
                 });
 
-            if (!scope.SameType(ToExpression.Type, Types.Int))
+            if (ToExpression.Type != Types.Int)
                 errors.Add(new SemanticError
                 {
                     Message = "The expression for the upper bound of the 'for' loop does not return a value",
@@ -65,14 +63,14 @@ namespace Tiger.AST
         public override void Generate(CodeGenerator generator)
         {
             generator = new CodeGenerator(generator);
-            ILGenerator il = generator.Generator;            
+            ILGenerator il = generator.Generator;
 
             Cursor.Generate(generator);
             LocalBuilder cursor = generator.Variables[Cursor.Name];
 
             LocalBuilder top = il.DeclareLocal(typeof(int));
-            ToExpression.Generate(generator);            
-            il.Emit(OpCodes.Stloc, top);                        
+            ToExpression.Generate(generator);
+            il.Emit(OpCodes.Stloc, top);
 
             Label condition = il.DefineLabel();
             Label end = il.DefineLabel();

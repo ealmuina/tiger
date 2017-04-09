@@ -27,11 +27,6 @@ namespace Tiger.AST
 
         public bool IsReadonly { get; }
 
-        public override string Type
-        {
-            get => Children[1] != null ? (Children[1] as IdNode).Name : Children[2].Type;
-        }
-
         public ExpressionNode Expression
         {
             get => Children[2] as ExpressionNode;
@@ -58,26 +53,36 @@ namespace Tiger.AST
                     Node = this
                 });
 
-            if (Children[1] == null && Expression.Type == Types.Nil)
+            if (Children[1] == null && Expression.Type.Equals( Types.Nil))
                 errors.Add(new SemanticError
                 {
                     Message = "Variable type cannot be infered from an expression which returns nil",
                     Node = this
                 });
 
-            if (!scope.IsDefined<TypeInfo>(Type))
-                errors.Add(new SemanticError
+            if (Children[1] != null)
+            {
+                if (!scope.IsDefined<TypeInfo>((Children[1] as IdNode).Name))
+                    errors.Add(new SemanticError
+                    {
+                        Message = $"Cannot declare variable of undefined type '{Type}'",
+                        Node = this
+                    });
+                else
                 {
-                    Message = $"Cannot declare variable of undefined type '{Type}'",
-                    Node = this
-                });
-
-            else if (Children[1] != null && Expression.Type != Types.Nil && !scope.SameType(Type, Expression.Type))
-                errors.Add(new SemanticError
-                {
-                    Message = "Variable declared type doesn't match with the expression assigned to it",
-                    Node = this
-                });
+                    Type = scope.GetItem<TypeInfo>((Children[1] as IdNode).Name);
+                    if (!Expression.Type.Equals(Types.Nil) && Type != Expression.Type)
+                        errors.Add(new SemanticError
+                        {
+                            Message = "Variable declared type doesn't match with the expression assigned to it",
+                            Node = this
+                        });
+                }
+            }
+            else
+            {
+                Type = Expression.Type;
+            }
 
             if (errors.Count == 0)
                 scope.DefineVariable(Name, Type, IsReadonly, false);
@@ -90,7 +95,7 @@ namespace Tiger.AST
             LocalBuilder variable = il.DeclareLocal(type);
 
             Expression.Generate(generator);
-            
+
             il.Emit(OpCodes.Stloc, variable);
             generator.Variables[Name] = variable;
         }

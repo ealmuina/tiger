@@ -23,7 +23,7 @@ namespace Tiger.AST
 
         public int Column { get; }
 
-        public virtual string Type => Types.Void;
+        public TypeInfo Type { get; protected set; } = Types.Void;
 
         public List<Node> Children { get; } = new List<Node>();
 

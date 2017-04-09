@@ -60,10 +60,10 @@ namespace Tiger.Semantics
         /// </summary>
         void InitTypes()
         {
-            types[Types.Int] = new TypeInfo(Types.Int);
-            types[Types.String] = new TypeInfo(Types.String);
-            types[Types.Void] = new TypeInfo(Types.Void);
-            types[Types.Nil] = new TypeInfo(Types.Nil);
+            types[Types.Int.Name] = Types.Int;
+            types[Types.String.Name] = Types.String;
+            types[Types.Void.Name] = Types.Void;
+            types[Types.Nil.Name] = Types.Nil;
         }
 
         /// <summary>
@@ -134,7 +134,12 @@ namespace Tiger.Semantics
         #region Define...
         public VariableInfo DefineVariable(string name, string type, bool readOnly, bool isForeign)
         {
-            type = GetItem<TypeInfo>(type).Name;
+            var tInfo = GetItem<TypeInfo>(type);
+            return DefineVariable(name, tInfo, readOnly, isForeign);
+        }
+
+        public VariableInfo DefineVariable(string name, TypeInfo type, bool readOnly, bool isForeign)
+        {
             var result = new VariableInfo(name, type, readOnly, isForeign);
             symbols[name] = result;
             return result;
@@ -142,8 +147,10 @@ namespace Tiger.Semantics
 
         public FunctionInfo DefineFunction(string name, string type, params string[] parameters)
         {
-            type = GetItem<TypeInfo>(type).Name;
-            var result = new FunctionInfo(name, false, type, parameters);
+            var tInfo = GetItem<TypeInfo>(type);
+            TypeInfo[] tParams = parameters.Select(p => GetItem<TypeInfo>(p)).ToArray();
+
+            var result = new FunctionInfo(name, false, tInfo, tParams);
             symbols[name] = result;
             return result;
         }
@@ -171,19 +178,6 @@ namespace Tiger.Semantics
         #endregion
 
         /// <summary>
-        /// Determine if two types are equals
-        /// </summary>
-        /// <param name="t1">Type 1</param>
-        /// <param name="t2"></param>
-        /// <returns>True if equals, false otherwise</returns>
-        public bool SameType(string t1, string t2)
-        {
-            var info1 = GetItem<TypeInfo>(t1);
-            var info2 = GetItem<TypeInfo>(t2);
-            return info1 == info2 || info1.Name == Types.Nil || info2.Name == Types.Nil;
-        }
-
-        /// <summary>
         /// Check if a type name is part of an invalid alias cycle
         /// </summary>
         /// <param name="name">Name of the type</param>
@@ -196,7 +190,7 @@ namespace Tiger.Semantics
             {
                 string next = (item is AliasInfo) ?
                     (item as AliasInfo).Aliased :
-                    (item as ArrayInfo).ElementsType;
+                    (item as ArrayInfo).ElementsTypeName;
 
                 if (!types.ContainsKey(next) || visited.Contains(item))
                     return true;

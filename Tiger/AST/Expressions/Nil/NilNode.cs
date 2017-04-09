@@ -8,11 +8,10 @@ namespace Tiger.AST
 {
     class NilNode : ExpressionNode
     {
-        public NilNode() : base(-1, -1) { }
-
-        public NilNode(ParserRuleContext context) : base(context) { }
-
-        public override string Type => Types.Nil;
+        public NilNode(ParserRuleContext context) : base(context)
+        {
+            Type = Types.Nil;
+        }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {

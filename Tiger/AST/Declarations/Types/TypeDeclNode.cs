@@ -16,10 +16,22 @@ namespace Tiger.AST
             get => Children[1] is IdNode;
         }
 
+        public bool IsArray
+        {
+            get => Children[1] is ArrayTypeNode;
+        }
+
         public Semantics.TypeInfo TypeInfo { get; protected set; }
 
         public void DefineType(Scope scope, List<SemanticError> errors)
         {
+            if (new string[] { Types.Int.Name, Types.String.Name }.Contains(Name))
+                errors.Add(new SemanticError
+                {
+                    Message = $"Builtin type '{Name}' cannot be redefined",
+                    Node = this
+                });
+
             if (IsAlias)
             {
                 var alias = (IdNode)Children[1];
@@ -27,34 +39,44 @@ namespace Tiger.AST
             }
             else if (Children[1] is FieldsListNode record)
             {
-                scope.DefineRecordType(Name, record.Names, record.Types);
+                scope.DefineRecordType(Name, record.Names, record.TypesNames);
             }
-            else //Children[1] is ArrayTypeNode
+            else //IsArray
             {
                 var array = (ArrayTypeNode)Children[1];
-                scope.DefineArrayType(Name, array.Type);
+                scope.DefineArrayType(Name, array.TypeName);
             }
+        }
+
+        public void CheckAlias(Scope scope, List<SemanticError> errors)
+        {
+            if ((IsAlias || IsArray) && scope.BadAlias(Name))
+                errors.Add(new SemanticError
+                {
+                    Message = $"Type '{Name}' is part of an invalid alias cycle",
+                    Node = this
+                });
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             Children.ForEach(n => n.CheckSemantics(scope, errors));
 
-            if (new string[] { Types.Int, Types.String }.Contains(Name))
-                errors.Add(new SemanticError
-                {
-                    Message = $"Builtin type '{Name}' cannot be redefined",
-                    Node = this
-                });
+            if (errors.Count > 0) return;
 
-            if ((IsAlias || Children[1] is ArrayTypeNode) && scope.BadAlias(Name))
-                errors.Add(new SemanticError
-                {
-                    Message = $"Type '{Name}' is part of an invalid alias cycle",
-                    Node = this
-                });
-            else
-                TypeInfo = scope.GetItem<Semantics.TypeInfo>(Name);
+            TypeInfo = scope.GetItem<Semantics.TypeInfo>(Name);
+
+            switch (TypeInfo)
+            {
+                case ArrayInfo aInfo:
+                    aInfo.ElementsType = scope.GetItem<Semantics.TypeInfo>(aInfo.ElementsTypeName);
+                    break;
+                case RecordInfo rInfo:
+                    rInfo.FieldTypes = rInfo.FieldTypesNames.Select(t => scope.GetItem<Semantics.TypeInfo>(t)).ToArray();
+                    break;
+                default:
+                    break;
+            }
         }
 
         /// <summary>
@@ -66,23 +88,23 @@ namespace Tiger.AST
             {
                 TypeBuilder typeBuilder = generator.Module.DefineType(Name + "_" + CodeGenerator.TypeId++, TypeAttributes.Public);
                 typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
-                generator.Types[Name] = typeBuilder;
+                generator.Types[TypeInfo] = typeBuilder;
             }
         }
 
         public override void Generate(CodeGenerator generator)
         {
             if (Children[1] is FieldsListNode record) // it's a record declaration. Define its fields!
-            {       
-                var typeBuilder = (TypeBuilder)generator.Types[Name];
+            {
+                var typeBuilder = (TypeBuilder)generator.Types[TypeInfo];
                 var clone = new CodeGenerator(generator)
                 {
                     Type = typeBuilder
                 };
                 Dictionary<string, FieldBuilder> fields = record.Define(clone);
 
-                generator.Fields[Name] = fields;
-                generator.Types[Name] = typeBuilder.CreateType();
+                generator.Fields[(RecordInfo)TypeInfo] = fields;
+                generator.Types[TypeInfo] = typeBuilder.CreateType();
             }
         }
     }

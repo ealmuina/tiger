@@ -23,11 +23,6 @@ namespace Tiger.AST
 
         public FunctionInfo SymbolInfo { get; protected set; }
 
-        public override string Type
-        {
-            get => SymbolInfo != null ? SymbolInfo.Type : Types.Void;
-        }
-
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             Arguments.ForEach(a => a.CheckSemantics(scope, errors));
@@ -72,10 +67,10 @@ namespace Tiger.AST
                 var arguments = Arguments.ToArray();
                 for (int i = 0; i < parameterCount; i++)
                 {
-                    string expectedT = info.Parameters[i];
-                    string exprT = arguments[i].Type;
+                    TypeInfo expectedT = info.Parameters[i];
+                    TypeInfo exprT = arguments[i].Type;
 
-                    if (exprT != Types.Nil && !scope.SameType(exprT, expectedT))
+                    if (!exprT.Equals(Types.Nil) && exprT != expectedT)
                         errors.Add(new SemanticError
                         {
                             Message = $"Called function {Name} with argument type '{exprT}' when expecting '{expectedT}'",
@@ -84,6 +79,7 @@ namespace Tiger.AST
                 }
 
                 SymbolInfo = info;
+                Type = info.Type;
             }
         }
 

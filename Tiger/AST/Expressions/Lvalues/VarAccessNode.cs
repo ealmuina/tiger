@@ -22,8 +22,6 @@ namespace Tiger.AST
 
         public VariableInfo Info { get; protected set; }
 
-        public override string Type => Info.Type;
-
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             if (!scope.IsDefined<VariableInfo>(Name))
@@ -53,6 +51,7 @@ namespace Tiger.AST
                     });
 
                 Info = info;
+                Type = info.Type;
             }
         }
 

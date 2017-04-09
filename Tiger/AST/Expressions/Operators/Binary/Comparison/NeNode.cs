@@ -8,7 +8,7 @@ namespace Tiger.AST
     {
         public NeNode(ParserRuleContext context) : base(context) { }
 
-        protected override bool SupportType(string type)
+        protected override bool SupportType(TypeInfo type)
         {
             return type != Types.Void;
         }

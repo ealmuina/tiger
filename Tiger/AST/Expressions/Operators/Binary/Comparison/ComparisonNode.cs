@@ -9,11 +9,12 @@ namespace Tiger.AST
 {
     abstract class ComparisonNode : BinaryNode
     {
-        public ComparisonNode(ParserRuleContext context) : base(context) { }
+        public ComparisonNode(ParserRuleContext context) : base(context)
+        {
+            Type = Types.Int;
+        }
 
-        public override string Type => Types.Int;
-
-        protected abstract bool SupportType(string type);
+        protected abstract bool SupportType(Semantics.TypeInfo type);
 
         protected abstract void CompareInt(ILGenerator il);
 
@@ -39,14 +40,14 @@ namespace Tiger.AST
             if (!SupportType(RightOperand.Type))
                 errors.Add(SemanticError.InvalidUseOfOperator("binary relational", "valid", "right", RightOperand));
 
-            if (!scope.SameType(RightOperand.Type, LeftOperand.Type) && LeftOperand.Type != Types.Nil && RightOperand.Type != Types.Nil)
+            if (RightOperand.Type != LeftOperand.Type && !LeftOperand.Type.Equals(Types.Nil) && !RightOperand.Type.Equals(Types.Nil))
                 errors.Add(new SemanticError
                 {
                     Message = $"Types of left and right operands of the binary relational operator do not match",
                     Node = this
                 });
 
-            if (LeftOperand.Type == Types.Nil && RightOperand.Type == Types.Nil)
+            if (LeftOperand.Type.Equals(Types.Nil) && RightOperand.Type.Equals(Types.Nil))
                 errors.Add(new SemanticError
                 {
                     Message = $"Types of left and right operands of the binary relational operator can't be both 'nil'",
@@ -66,8 +67,8 @@ namespace Tiger.AST
             LeftOperand.Generate(generator);
             RightOperand.Generate(generator);
 
-            ILGenerator il = generator.Generator;          
-            
+            ILGenerator il = generator.Generator;
+
             //TODO Chequear si funciona con alias
             if (LeftOperand.Type == Types.Int)
                 CompareInt(generator.Generator);

@@ -11,7 +11,7 @@ namespace Tiger.AST
     {
         public ArrayNode(ParserRuleContext context) : base(context) { }
 
-        public override string Type
+        public string TypeName
         {
             get => (Children[0] as IdNode).Name;
         }
@@ -32,23 +32,25 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            if (!scope.IsDefined<TypeInfo>(Type) || !(scope.GetItem<TypeInfo>(Type) is ArrayInfo info))
+            if (!scope.IsDefined<TypeInfo>(TypeName) || !(scope.GetItem<TypeInfo>(TypeName) is ArrayInfo info))
                 errors.Add(new SemanticError
                 {
-                    Message = $"Undefined array type '{Type}'",
+                    Message = $"Undefined array type '{TypeName}'",
                     Node = this
                 });
             else
             {
-                if (!scope.SameType(InitExpr.Type, info.ElementsType))
+                if (InitExpr.Type != info.ElementsType)
                     errors.Add(new SemanticError
                     {
                         Message = $"Array elements initial value type is '{InitExpr.Type}' which isn't an alias for expected '{info.ElementsType}'",
                         Node = this
                     });
+
+                Type = info;
             }
 
-            if (!scope.SameType(SizeExpr.Type, Types.Int))
+            if (SizeExpr.Type != Types.Int)
                 errors.Add(new SemanticError
                 {
                     Message = $"Array size expression type is '{SizeExpr.Type}' which isn't an alias for 'Int'",

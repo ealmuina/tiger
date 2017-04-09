@@ -8,13 +8,14 @@ namespace Tiger.AST
 {
     abstract class ArithmeticNode : BinaryNode
     {
-        public ArithmeticNode(ParserRuleContext context) : base(context) { }
+        public ArithmeticNode(ParserRuleContext context) : base(context)
+        {
+            Type = Types.Int;
+        }
 
         public abstract OpCode OperatorOpCode { get; }
 
         public abstract string OperatorName { get; }
-
-        public override string Type => Types.Int;
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
@@ -26,11 +27,11 @@ namespace Tiger.AST
 
             if (LeftOperand.Type != Type)
                 errors.Add(SemanticError.InvalidUseOfOperator(
-                    OperatorName, LeftOperand.Type == Types.Nil ? "valued" : "integer", "left", LeftOperand));
+                    OperatorName, LeftOperand.Type.Equals( Types.Nil) ? "valued" : "integer", "left", LeftOperand));
 
             if (RightOperand.Type != Type)
                 errors.Add(SemanticError.InvalidUseOfOperator(
-                    OperatorName, RightOperand.Type == Types.Nil ? "valued" : "integer", "right", RightOperand));
+                    OperatorName, RightOperand.Type.Equals( Types.Nil) ? "valued" : "integer", "right", RightOperand));
         }
 
         public override void Generate(CodeGenerator generator)

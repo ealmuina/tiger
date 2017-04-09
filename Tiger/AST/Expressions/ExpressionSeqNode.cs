@@ -21,32 +21,28 @@ namespace Tiger.AST
 
         bool InLoop { get; set; }
 
-        public override string Type
-        {
-            get
-            {
-                if (Children.Count > 0 && !(InLoop && MayCauseBreak(this)))
-                    return Children.Last().Type;
-                return Types.Void;
-            }
-        }
-
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             InLoop = scope.InsideLoop;
 
             foreach (var expr in Children)
             {
-                int errorsCount = errors.Count;
                 expr.CheckSemantics(scope, errors);
 
-                if (errorsCount == errors.Count && !scope.IsDefined<TypeInfo>(expr.Type))
-                    errors.Add(new SemanticError
-                    {
-                        Message = $"Type '{expr.Type}' returned by the expression isn't visible in its context",
-                        Node = expr
-                    });
+                if (errors.Count > 0) return;
+
+                //if (!scope.IsDefined<TypeInfo>(expr.Type.Name) || scope.GetItem<TypeInfo>(expr.Type.Name) != expr.Type)
+                //    errors.Add(new SemanticError
+                //    {
+                //        Message = $"Type '{expr.Type}' returned by the expression isn't visible in its context",
+                //        Node = expr
+                //    });
             }
+
+            if (Children.Count > 0 && !(InLoop && MayCauseBreak(this)))
+                Type = Children.Last().Type;
+            else
+                Type = Types.Void;
         }
 
         public override void Generate(CodeGenerator generator)

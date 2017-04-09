@@ -8,9 +8,10 @@ namespace Tiger.AST
 {
     abstract class LogicalNode : BinaryNode
     {
-        public LogicalNode(ParserRuleContext context) : base(context) { }
-
-        public override string Type => Types.Int;
+        public LogicalNode(ParserRuleContext context) : base(context)
+        {
+            Type = Types.Int;
+        }
 
         public abstract OpCode OperatorOpCode { get; }
 
@@ -21,13 +22,13 @@ namespace Tiger.AST
             LeftOperand.CheckSemantics(scope, errors);
             RightOperand.CheckSemantics(scope, errors);
 
-            if (!scope.SameType(LeftOperand.Type, Type))
+            if (LeftOperand.Type != Type)
                 errors.Add(SemanticError.InvalidUseOfOperator(
-                    "binary logical", LeftOperand.Type == Types.Nil ? "valued" : "integer", "left", LeftOperand));
+                    "binary logical", LeftOperand.Type.Equals(Types.Nil) ? "valued" : "integer", "left", LeftOperand));
 
-            if (!scope.SameType(RightOperand.Type, Type))
+            if (RightOperand.Type != Type)
                 errors.Add(SemanticError.InvalidUseOfOperator(
-                    "binary logical", RightOperand.Type == Types.Nil ? "valued" : "integer", "right", RightOperand));
+                    "binary logical", RightOperand.Type.Equals(Types.Nil) ? "valued" : "integer", "right", RightOperand));
         }
 
         public override void Generate(CodeGenerator generator)

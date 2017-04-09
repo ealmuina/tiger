@@ -2,12 +2,12 @@
 {
     static class Types
     {
-        public static string Int { get { return "int"; } }
+        public static TypeInfo Int { get; } = new TypeInfo("int");
 
-        public static string String { get { return "string"; } }
+        public static TypeInfo String { get; } = new TypeInfo("string");
 
-        public static string Nil { get { return "nil"; } }
+        public static TypeInfo Nil { get; } = new TypeInfo("nil");
 
-        public static string Void { get { return "void"; } }
+        public static TypeInfo Void { get; } = new TypeInfo("void");
     }
 }

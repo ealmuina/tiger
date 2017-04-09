@@ -9,6 +9,8 @@ namespace Tiger.AST
     {
         public StringNode(ParserRuleContext context, string text) : base(context)
         {
+            Type = Types.String;
+
             Text = "";
             for (int i = 1; i < text.Length - 1; i++) // 0 to Length - 1 in order to remove the (Antlr delivered) ""
             {
@@ -61,8 +63,6 @@ namespace Tiger.AST
         }
 
         public string Text { get; }
-
-        public override string Type => Types.String;
 
         public override void Generate(CodeGenerator generator) => generator.Generator.Emit(OpCodes.Ldstr, Text);
     }

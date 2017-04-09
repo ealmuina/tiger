@@ -9,11 +9,7 @@ namespace Tiger.AST
 {
     class IndexNode : LValueNode
     {
-        string type;
-
         public IndexNode(ParserRuleContext context) : base(context) { }
-
-        public override string Type => type;
 
         public ExpressionNode Expression
         {
@@ -27,7 +23,7 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            var info = scope.GetItem<TypeInfo>(Children[0].Type);
+            var info = Children[0].Type;
 
             if (!(info is ArrayInfo arrayInfo))
                 errors.Add(new SemanticError
@@ -36,9 +32,9 @@ namespace Tiger.AST
                     Node = this
                 });
             else
-                type = arrayInfo.ElementsType;
+                Type = arrayInfo.ElementsType;
 
-            if (!scope.SameType(Expression.Type, Types.Int))
+            if (Expression.Type != Types.Int)
                 errors.Add(new SemanticError
                 {
                     Message = $"Invalid array indexing expression of type '{Expression.Type}', it should be '{Types.Int}'",

@@ -10,9 +10,8 @@ namespace Tiger.AST
         public IntegerNode(ParserRuleContext context, string text) : base(context)
         {
             Value = int.Parse(text);
+            Type = Types.Int;
         }
-
-        public override string Type => Types.Int;
 
         public int Value { get; }
 
