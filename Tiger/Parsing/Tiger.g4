@@ -5,60 +5,60 @@ grammar Tiger;
  */
 
 compileUnit
-	:	expr EOF															# Program
+	:	expr EOF																# Program
 	;
 
 expr
-	:	STRING																# String
-	|	INTEGER																# Integer
-	|	'nil'																# Nil
-	|	lvalue																# LValue	
+	:	STRING																	# String
+	|	INTEGER																	# Integer
+	|	'nil'																	# Nil
+	|	lvalue																	# LValue	
 
-	|	'-' expr															# UnaryMinus
-	|	expr op=('*' | '/') expr											# Arithmetic
-	|	expr op=('+' | '-') expr											# Arithmetic
-	|	expr op=('<>' | '=' | '>=' | '<=' | '>' | '<') expr					# Comparison
-	|	expr op='&' expr													# Logical
-	|	expr op='|' expr													# Logical
+	|	'-' expr																# UnaryMinus
+	|	expr op=('*' | '/') expr												# Arithmetic
+	|	expr op=('+' | '-') expr												# Arithmetic
+	|	expr op=('<>' | '=' | '>=' | '<=' | '>' | '<') expr						# Comparison
+	|	expr op='&' expr														# Logical
+	|	expr op='|' expr														# Logical
 
-	|	lvalue ':=' expr													# Assign
-	|	ID '(' (expr (',' expr)*)? ')'										# Call
-	|	'(' (expr (';' expr)*)? ')'											# ParenExprs
-	|	typeID=ID '{' (ID '=' expr (',' ID '=' expr)*)? '}'					# Record
-	|	ID '[' expr ']' 'of' expr											# Array	
+	|	lvalue ':=' expr														# Assign
+	|	ID '(' (expr (',' expr)*)? ')'											# Call
+	|	'(' (expr (';' expr)*)? ')'												# ParenExprs
+	|	typeID=ID '{' (ID '=' expr (',' ID '=' expr)*)? '}'						# Record
+	|	ID '[' expr ']' 'of' expr												# Array	
 
-	|	'if' expr 'then' expr ('else' expr)?								# If
-	|	'while' expr 'do' expr												# While	
-	|	'for' ID ':=' expr 'to' expr 'do' expr								# For			
-	|	'break'																# Break
+	|	'if' expr 'then' expr ('else' expr)?									# If
+	|	'while' expr 'do' expr													# While	
+	|	'for' ID ':=' expr 'to' expr 'do' expr									# For			
+	|	'break'																	# Break
 	
-	|	'let' decls+ 'in' (expr (';' expr)*)? 'end'							# Let
+	|	'let' decls+ 'in' (expr (';' expr)*)? 'end'								# Let
 	;
 
 lvalue
-	:	ID																	# IdLValue	
-	|	lvalue '.' ID														# FieldLValue
-	|	lvalue '[' expr ']'													# IndexLValue
+	:	ID																		# IdLValue	
+	|	lvalue '.' ID															# FieldLValue
+	|	lvalue '[' expr ']'														# IndexLValue
 	;
 
 decls
-	:	('type' ID '=' type)+												# TypeDecls
-	|	'var' id=ID (':' typeId=ID)? ':=' expr								# VarDecl
-	|	func_decl+															# FuncDecls
+	:	('type' ID '=' type)+													# TypeDecls
+	|	'var' id=ID (':' typeId=ID)? ':=' expr									# VarDecl
+	|	func_decl+																# FuncDecls
 	;
 
 func_decl
-	:	'function' id=ID '(' type_fields? ')' (':' typeId=ID)? '=' expr		# FuncDecl
+	:	'function' id=ID '(' type_fields? ')' (':' typeId=ID)? '=' expr			# FuncDecl
 	;
 
 type
-	:	ID																	# IdType
-	|	'{' type_fields? '}'												# RecordType
-	|	'array' 'of' ID														# ArrayType
+	:	ID																		# IdType
+	|	'{' type_fields? '}'													# RecordType
+	|	'array' 'of' ID															# ArrayType
 	;
 
 type_fields
-	:	ID ':' ID (',' ID ':' ID)*											# TypeFields
+	:	ID ':' ID (',' ID ':' ID)*												# TypeFields
 	;
 
 /*

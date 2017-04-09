@@ -10,40 +10,54 @@ namespace Tiger.AST
     {
         public ForNode(ParserRuleContext context) : base(context) { }
 
-        public string Cursor
+        public VarDeclNode Cursor
         {
-            get => (Children[0] as VarDeclNode).Name;
+            get => Children[0] as VarDeclNode;
+        }
+
+        public ExpressionNode ToExpression
+        {
+            get => Children[1] as ExpressionNode;
+        }
+
+        public ExpressionNode DoExpression
+        {
+            get => Children[2] as ExpressionNode;
         }
 
         public override string Type => Types.Void;
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            var clone = new Scope(scope);
-            clone.InsideLoop = true;
+            var clone = new Scope(scope)
+            {
+                InsideLoop = true
+            };
 
-            Children[0].CheckSemantics(clone, errors);
-            Children[1].CheckSemantics(scope, errors);
-            Children[2].CheckSemantics(clone, errors);
+            Cursor.CheckSemantics(clone, errors);
+            ToExpression.CheckSemantics(scope, errors);
+            DoExpression.CheckSemantics(clone, errors);
 
-            if ((Children[0] as VarDeclNode).Type != Types.Int)
+            if (errors.Count > 0) return;
+
+            if (!scope.SameType(Cursor.Type, Types.Int))
                 errors.Add(new SemanticError
                 {
-                    Message = $"The return type of the expression for the lower bound of the 'for' loop is not integer",
+                    Message = $"The return type '{Cursor.Type}' of the expression for the lower bound of the 'for' loop is not integer",
                     Node = Children[0]
                 });
 
-            if (Children[1].Type != Types.Int)
+            if (!scope.SameType(ToExpression.Type, Types.Int))
                 errors.Add(new SemanticError
                 {
-                    Message = $"The expression for the upper bound of the 'for' loop does not return a value",
+                    Message = "The expression for the upper bound of the 'for' loop does not return a value",
                     Node = Children[1]
                 });
 
-            if (Children[2].Type != Types.Void)
+            if (DoExpression.Type != Types.Void)
                 errors.Add(new SemanticError
                 {
-                    Message = $"The body expression of the 'for' loop may not produce a result",
+                    Message = "The body expression of the 'for' loop may not produce a result",
                     Node = Children[2]
                 });
         }
@@ -51,14 +65,14 @@ namespace Tiger.AST
         public override void Generate(CodeGenerator generator)
         {
             generator = new CodeGenerator(generator);
-            ILGenerator il = generator.Generator;
+            ILGenerator il = generator.Generator;            
 
-            Children[0].Generate(generator);
-            Children[1].Generate(generator);
+            Cursor.Generate(generator);
+            LocalBuilder cursor = generator.Variables[Cursor.Name];
+
             LocalBuilder top = il.DeclareLocal(typeof(int));
-            il.Emit(OpCodes.Stloc, top);
-
-            LocalBuilder cursor = generator.Variables[Cursor];
+            ToExpression.Generate(generator);            
+            il.Emit(OpCodes.Stloc, top);                        
 
             Label condition = il.DefineLabel();
             Label end = il.DefineLabel();
@@ -74,7 +88,7 @@ namespace Tiger.AST
             il.Emit(OpCodes.Bgt, end);
 
             //For body
-            Children[2].Generate(generator);
+            DoExpression.Generate(generator);
 
             //Increase cursor value and continue iteration
             il.Emit(OpCodes.Ldloc, cursor);
@@ -85,7 +99,6 @@ namespace Tiger.AST
 
             //end
             il.MarkLabel(end);
-
             generator.LoopEnd = loopEnd;
         }
     }

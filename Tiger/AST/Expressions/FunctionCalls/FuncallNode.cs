@@ -11,14 +11,14 @@ namespace Tiger.AST
     {
         public FuncallNode(ParserRuleContext context) : base(context) { }
 
-        public string FunctionName
+        public string Name
         {
             get => (Children[0] as IdNode).Name;
         }
 
-        public IEnumerable<ExpressionNode> Arguments
+        public List<ExpressionNode> Arguments
         {
-            get => Children.Skip(1).Cast<ExpressionNode>();
+            get => Children.Skip(1).Cast<ExpressionNode>().ToList();
         }
 
         public FunctionInfo SymbolInfo { get; protected set; }
@@ -30,81 +30,80 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            foreach (var arg in Arguments)
-                arg.CheckSemantics(scope, errors);
+            Arguments.ForEach(a => a.CheckSemantics(scope, errors));
 
             if (errors.Count > 0)
                 return;
 
-            if (!scope.IsDefined(FunctionName))
+            if (scope.IsDefined<VariableInfo>(Name))
             {
                 errors.Add(new SemanticError
                 {
-                    Message = $"Function '{FunctionName}' does not exist",
+                    Message = $"Variable '{Name}' is being used as a function",
                     Node = this
                 });
                 return;
             }
-
-            ItemInfo info = scope[FunctionName];
-            if (!(info is FunctionInfo fInfo))
+            else if (!scope.IsDefined<FunctionInfo>(Name))
             {
                 errors.Add(new SemanticError
                 {
-                    Message = $"Variable or constant '{FunctionName}' is being used as a function",
+                    Message = $"Function '{Name}' does not exist",
                     Node = this
                 });
                 return;
             }
-
-            int parameterCount = fInfo.Parameters.Length;
-            int argumentCount = Arguments.Count();
-            if (parameterCount != argumentCount)
+            else
             {
-                errors.Add(new SemanticError
+                var info = scope.GetItem<FunctionInfo>(Name);
+
+                int parameterCount = info.Parameters.Length;
+                int argumentCount = Arguments.Count();
+                if (parameterCount != argumentCount)
                 {
-                    Message = $"Function '{FunctionName}' takes {parameterCount} arguments, got {argumentCount} instead",
-                    Node = this
-                });
-                return;
-            }
-
-            var arguments = Arguments.ToArray();
-            for (int i = 0; i < parameterCount; i++)
-            {
-                string expectedT = fInfo.Parameters[i];
-                string exprT = arguments[i].Type;
-
-                if (exprT != Types.Nil && !scope.SameType(exprT, expectedT))
                     errors.Add(new SemanticError
                     {
-                        Message = $"Called function {FunctionName} with argument type '{exprT}' when expecting '{expectedT}'",
-                        Node = arguments[i]
+                        Message = $"Function '{Name}' takes {parameterCount} arguments, got {argumentCount} instead",
+                        Node = this
                     });
-            }
+                    return;
+                }
 
-            SymbolInfo = fInfo;
+                var arguments = Arguments.ToArray();
+                for (int i = 0; i < parameterCount; i++)
+                {
+                    string expectedT = info.Parameters[i];
+                    string exprT = arguments[i].Type;
+
+                    if (exprT != Types.Nil && !scope.SameType(exprT, expectedT))
+                        errors.Add(new SemanticError
+                        {
+                            Message = $"Called function {Name} with argument type '{exprT}' when expecting '{expectedT}'",
+                            Node = arguments[i]
+                        });
+                }
+
+                SymbolInfo = info;
+            }
         }
 
         public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
 
-            foreach (var arg in Arguments)
-            {
-                arg.Generate(generator);
-            }
+            Arguments.ForEach(a => a.Generate(generator));
 
-            if (!SymbolInfo.IsStdlFunc)
-                foreach (var fv in SymbolInfo.ForeignVars)
+            if (!SymbolInfo.IsStdlFunc) // stdl functions doesn't have closures
+                foreach (var fv in SymbolInfo.ForeignVars) // pass foreign variables as parameters
                 {
                     if (generator.Variables.ContainsKey(fv))
                     {
-                        if (!SymbolInfo.Parameters.Contains(fv))
-                            il.Emit(OpCodes.Ldloca, generator.Variables[fv]);
+                        // fv is local in the calling context
+                        il.Emit(OpCodes.Ldloca, generator.Variables[fv]);
                     }
                     else
                     {
+                        // fv is foreign in the calling context
                         il.Emit(OpCodes.Ldarg, generator.ParamIndex[fv]);
                     }
                 }

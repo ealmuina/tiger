@@ -16,12 +16,12 @@ namespace Tiger.AST
 
         public FuncDeclNode(ParserRuleContext context) : base(context) { }
 
-        public RecordTypeNode Arguments
+        public FieldsListNode Arguments
         {
-            get => Children[1] as RecordTypeNode;
+            get => Children[1] as FieldsListNode;
         }
 
-        public string FunctionType
+        public override string Type
         {
             get => Children[2] != null ? (Children[2] as IdNode).Name : Types.Void;
         }
@@ -33,14 +33,17 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            foreignVariables = (VariableInfo[])scope.Variables.Clone();
-            scope = new Scope(scope);
-            scope.InsideLoop = false;
-            var info = (FunctionInfo)scope[Name];
+            foreignVariables = scope.Variables;
+            scope = new Scope(scope)
+            {
+                InsideLoop = false
+            };
+            var info = scope.GetItem<FunctionInfo>(Name);
 
+            // Define foreign variables
             foreach (var fv in foreignVariables)
             {
-                scope.DefineVariable(fv.Name, fv.Type, (scope[fv.Name] as VariableInfo).IsReadOnly, true);
+                scope.DefineVariable(fv.Name, fv.Type, (scope.GetItem<VariableInfo>(fv.Name)).IsReadOnly, true);
                 info.ForeignVars.Add(fv.Name);
             }
 
@@ -63,33 +66,39 @@ namespace Tiger.AST
                     if (names[i] == Name)
                         errors.Add(new SemanticError
                         {
-                            Message = $"There is an argument named as the function",
+                            Message = "There is an argument named as the function",
                             Node = this
                         });
 
+                    if (errors.Count > 0) return;
+
+                    // Define arguments
                     scope.DefineVariable(names[i], types[i], false, false);
-                    info.ForeignVars.Remove(names[i]);
+                    info.ForeignVars.Remove(names[i]); // in case an argument hides a foreign variable
                 }
             }
 
             Expression.CheckSemantics(scope, errors);
 
-            if (Expression.Type != Types.Nil && FunctionType != Expression.Type)
+            if (Expression.Type != Types.Nil && !scope.SameType(Type, Expression.Type))
                 errors.Add(new SemanticError
                 {
-                    Message = $"The expression assigned to function '{Name}' returns '{Expression.Type}' and doesn't match with the expected '{FunctionType}'",
+                    Message = $"The expression assigned to function '{Name}' returns '{Expression.Type}' and doesn't match with the expected '{Type}'",
                     Node = this
                 });
         }
 
         public void Define(CodeGenerator generator)
         {
+            // Create and store a new MethodBuilder
             MethodBuilder func = generator.Type.DefineMethod(Name, MethodAttributes.Static);
-            func.SetReturnType(generator.Types[FunctionType]);
+            func.SetReturnType(generator.Types[Type]);
             generator.Functions[Name] = func;
 
+            // Create a clone of the current generator, modify it and save it as the function's own
             this.generator = new CodeGenerator(generator);
             this.generator.Functions = generator.Functions;
+
             generator = this.generator;
             generator.Method = func;
             generator.Generator = func.GetILGenerator();
@@ -97,7 +106,7 @@ namespace Tiger.AST
 
             var paramTypes = new List<Type>();
 
-            //Store parameters types
+            //Store parameters types and indices
             if (Arguments != null)
             {
                 string[] names = Arguments.Names;
@@ -110,7 +119,7 @@ namespace Tiger.AST
                 }
             }
 
-            //Store foreign variables types to pass them as ref parameters
+            //Store foreign variables types to pass them as ref parameters, as well as their indices
             VariableInfo[] fv = foreignVariables;
             int paramIndex = Arguments != null ? Arguments.Names.Length : 0;
             for (int i = 0; i < fv.Length; i++)
@@ -147,7 +156,7 @@ namespace Tiger.AST
 
         public override void Generate(CodeGenerator generator)
         {
-            generator = this.generator;
+            generator = this.generator; // use the function's own generator
             ILGenerator il = generator.Generator;
 
             // Save arguments to local variables
@@ -158,7 +167,7 @@ namespace Tiger.AST
 
                 for (int i = 0; i < names.Length; i++)
                 {
-                    LocalBuilder arg = generator.Generator.DeclareLocal(generator.Types[types[i]]);
+                    LocalBuilder arg = il.DeclareLocal(generator.Types[types[i]]);
                     generator.Variables[names[i]] = arg;
 
                     il.Emit(OpCodes.Ldarg, i);

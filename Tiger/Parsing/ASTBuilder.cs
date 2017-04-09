@@ -145,8 +145,8 @@ namespace Tiger.Parsing
         {
             var node = new FuncallNode(context);
             var id = new IdNode(context, context.ID().GetText());
-            node.Children.Add(id);
-            node.Children.AddRange(from e in context.expr() select Visit(e));
+            node.Children.Add(id); // FUNCTION NAME
+            node.Children.AddRange(from e in context.expr() select Visit(e)); // PARAMETERS
             return node;
         }
         #endregion
@@ -181,8 +181,8 @@ namespace Tiger.Parsing
         {
             var node = new RecordNode(context);
 
-            var typeId = new IdNode(context, context.typeID.Text);
-            node.Children.Add(typeId);
+            var typeId = new IdNode(context, context.typeID.Text); 
+            node.Children.Add(typeId); // RECORD TYPE
 
             ITerminalNode[] ids = context.ID();
             TigerParser.ExprContext[] exprs = context.expr();
@@ -197,10 +197,10 @@ namespace Tiger.Parsing
                 var fieldExpr = Visit(exprs[i - 1]);
 
                 var field = new FieldNode(fieldId.Line, fieldId.Column);
-                field.Children.Add(fieldId);
-                field.Children.Add(fieldExpr);
+                field.Children.Add(fieldId); // field -> FIELD NAME
+                field.Children.Add(fieldExpr); // field -> FIELD EXPRESSION
 
-                node.Children.Add(field);
+                node.Children.Add(field); // FIELD #i
             }
             return node;
         }
@@ -210,9 +210,9 @@ namespace Tiger.Parsing
             var node = new ArrayNode(context);
             var typeId = new IdNode(context, context.ID().GetText());
 
-            node.Children.Add(typeId);
-            node.Children.Add(Visit(context.expr(0)));
-            node.Children.Add(Visit(context.expr(1)));
+            node.Children.Add(typeId); // TYPE
+            node.Children.Add(Visit(context.expr(0))); // SIZE
+            node.Children.Add(Visit(context.expr(1))); // INIT EXPRESSION
 
             return node;
         }
@@ -222,19 +222,19 @@ namespace Tiger.Parsing
         public override Node VisitIf([NotNull] TigerParser.IfContext context)
         {
             var node = new IfNode(context);
-            node.Children.Add(Visit(context.expr(0))); //If condition
-            node.Children.Add(Visit(context.expr(1))); //Then expression
+            node.Children.Add(Visit(context.expr(0))); //IF EXPRESSION
+            node.Children.Add(Visit(context.expr(1))); //THEN EXPRESSION
 
             var elseExpr = context.expr(2);
-            node.Children.Add(elseExpr != null ? Visit(elseExpr) : null); //Else expression if any, otherwise nil
+            node.Children.Add(elseExpr != null ? Visit(elseExpr) : null); //ELSE EXPRESSION if any, otherwise nil
             return node;
         }
 
         public override Node VisitWhile([NotNull] TigerParser.WhileContext context)
         {
             var node = new WhileNode(context);
-            node.Children.Add(Visit(context.expr(0))); //Condition
-            node.Children.Add(Visit(context.expr(1))); //Do expression
+            node.Children.Add(Visit(context.expr(0))); // CONDITION
+            node.Children.Add(Visit(context.expr(1))); // DO EXPRESSION
             return node;
         }
 
@@ -244,13 +244,13 @@ namespace Tiger.Parsing
 
             ITerminalNode id = context.ID();
             var init = new VarDeclNode(id.Symbol.Line, id.Symbol.Column, true);
-            init.Children.Add(new IdNode(id.Symbol.Line, id.Symbol.Column, id.GetText()));
-            init.Children.Add(null);
-            init.Children.Add(Visit(context.expr(0)));
+            init.Children.Add(new IdNode(id.Symbol.Line, id.Symbol.Column, id.GetText())); // init -> INIT VARIABLE NAME
+            init.Children.Add(null); // init -> INIT VARIABLE TYPE
+            init.Children.Add(Visit(context.expr(0))); // init -> INIT VARIABLE VALUE EXPRESSION
 
-            node.Children.Add(init);
-            node.Children.Add(Visit(context.expr(1))); //To expression
-            node.Children.Add(Visit(context.expr(2))); //Do expression
+            node.Children.Add(init); // INIT VARIABLE
+            node.Children.Add(Visit(context.expr(1))); //TO EXPRESSION
+            node.Children.Add(Visit(context.expr(2))); //DO EXPRESSION
 
             return node;
         }
@@ -311,7 +311,7 @@ namespace Tiger.Parsing
         public override Node VisitFuncDecls([NotNull] TigerParser.FuncDeclsContext context)
         {
             var node = new FuncDeclListNode(context);
-            node.Children.AddRange(from funcDecl in context.func_decl() select Visit(funcDecl));
+            node.Children.AddRange(from funcDecl in context.func_decl() select Visit(funcDecl)); // FUNCTIONS
             return node;
         }
 
@@ -319,20 +319,24 @@ namespace Tiger.Parsing
         {
             var node = new FuncDeclNode(context);
 
+            // ID
             node.Children.Add(
                 new IdNode(context.id.Line, context.id.Column, context.id.Text));
 
+            // PARAMS ?
             TigerParser.Type_fieldsContext typeFields = context.type_fields();
             node.Children.Add(
                 typeFields == null ?
                 null :
                 Visit(typeFields));
 
+            // RETURN TYPE ?
             node.Children.Add(
                 context.typeId == null ?
                 null :
                 new IdNode(context.typeId.Line, context.typeId.Column, context.typeId.Text));
 
+            // BODY
             node.Children.Add(Visit(context.expr()));
 
             return node;
@@ -372,7 +376,7 @@ namespace Tiger.Parsing
             }
             catch (Exception)
             {
-                return new RecordTypeNode(context, new string[] { }, new string[] { });
+                return new FieldsListNode(context, new string[] { }, new string[] { });
             }
         }
 
@@ -380,7 +384,7 @@ namespace Tiger.Parsing
         {
             var node = new ArrayTypeNode(context);
             ITerminalNode id = context.ID();
-            node.Children.Add(
+            node.Children.Add( // ELEMENTS TYPE
                 new IdNode(
                     id.Symbol.Line,
                     id.Symbol.Column,
@@ -398,12 +402,12 @@ namespace Tiger.Parsing
             for (int i = 0; i < ids.Length; i++)
             {
                 if (i % 2 == 0)
-                    names.Add(ids[i].GetText());
+                    names.Add(ids[i].GetText()); // names are in even positions
                 else
-                    types.Add(ids[i].GetText());
+                    types.Add(ids[i].GetText()); //types are in odd positions
             }
 
-            var node = new RecordTypeNode(context, names.ToArray(), types.ToArray());
+            var node = new FieldsListNode(context, names.ToArray(), types.ToArray());
             return node;
         }
         #endregion
@@ -413,20 +417,20 @@ namespace Tiger.Parsing
         {
             var node = new VarDeclNode(context);
 
-            node.Children.Add(
+            node.Children.Add( // NAME
                 new IdNode(
                     context.id.Line,
                     context.id.Column,
                     context.id.Text));
 
-            node.Children.Add(context.typeId == null ?
+            node.Children.Add(context.typeId == null ? // TYPE
                 null :
                 new IdNode(
                     context.typeId.Line,
                     context.typeId.Column,
                     context.typeId.Text));
 
-            node.Children.Add(Visit(context.expr()));
+            node.Children.Add(Visit(context.expr())); // EXPRESSION
             return node;
         }
         #endregion

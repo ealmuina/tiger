@@ -13,30 +13,38 @@ namespace Tiger.AST
 
         public string[] DeclaredNames
         {
-            get => (from f in Children.Cast<FuncDeclNode>() select f.Name).ToArray();
+            get =>(from f in Children.Cast<FuncDeclNode>() select f.Name).ToArray();
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            var functions = Children.Cast<FuncDeclNode>();
+            var functions = Children.Cast<FuncDeclNode>().ToList();
 
             foreach (var func in functions)
-            {
-                scope.DefineFunction(func.Name, func.FunctionType,
+            {                
+                if (!scope.IsDefined<TypeInfo>(func.Type)) 
+                {                    
+                    errors.Add(new SemanticError
+                    {
+                        Message = $"Function '{func.Name}' return type '{func.Type}' is undefined in its scope",
+                        Node = this
+                    });
+                    return;
+                } // In order to be able to define correctly the function below we need to check here that its return type is correct
+
+                scope.DefineFunction(func.Name, func.Type,
                     func.Arguments != null ? func.Arguments.Types : new string[] { });
             }
 
-            foreach (var func in functions)
-                func.CheckSemantics(scope, errors);
+            functions.ForEach(f => f.CheckSemantics(scope, errors));
         }
 
         public override void Generate(CodeGenerator generator)
         {
-            foreach (var func in Children.Cast<FuncDeclNode>())
-                func.Define(generator);
+            var functions = Children.Cast<FuncDeclNode>().ToList();
 
-            foreach (var node in Children)
-                node.Generate(generator);
+            functions.ForEach(f => f.Define(generator));
+            functions.ForEach(f => f.Generate(generator));
         }
     }
 }

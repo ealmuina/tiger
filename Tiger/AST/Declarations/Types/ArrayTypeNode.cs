@@ -16,15 +16,14 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            if (!scope.Types.ContainsKey(Type))
+            if (!scope.IsDefined<TypeInfo>(Type))
                 errors.Add(new SemanticError
                 {
                     Message = $"Unknown type '{Type}' on array declaration",
                     Node = this
                 });
 
-            foreach (var node in Children)
-                node.CheckSemantics(scope, errors);
+            Children.ForEach(n => n.CheckSemantics(scope, errors));
         }
 
         public override void Generate(CodeGenerator generator)

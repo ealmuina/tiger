@@ -19,16 +19,24 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
+            Scope outerScope = scope;
             scope = new Scope(scope);
-            foreach (var node in Children)
-                node.CheckSemantics(scope, errors);
+
+            Children.ForEach(n => n.CheckSemantics(scope, errors));
+            if (errors.Count > 0) return;
+
+            if (!outerScope.IsDefined<TypeInfo>(Type) || scope.GetItem<TypeInfo>(Type) != outerScope.GetItem<TypeInfo>(Type))
+                errors.Add(new SemanticError
+                {
+                    Message = $"'let' block return type '{Type}' is not visible in the outer scope",
+                    Node = this
+                });
         }
 
         public override void Generate(CodeGenerator generator)
         {
             generator = new CodeGenerator(generator);
-            foreach (var node in Children)
-                node.Generate(generator);
+            Children.ForEach(n => n.Generate(generator));
         }
     }
 }

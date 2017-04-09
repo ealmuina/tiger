@@ -16,7 +16,10 @@ namespace Tiger.AST
             get => (from f in Children.Cast<TypeDeclNode>() select f.Name).ToArray();
         }
 
-        private void FixArrayType(TypeDeclNode type, CodeGenerator generator)
+        /// <summary>
+        /// Register in the generator a Type that corresponds with the specified array type if its elements type is already in the generator
+        /// </summary>
+        void FixArrayType(TypeDeclNode type, CodeGenerator generator)
         {
             var info = (ArrayInfo)type.TypeInfo;
             generator.Types[type.Name] = generator.Types.ContainsKey(info.ElementsType) ?
@@ -25,13 +28,10 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            var types = Children.Cast<TypeDeclNode>();
+            var types = Children.Cast<TypeDeclNode>().ToList();
 
-            foreach (var type in types)
-                type.DefineType(scope, errors);
-
-            foreach (var type in types)
-                type.CheckSemantics(scope, errors);
+            types.ForEach(t => t.DefineType(scope, errors));
+            types.ForEach(t => t.CheckSemantics(scope, errors));
         }
 
         public override void Generate(CodeGenerator generator)
@@ -43,16 +43,16 @@ namespace Tiger.AST
                     FixArrayType(type, generator);
             }
 
-            //Store real name for aliases
+            //Store real type for aliases
             foreach (var type in Children.Cast<TypeDeclNode>().Where(t => !(t.TypeInfo is ArrayInfo)))
                 generator.Types[type.Name] = generator.Types[type.TypeInfo.Name];
 
+            // Fix arrays
             while (generator.Types.ContainsValue(null))
                 foreach (var type in Children.Cast<TypeDeclNode>().Where(t => t.TypeInfo is ArrayInfo))
                     FixArrayType(type, generator);
 
-            foreach (var node in Children)
-                node.Generate(generator);
+            Children.ForEach(n => n.Generate(generator));
         }
     }
 }

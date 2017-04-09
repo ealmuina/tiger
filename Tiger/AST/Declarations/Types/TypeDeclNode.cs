@@ -25,7 +25,7 @@ namespace Tiger.AST
                 var alias = (IdNode)Children[1];
                 scope.DefineAliasType(Name, alias.Name);
             }
-            else if (Children[1] is RecordTypeNode record)
+            else if (Children[1] is FieldsListNode record)
             {
                 scope.DefineRecordType(Name, record.Names, record.Types);
             }
@@ -38,8 +38,7 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            foreach (var node in Children)
-                node.CheckSemantics(scope, errors);
+            Children.ForEach(n => n.CheckSemantics(scope, errors));
 
             if (new string[] { Types.Int, Types.String }.Contains(Name))
                 errors.Add(new SemanticError
@@ -58,9 +57,12 @@ namespace Tiger.AST
                 TypeInfo = scope.GetItem<Semantics.TypeInfo>(Name);
         }
 
+        /// <summary>
+        /// If it's record declaration, then defines it with the generator
+        /// </summary>
         public void Define(CodeGenerator generator)
         {
-            if (Children[1] is RecordTypeNode)
+            if (Children[1] is FieldsListNode)
             {
                 TypeBuilder typeBuilder = generator.Module.DefineType(Name + "_" + CodeGenerator.TypeId++, TypeAttributes.Public);
                 typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
@@ -70,15 +72,16 @@ namespace Tiger.AST
 
         public override void Generate(CodeGenerator generator)
         {
-            if (Children[1] is RecordTypeNode record)
-            {
+            if (Children[1] is FieldsListNode record) // it's a record declaration. Define its fields!
+            {       
                 var typeBuilder = (TypeBuilder)generator.Types[Name];
-
-                var clone = new CodeGenerator(generator);
-                clone.Type = typeBuilder;
+                var clone = new CodeGenerator(generator)
+                {
+                    Type = typeBuilder
+                };
                 Dictionary<string, FieldBuilder> fields = record.Define(clone);
-                generator.Fields[Name] = fields;
 
+                generator.Fields[Name] = fields;
                 generator.Types[Name] = typeBuilder.CreateType();
             }
         }

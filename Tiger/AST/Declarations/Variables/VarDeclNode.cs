@@ -32,6 +32,11 @@ namespace Tiger.AST
             get => Children[1] != null ? (Children[1] as IdNode).Name : Children[2].Type;
         }
 
+        public ExpressionNode Expression
+        {
+            get => Children[2] as ExpressionNode;
+        }
+
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             foreach (var node in Children.Where(n => n != null))
@@ -46,46 +51,46 @@ namespace Tiger.AST
                     Node = this
                 });
 
-            if (Children[2].Type == Types.Void)
+            if (Expression.Type == Types.Void)
                 errors.Add(new SemanticError
                 {
-                    Message = $"Expression assigned to variable does not return a value",
+                    Message = "Expression assigned to variable does not return a value",
                     Node = this
                 });
 
-            if (Children[1] == null && Children[2].Type == Types.Nil)
+            if (Children[1] == null && Expression.Type == Types.Nil)
                 errors.Add(new SemanticError
                 {
-                    Message = $"Variable type cannot be infered from an expression which returns nil",
+                    Message = "Variable type cannot be infered from an expression which returns nil",
                     Node = this
                 });
 
-            if (Children[1] != null && !scope.Types.ContainsKey(Type))
+            if (!scope.IsDefined<TypeInfo>(Type))
                 errors.Add(new SemanticError
                 {
                     Message = $"Cannot declare variable of undefined type '{Type}'",
-                    Node = Children[1]
+                    Node = this
                 });
 
-            else if (Children[1] != null && Children[2].Type != Types.Nil && !scope.SameType((Children[1] as IdNode).Name, Children[2].Type))
+            else if (Children[1] != null && Expression.Type != Types.Nil && !scope.SameType(Type, Expression.Type))
                 errors.Add(new SemanticError
                 {
-                    Message = $"Expression assigned to variable does not match with its type",
+                    Message = "Variable declared type doesn't match with the expression assigned to it",
                     Node = this
                 });
 
             if (errors.Count == 0)
-                scope.DefineVariable(Name, scope.GetItem<TypeInfo>(Type).Name, IsReadonly, false);
+                scope.DefineVariable(Name, Type, IsReadonly, false);
         }
 
         public override void Generate(CodeGenerator generator)
         {
             ILGenerator il = generator.Generator;
             Type type = generator.Types[Type];
-
-            Children[2].Generate(generator);
-
             LocalBuilder variable = il.DeclareLocal(type);
+
+            Expression.Generate(generator);
+            
             il.Emit(OpCodes.Stloc, variable);
             generator.Variables[Name] = variable;
         }

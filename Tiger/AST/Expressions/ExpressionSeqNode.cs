@@ -15,7 +15,8 @@ namespace Tiger.AST
 
         bool MayCauseBreak(Node node)
         {
-            return node != null && (node is BreakNode || node.Children.Exists(n => MayCauseBreak(n)));
+            if (node == null || node is WhileNode || node is ForNode) return false;
+            return node is BreakNode || node.Children.Exists(n => MayCauseBreak(n));
         }
 
         bool InLoop { get; set; }
@@ -39,7 +40,7 @@ namespace Tiger.AST
                 int errorsCount = errors.Count;
                 expr.CheckSemantics(scope, errors);
 
-                if (errorsCount == errors.Count && !scope.Types.ContainsKey(expr.Type))
+                if (errorsCount == errors.Count && !scope.IsDefined<TypeInfo>(expr.Type))
                     errors.Add(new SemanticError
                     {
                         Message = $"Type '{expr.Type}' returned by the expression isn't visible in its context",

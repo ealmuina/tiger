@@ -11,19 +11,29 @@ namespace Tiger.AST
 
         public FieldNode(int line, int column) : base(line, column) { }
 
-        public string Name => (Children[0] as IdNode).Name;
+        public string Name
+        {
+            get => (Children[0] as IdNode).Name;
+        }
 
-        public override string Type => Children[1].Type;
+        public ExpressionNode Expression
+        {
+            get => Children[1] as ExpressionNode;
+        }
+
+        public override string Type
+        {
+            get => Children[1].Type;
+        }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            foreach (var node in Children)
-                node.CheckSemantics(scope, errors);
+            Children.ForEach(n => n.CheckSemantics(scope, errors));
         }
 
         public override void Generate(CodeGenerator generator)
         {
-            Children[1].Generate(generator);
+            Expression.Generate(generator);
         }
     }
 }

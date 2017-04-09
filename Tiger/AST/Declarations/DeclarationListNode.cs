@@ -25,7 +25,7 @@ namespace Tiger.AST
                     if (s.Contains(decl))
                         errors.Add(new SemanticError
                         {
-                            Message = string.Format("{0} {1} declared directly in the same 'let' several times",
+                            Message = string.Format("{0} '{1}' declared directly in the same 'let' several times",
                                                      node is TypeDeclListNode ? "Type" : "Variable/function",
                                                      decl),
                             Node = (Node)node
@@ -45,13 +45,15 @@ namespace Tiger.AST
 
         public override void Generate(CodeGenerator generator)
         {
-            foreach (var node in Children)
-                node.Generate(generator);
+            Children.ForEach(n => n.Generate(generator));
         }
     }
 
     interface IDeclarationList
     {
+        /// <summary>
+        /// Name of declared elements in the sequence of declarations
+        /// </summary>
         string[] DeclaredNames { get; }
     }
 }

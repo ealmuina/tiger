@@ -28,8 +28,7 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            foreach (var node in Children)
-                node.CheckSemantics(scope, errors);
+            Children.ForEach(n => n.CheckSemantics(scope, errors));
 
             if (errors.Count > 0) return;
 
@@ -64,37 +63,37 @@ namespace Tiger.AST
             Label loop = il.DefineLabel();
             Label end = il.DefineLabel();
 
-            LocalBuilder index = il.DeclareLocal(generator.Types[Types.Int]);
+            LocalBuilder cursor = il.DeclareLocal(generator.Types[Types.Int]);
             LocalBuilder size = il.DeclareLocal(generator.Types[Types.Int]);
             LocalBuilder array = il.DeclareLocal(generator.Types[Type]);
 
             Type type = generator.Types[Type].GetElementType();
 
             SizeExpr.Generate(generator);
-            il.Emit(OpCodes.Stloc, size);
+            il.Emit(OpCodes.Stloc, size);   // store size
 
             il.Emit(OpCodes.Ldloc, size);
             il.Emit(OpCodes.Newarr, type);
-            il.Emit(OpCodes.Stloc, array);
+            il.Emit(OpCodes.Stloc, array);  // store array
 
             il.Emit(OpCodes.Ldc_I4_0);
-            il.Emit(OpCodes.Stloc, index);
+            il.Emit(OpCodes.Stloc, cursor); // store cursor = 0
 
             il.MarkLabel(loop);
-            il.Emit(OpCodes.Ldloc, index);
+            il.Emit(OpCodes.Ldloc, cursor);
             il.Emit(OpCodes.Ldloc, size);
-            il.Emit(OpCodes.Bge, end);
+            il.Emit(OpCodes.Bge, end);      // End if cursor >= size
 
             il.Emit(OpCodes.Ldloc, array);
-            il.Emit(OpCodes.Ldloc, index);
+            il.Emit(OpCodes.Ldloc, cursor);
             InitExpr.Generate(generator);
-            il.Emit(OpCodes.Stelem, type);
+            il.Emit(OpCodes.Stelem, type);  // array[cursor] = InitExpr result
 
-            il.Emit(OpCodes.Ldloc, index);
+            il.Emit(OpCodes.Ldloc, cursor);
             il.Emit(OpCodes.Ldc_I4_1);
             il.Emit(OpCodes.Add);
-            il.Emit(OpCodes.Stloc, index);
-            il.Emit(OpCodes.Br, loop);
+            il.Emit(OpCodes.Stloc, cursor); // cursor++
+            il.Emit(OpCodes.Br, loop);      // keep iterating
 
             il.MarkLabel(end);
             il.Emit(OpCodes.Ldloc, array);

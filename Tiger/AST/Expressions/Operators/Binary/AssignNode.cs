@@ -38,6 +38,13 @@ namespace Tiger.AST
                     Node = Expression
                 });
 
+            if (!scope.IsDefined<TypeInfo>(Expression.Type))
+                errors.Add(new SemanticError
+                {
+                    Message = $"Expression type {Expression.Type} doesn't exist in the current context",
+                    Node = Expression
+                });
+
             else if (!scope.SameType(LValue.Type, Expression.Type))
                 errors.Add(new SemanticError
                 {

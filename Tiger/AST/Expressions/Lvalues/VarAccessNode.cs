@@ -34,7 +34,7 @@ namespace Tiger.AST
                     Node = this
                 });
 
-                if (scope.IsDefined(Name))
+                if (scope.IsDefined<FunctionInfo>(Name))
                     errors.Add(new SemanticError
                     {
                         Message = $"Function '{Name}' used as variable",
@@ -43,7 +43,7 @@ namespace Tiger.AST
             }
             else
             {
-                var info = (VariableInfo)scope[Name];
+                var info = scope.GetItem<VariableInfo>(Name);
 
                 if (info.IsReadOnly && !ByValue)
                     errors.Add(new SemanticError

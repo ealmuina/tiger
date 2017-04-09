@@ -67,16 +67,19 @@ namespace Tiger.CodeGeneration
             Label error = il.DefineLabel();
             Label end = il.DefineLabel();
 
-            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_0); // Load n on evaluation stack
 
+            // Error if n < 0
             il.Emit(OpCodes.Dup);
             il.Emit(OpCodes.Ldc_I4_0);
-            il.Emit(OpCodes.Blt, error);
+            il.Emit(OpCodes.Blt, error); 
 
+            // Error if n > 127
             il.Emit(OpCodes.Dup);
             il.Emit(OpCodes.Ldc_I4, 127);
             il.Emit(OpCodes.Bgt, error);
 
+            // Convert.ToChar(n).ToString()
             MethodInfo toChar = typeof(Convert).GetMethod("ToChar", new[] { typeof(int) });
             il.Emit(OpCodes.Call, toChar);
             MethodInfo toString = typeof(Convert).GetMethod("ToString", new[] { typeof(char) });
@@ -85,6 +88,7 @@ namespace Tiger.CodeGeneration
 
             il.MarkLabel(error);
             il.ThrowException(typeof(ArgumentException));
+
             il.MarkLabel(end);
             il.Emit(OpCodes.Ret);
 

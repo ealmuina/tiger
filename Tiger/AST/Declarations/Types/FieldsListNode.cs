@@ -8,9 +8,9 @@ using System.Reflection;
 
 namespace Tiger.AST
 {
-    class RecordTypeNode : TypeNode
+    class FieldsListNode : TypeNode
     {
-        public RecordTypeNode(ParserRuleContext context, string[] names, string[] types) : base(context)
+        public FieldsListNode(ParserRuleContext context, string[] names, string[] types) : base(context)
         {
             Names = names;
             Types = types;
@@ -25,7 +25,7 @@ namespace Tiger.AST
             if (Names.GroupBy(n => n).Count() != Names.Length)
                 errors.Add(new SemanticError
                 {
-                    Message = $"At least two fields have the same name",
+                    Message = "At least two fields have the same name",
                     Node = this
                 });
 
@@ -38,6 +38,10 @@ namespace Tiger.AST
                     });
         }
 
+        /// <summary>
+        /// Define the fields as members of generator.Type
+        /// </summary>
+        /// <returns>Dictionary that associates a name of a field with its corresponding FieldBuilder</returns>
         public Dictionary<string, FieldBuilder> Define(CodeGenerator generator)
         {
             var result = new Dictionary<string, FieldBuilder>();

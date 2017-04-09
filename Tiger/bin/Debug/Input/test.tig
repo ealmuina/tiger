@@ -1,1 +1,17 @@
-print("Hi")
+let
+    type output = { value : string, count : int }
+    var a : output := if 1 then output{value = "test", count = 2} else nil
+	var b : output := if 1 then nil else nil
+	var c := if 1 then nil else nil
+in
+    for i:= 0 to a.count do
+        print(a.value);
+	let
+		type output = {}
+		var a := 10 * 80
+	in
+		printiline(a);
+		output{}
+	end;
+	print("test")
+end

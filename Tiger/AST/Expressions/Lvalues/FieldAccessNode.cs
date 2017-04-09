@@ -31,23 +31,25 @@ namespace Tiger.AST
             if (errors.Count > 0) return;
 
             var info = scope.GetItem<TypeInfo>(Children[0].Type);
-            if (!(info is RecordInfo))
+            if (!(info is RecordInfo recInfo))
                 errors.Add(new SemanticError
                 {
                     Message = $"Type '{info.Name}' isn't a record type",
                     Node = Children[1]
                 });
-
-            RecordInfo = (RecordInfo)info;
-
-            if (!RecordInfo.FieldNames.Contains(FieldName))
-                errors.Add(new SemanticError
-                {
-                    Message = $"Type '{RecordInfo.Name}' doesn't have a field named '{FieldName}'",
-                    Node = Children[1]
-                });
             else
-                type = RecordInfo.FieldTypes[Array.IndexOf(RecordInfo.FieldNames, FieldName)];
+            {
+                RecordInfo = recInfo;
+
+                if (!RecordInfo.FieldNames.Contains(FieldName))
+                    errors.Add(new SemanticError
+                    {
+                        Message = $"Type '{RecordInfo.Name}' doesn't have a field named '{FieldName}'",
+                        Node = Children[1]
+                    });
+                else
+                    type = RecordInfo.FieldTypes[Array.IndexOf(RecordInfo.FieldNames, FieldName)];
+            }            
         }
 
         public override void Generate(CodeGenerator generator)

@@ -20,8 +20,7 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            foreach (var node in Children)
-                node.CheckSemantics(scope, errors);
+            Children.ForEach(n => n.CheckSemantics(scope, errors));
 
             if (!scope.IsDefined<TypeInfo>(Type) || !(scope.GetItem<TypeInfo>(Type) is RecordInfo info))
                 errors.Add(new SemanticError
@@ -36,7 +35,7 @@ namespace Tiger.AST
                 if (Children.Count - 1 != info.FieldNames.Length)
                     errors.Add(new SemanticError
                     {
-                        Message = $"Invalid number of fields in record literal",
+                        Message = "Invalid number of fields in record literal",
                         Node = this
                     });
                 else
@@ -54,23 +53,18 @@ namespace Tiger.AST
         public override void Generate(CodeGenerator generator)
         {
             string type = RecordInfo.Name;
-
             ILGenerator il = generator.Generator;
-            LocalBuilder record = il.DeclareLocal(generator.Types[type]);
 
-            il.Emit(OpCodes.Newobj, generator.Types[type].GetConstructor(new Type[] { }));
-            il.Emit(OpCodes.Stloc, record);
-            il.Emit(OpCodes.Ldloc, record);
+            il.Emit(OpCodes.Newobj, generator.Types[type].GetConstructor(new Type[] { })); // create record
 
-            for (int i = 1; i < Children.Count; i++)
+            // Assign values to fields
+            for (int i = 1; i < Children.Count; i++) // 0 is the record type name
             {
                 var field = (FieldNode)Children[i];
-                il.Emit(OpCodes.Dup);
+                il.Emit(OpCodes.Dup); // keep record on evaluation stack
                 field.Generate(generator);
                 il.Emit(OpCodes.Stfld, generator.Fields[type][field.Name]);
             }
-            il.Emit(OpCodes.Pop);
-            il.Emit(OpCodes.Ldloc, record);
         }
     }
 }

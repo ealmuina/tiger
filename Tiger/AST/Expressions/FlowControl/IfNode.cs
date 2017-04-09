@@ -13,7 +13,22 @@ namespace Tiger.AST
 
         public override string Type
         {
-            get => Children[2] == null ? Types.Void : Children[2].Type;
+            get => ElseExpression == null ? Types.Void : ElseExpression.Type;
+        }
+
+        public ExpressionNode IfExpression
+        {
+            get => Children[0] as ExpressionNode;
+        }
+
+        public ExpressionNode ThenExpression
+        {
+            get => Children[1] as ExpressionNode;
+        }
+
+        public ExpressionNode ElseExpression
+        {
+            get => Children[2] as ExpressionNode;
         }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
@@ -23,31 +38,53 @@ namespace Tiger.AST
 
             if (errors.Count > 0) return;
 
-            if (Children[0].Type != Types.Int)
+            if (!scope.SameType(IfExpression.Type, Types.Int))
                 errors.Add(new SemanticError
                 {
-                    Message = $"The condition of the 'if-then-else' statement does not return an integer value",
-                    Node = Children[0]
+                    Message = "The condition of the 'if-then-else' statement does not return an integer value",
+                    Node = IfExpression
                 });
 
-            if (Children[2] == null && Children[1].Type != Types.Void) //if-then
+            if (ElseExpression == null && ThenExpression.Type != Types.Void) //if-then
                 errors.Add(new SemanticError
                 {
-                    Message = $"The 'then' expression of the 'if-then' statement should not return a value",
-                    Node = Children[1]
+                    Message = "The 'then' expression of the 'if-then' statement should not return a value",
+                    Node = ThenExpression
                 });
 
-            if (Children[2] != null && Children[1].Type != Children[2].Type) //if-then-else
+            bool visibleType = true;
+
+            if (!scope.IsDefined<TypeInfo>(ThenExpression.Type))
+            {
                 errors.Add(new SemanticError
                 {
-                    Message = $"The return types of the expressions of the 'if-then-else' statement are not the same",
+                    Message = $"Value returned by the 'then' expression has a type {ThenExpression.Type} that isn't visible in the outer scope",
+                    Node = ThenExpression
+                });
+                visibleType = false;
+            }
+
+            if (ElseExpression != null && !scope.IsDefined<TypeInfo>(ElseExpression.Type))
+            {
+                errors.Add(new SemanticError
+                {
+                    Message = $"Value returned by the 'else' expression has a type {ElseExpression.Type} that isn't visible in the outer scope",
+                    Node = ElseExpression
+                });
+                visibleType = false;
+            }
+
+            if (visibleType && ElseExpression != null && !scope.SameType(ThenExpression.Type, ElseExpression.Type)) //if-then-else
+                errors.Add(new SemanticError
+                {
+                    Message = "The return types of the expressions of the 'if-then-else' statement are not the same",
                     Node = this
                 });
         }
 
         public override void Generate(CodeGenerator generator)
         {
-            Children[0].Generate(generator);
+            IfExpression.Generate(generator);
 
             ILGenerator il = generator.Generator;
             Label _else = il.DefineLabel();
@@ -58,13 +95,12 @@ namespace Tiger.AST
             il.Emit(OpCodes.Beq, _else);
 
             //true
-            Children[1].Generate(generator);
+            ThenExpression.Generate(generator);
             il.Emit(OpCodes.Br, end); //skip false expr
 
             //false
             il.MarkLabel(_else);
-            if (Children[2] != null)
-                Children[2].Generate(generator);
+            ElseExpression?.Generate(generator);
 
             il.MarkLabel(end);
         }

@@ -16,7 +16,7 @@ namespace Tiger.AST
         {
             Expression.CheckSemantics(scope, errors);
 
-            if (errors.Count == 0 && !scope.Types.ContainsKey(Expression.Type))
+            if (errors.Count == 0 && !scope.IsDefined<TypeInfo>(Expression.Type))
                 errors.Add(new SemanticError
                 {
                     Message = $"Type '{Expression.Type}' returned by the expression isn't visible in its context",

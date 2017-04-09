@@ -10,11 +10,20 @@ namespace Tiger.AST
     {
         public WhileNode(ParserRuleContext context) : base(context) { }
 
-        public ExpressionNode Condition => Children[0] as ExpressionNode;
+        public ExpressionNode Condition
+        {
+            get => Children[0] as ExpressionNode;
+        }
 
-        public ExpressionNode Expression => Children[1] as ExpressionNode;
+        public ExpressionNode Expression
+        {
+            get => Children[1] as ExpressionNode;
+        }
 
-        public override string Type => Types.Void;
+        public override string Type
+        {
+            get => Types.Void;
+        }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
@@ -23,17 +32,17 @@ namespace Tiger.AST
             scope.InsideLoop = true;
             Expression.CheckSemantics(scope, errors);
 
-            if (Condition.Type != Types.Int)
+            if (!scope.SameType(Condition.Type, Types.Int))
                 errors.Add(new SemanticError
                 {
-                    Message = $"Invalid type of condition of the while statement",
+                    Message = "Invalid type of condition of the while statement",
                     Node = Condition
                 });
 
             if (Expression.Type != Types.Void)
                 errors.Add(new SemanticError
                 {
-                    Message = $"'while' used with an expression with return value",
+                    Message = "'while' used with an expression with return value",
                     Node = Expression
                 });
 
@@ -62,7 +71,6 @@ namespace Tiger.AST
 
             //false, end
             il.MarkLabel(end);
-
             generator.LoopEnd = loopEnd;
         }
     }
