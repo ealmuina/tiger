@@ -41,7 +41,7 @@ namespace Tiger
         static void PrintHelp()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine("sl.exe [<input_file>]");
+            Console.WriteLine("tiger.exe [<input_file>]");
             Console.WriteLine("<input_file>:\tPath to file written in Tiger to be compiled");
             Console.WriteLine("Without parameters programm will print this help.");
         }
