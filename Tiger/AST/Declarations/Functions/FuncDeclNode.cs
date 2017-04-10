@@ -53,7 +53,7 @@ namespace Tiger.AST
             if (Arguments != null)
                 Arguments.CheckSemantics(scope, errors);
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             scope.DefineFunction(Name, TypeReturnName,
                 Arguments != null ? Arguments.TypesNames : new string[] { });
@@ -81,19 +81,10 @@ namespace Tiger.AST
                 string[] names = Arguments.Names;
                 string[] types = Arguments.TypesNames;
 
-                if (errors.Count > 0) return;
+                if (errors.Any()) return;
 
                 for (int i = 0; i < names.Length; i++)
                 {
-                    //if (names[i] == Name)
-                    //    errors.Add(new SemanticError
-                    //    {
-                    //        Message = "There is an argument named as the function",
-                    //        Node = this
-                    //    });
-
-                    //if (errors.Count > 0) return;
-
                     // Define arguments
                     scope.DefineVariable(names[i], types[i], false, false);
                     info.Parameters[i] = scope.GetItem<Semantics.TypeInfo>(types[i]);
@@ -103,7 +94,7 @@ namespace Tiger.AST
 
             Expression.CheckSemantics(scope, errors);
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             if (!Expression.Type.Equals(Types.Nil) && info.Type != Expression.Type)
                 errors.Add(new SemanticError

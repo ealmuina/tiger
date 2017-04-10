@@ -2,6 +2,7 @@
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
+using System.Linq;
 
 namespace Tiger.AST
 {
@@ -24,7 +25,7 @@ namespace Tiger.AST
                 });
 
             Children.ForEach(n => n.CheckSemantics(scope, errors));
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             Type = scope.GetItem<TypeInfo>(TypeName);
         }

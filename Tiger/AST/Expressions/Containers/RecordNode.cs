@@ -51,7 +51,7 @@ namespace Tiger.AST
                                 Node = Children[i]
                             });
 
-                        if (!Children[i].Type.Equals(Types.Nil) && Children[i].Type != info.FieldTypes[i - 1])
+                        if (Children[i].Type != info.FieldTypes[i - 1])
                             errors.Add(new SemanticError
                             {
                                 Message = $"Expression of type '{Children[i].Type}' cannot be assigned to field " +

@@ -9,6 +9,7 @@ using Tiger.CodeGeneration;
 using Tiger.Parsing;
 using Tiger.Semantics;
 using Tiger.AST;
+using System.Linq;
 
 namespace Tiger
 {
@@ -20,7 +21,7 @@ namespace Tiger
         {
             if (args.Length != 1)
             {
-                Console.Error.WriteLine("Wrong parameter number.");
+                Console.Error.WriteLine("(0,0): Wrong parameter number.");
                 Environment.ExitCode = ErrorCode;
                 PrintHelp();
                 return;
@@ -28,7 +29,7 @@ namespace Tiger
 
             if (!File.Exists(args[0]))
             {
-                Console.Error.WriteLine("Input file path is not valid, does not exist or user has no sufficient permission to read it.");
+                Console.Error.WriteLine("(0,0): Input file path is not valid, does not exist or user has no sufficient permission to read it.");
                 Environment.ExitCode = ErrorCode;
                 return;
             }
@@ -80,7 +81,7 @@ namespace Tiger
 
                 IParseTree tree = parser.compileUnit();
 
-                if (errors.Count > 0)
+                if (errors.Any())
                 {
                     Console.WriteLine();
                     foreach (var error in errors)
@@ -107,18 +108,22 @@ namespace Tiger
                 return true;
             Console.WriteLine();
             foreach (var error in errors)
-                Console.WriteLine($"({error.Node.Line}, {error.Node.Column}): {error.Message}.");
+                Console.WriteLine($"({error.Node.Line},{error.Node.Column}): {error.Message}.");
             return false;
         }
 
         static void GenerateCode(Node root, string outputPath, Scope scope)
         {
-            var generator = new CodeGenerator(outputPath);
+            var generator = new CodeGenerator();
 
             string name = Path.GetFileNameWithoutExtension(outputPath);
             string filename = Path.GetFileName(outputPath);
+            string directory = Path.GetDirectoryName(outputPath);
+
+            directory = directory == "" ? "./" : directory;
+
             AssemblyName assemblyName = new AssemblyName(name);
-            generator.Assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave, Path.GetDirectoryName(outputPath));
+            generator.Assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndSave, directory);
             generator.Module = generator.Assembly.DefineDynamicModule(name, filename);
 
             StandardLibrary.Build(generator, scope);

@@ -11,6 +11,7 @@ namespace Tiger.Semantics
         {
             return a.Equals(b) ||
                 (!a.Equals(Types.Void) && !b.Equals(Types.Void) &&
+                !a.Equals(Types.Int) && !b.Equals(Types.Int) &&
                 (a.Equals(Types.Nil) || b.Equals(Types.Nil)));
         }
 

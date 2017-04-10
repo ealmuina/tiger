@@ -14,7 +14,7 @@ namespace Tiger.CodeGeneration
         /// </summary>
         public static int TypeId { get; set; }
 
-        public CodeGenerator(string path)
+        public CodeGenerator()
         {
             Functions = new Dictionary<string, MethodInfo>();
             Variables = new Dictionary<string, LocalBuilder>();

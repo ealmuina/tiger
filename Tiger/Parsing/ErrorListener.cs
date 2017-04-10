@@ -14,7 +14,7 @@ namespace Tiger.Parsing
 
         public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
-            errors.Add(string.Format("({0}, {1}): {2}", line, charPositionInLine, msg));
+            errors.Add(string.Format("({0},{1}): {2}", line, charPositionInLine, msg));
         }
     }
 
@@ -29,7 +29,7 @@ namespace Tiger.Parsing
 
         public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
-            errors.Add(string.Format("({0}, {1}): {2}", line, charPositionInLine, msg));
+            errors.Add(string.Format("({0},{1}): {2}", line, charPositionInLine, msg));
         }
     }
 }

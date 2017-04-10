@@ -10,8 +10,6 @@ namespace Tiger.AST
     {
         public DeclarationListNode(ParserRuleContext context) : base(context) { }
 
-        public DeclarationListNode(int line, int column) : base(line, column) { }
-
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             var declaredObjects = new HashSet<string>();
@@ -34,11 +32,11 @@ namespace Tiger.AST
                         s.Add(decl);
             }
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             foreach (var node in Children)
             {
-                if (errors.Count > 0) break;
+                if (errors.Any()) break;
                 node.CheckSemantics(scope, errors);
             }
         }

@@ -3,6 +3,7 @@ using System.Reflection.Emit;
 using Antlr4.Runtime;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
+using System.Linq;
 
 namespace Tiger.AST
 {
@@ -36,7 +37,7 @@ namespace Tiger.AST
             ToExpression.CheckSemantics(scope, errors);
             DoExpression.CheckSemantics(clone, errors);
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             if (Cursor.Type != Types.Int)
                 errors.Add(new SemanticError

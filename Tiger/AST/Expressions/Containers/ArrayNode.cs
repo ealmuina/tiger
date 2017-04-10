@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
@@ -30,7 +31,7 @@ namespace Tiger.AST
         {
             Children.ForEach(n => n.CheckSemantics(scope, errors));
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             if (!scope.IsDefined<TypeInfo>(TypeName) || !(scope.GetItem<TypeInfo>(TypeName) is ArrayInfo info))
                 errors.Add(new SemanticError
@@ -53,7 +54,7 @@ namespace Tiger.AST
             if (SizeExpr.Type != Types.Int)
                 errors.Add(new SemanticError
                 {
-                    Message = $"Array size expression type is '{SizeExpr.Type}' which isn't an alias for 'Int'",
+                    Message = $"Array size expression type is '{SizeExpr.Type}' which isn't an alias for '{Types.Int}'",
                     Node = this
                 });
         }

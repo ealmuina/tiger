@@ -15,15 +15,6 @@ namespace Tiger.AST
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
             Expression.CheckSemantics(scope, errors);
-
-            if (errors.Count > 0) return;
-
-            if (!scope.IsDefined<TypeInfo>(Expression.Type.Name))
-                errors.Add(new SemanticError
-                {
-                    Message = $"Type '{Expression.Type}' returned by the expression isn't visible in its context",
-                    Node = Expression
-                });
         }
 
         public override void Generate(CodeGenerator generator)

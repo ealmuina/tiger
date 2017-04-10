@@ -12,7 +12,7 @@ namespace Tiger.Parsing
         public override Node VisitProgram([NotNull] TigerParser.ProgramContext context)
         {
             var node = new ProgramNode(context);
-            node.Children.Add(Visit(context.expr()));
+            node.Children.Add(Visit(context.expr())); // EXPRESSION
             return node;
         }
 
@@ -43,7 +43,7 @@ namespace Tiger.Parsing
         public override Node VisitUnaryMinus([NotNull] TigerParser.UnaryMinusContext context)
         {
             var node = new NegativeNode(context);
-            node.Children.Add(Visit(context.expr()));
+            node.Children.Add(Visit(context.expr())); // OPERAND
             return node;
         }
         #endregion
@@ -70,8 +70,8 @@ namespace Tiger.Parsing
                     throw new NotSupportedException();
             }
 
-            node.Children.Add(Visit(context.expr(0)));
-            node.Children.Add(Visit(context.expr(1)));
+            node.Children.Add(Visit(context.expr(0))); // LEFT EXPRESSION
+            node.Children.Add(Visit(context.expr(1))); // RIGHT EXPRESSION
             return node;
         }
 
@@ -102,8 +102,8 @@ namespace Tiger.Parsing
                     throw new NotSupportedException();
             }
 
-            node.Children.Add(Visit(context.expr(0)));
-            node.Children.Add(Visit(context.expr(1)));
+            node.Children.Add(Visit(context.expr(0)));  // LEFT EXPRESSION
+            node.Children.Add(Visit(context.expr(1)));  // RIGHT EXPRESSION
             return node;
         }
 
@@ -122,8 +122,8 @@ namespace Tiger.Parsing
                     throw new NotSupportedException();
             }
 
-            node.Children.Add(Visit(context.expr(0)));
-            node.Children.Add(Visit(context.expr(1)));
+            node.Children.Add(Visit(context.expr(0))); // LEFT EXPRESSION
+            node.Children.Add(Visit(context.expr(1))); // RIGHT EXPRESSION
             return node;
         }
 
@@ -133,9 +133,9 @@ namespace Tiger.Parsing
 
             var lvalue = (LValueNode)Visit(context.lvalue());
             lvalue.ByValue = false;
-            node.Children.Add(lvalue);
+            node.Children.Add(lvalue); // LVALUE
 
-            node.Children.Add(Visit(context.expr()));
+            node.Children.Add(Visit(context.expr())); // EXPRESSION
             return node;
         }
         #endregion
@@ -158,8 +158,8 @@ namespace Tiger.Parsing
 
             TigerParser.DeclsContext[] decls = context.decls();
             var declarations = new DeclarationListNode(decls[0]);
-            declarations.Children.AddRange(from d in decls select Visit(d));
-            node.Children.Add(declarations);
+            declarations.Children.AddRange(from d in decls select Visit(d)); // declaration list -> DECLARATION+
+            node.Children.Add(declarations); // DECLARATION LIST
 
             TigerParser.ExprContext[] exprs = context.expr();
 
@@ -169,8 +169,8 @@ namespace Tiger.Parsing
             else
                 expressions = new ExpressionSeqNode(-1, -1);
 
-            expressions.Children.AddRange(from e in exprs select Visit(e));
-            node.Children.Add(expressions);
+            expressions.Children.AddRange(from e in exprs select Visit(e)); // expression sequence -> EXPRESSION*
+            node.Children.Add(expressions); // EXPRESSION SEQUENCE
 
             return node;
         }
@@ -272,10 +272,10 @@ namespace Tiger.Parsing
             var node = new FieldAccessNode(context);
             var lvalue = (LValueNode)Visit(context.lvalue());
             lvalue.ByValue = true;
-            node.Children.Add(lvalue);
+            node.Children.Add(lvalue); // LVALUE
 
             ITerminalNode id = context.ID();
-            node.Children.Add(
+            node.Children.Add( // FIELD ID
                 new IdNode(
                 id.Symbol.Line,
                 id.Symbol.Column,
@@ -290,9 +290,9 @@ namespace Tiger.Parsing
 
             var lvalue = (LValueNode)Visit(context.lvalue());
             lvalue.ByValue = true;
-            node.Children.Add(lvalue);
+            node.Children.Add(lvalue); // LVALUE
 
-            node.Children.Add(Visit(context.expr()));
+            node.Children.Add(Visit(context.expr())); // INDEX EXPRESSION
             return node;
         }
         #endregion
@@ -300,7 +300,7 @@ namespace Tiger.Parsing
         public override Node VisitParenExprs([NotNull] TigerParser.ParenExprsContext context)
         {
             var node = new ExpressionSeqNode(context);
-            node.Children.AddRange(from e in context.expr() select Visit(e));
+            node.Children.AddRange(from e in context.expr() select Visit(e)); // EXPRESSION+
             return node;
         }
         #endregion

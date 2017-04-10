@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Tiger.CodeGeneration;
 using Tiger.Semantics;
 using System.Reflection;
+using System.Linq;
 
 namespace Tiger.AST
 {
@@ -32,7 +33,7 @@ namespace Tiger.AST
             LeftOperand.CheckSemantics(scope, errors);
             RightOperand.CheckSemantics(scope, errors);
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             if (!SupportType(LeftOperand.Type))
                 errors.Add(SemanticError.InvalidUseOfOperator("binary relational", "valid", "left", LeftOperand));
@@ -40,24 +41,24 @@ namespace Tiger.AST
             if (!SupportType(RightOperand.Type))
                 errors.Add(SemanticError.InvalidUseOfOperator("binary relational", "valid", "right", RightOperand));
 
-            if (RightOperand.Type != LeftOperand.Type && !LeftOperand.Type.Equals(Types.Nil) && !RightOperand.Type.Equals(Types.Nil))
+            if (RightOperand.Type != LeftOperand.Type)
                 errors.Add(new SemanticError
                 {
-                    Message = $"Types of left and right operands of the binary relational operator do not match",
+                    Message = "Types of left and right operands of the binary relational operator do not match",
                     Node = this
                 });
 
             if (LeftOperand.Type.Equals(Types.Nil) && RightOperand.Type.Equals(Types.Nil))
                 errors.Add(new SemanticError
                 {
-                    Message = $"Types of left and right operands of the binary relational operator can't be both 'nil'",
+                    Message = $"Types of left and right operands of the binary relational operator can't be both '{Types.Nil}'",
                     Node = this
                 });
 
             if (LeftOperand is ComparisonNode || RightOperand is ComparisonNode)
                 errors.Add(new SemanticError
                 {
-                    Message = $"Comparison operators do not associate",
+                    Message = "Comparison operators do not associate",
                     Node = this
                 });
         }
@@ -69,7 +70,6 @@ namespace Tiger.AST
 
             ILGenerator il = generator.Generator;
 
-            //TODO Chequear si funciona con alias
             if (LeftOperand.Type == Types.Int)
                 CompareInt(generator.Generator);
 

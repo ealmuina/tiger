@@ -3,6 +3,7 @@ using System.Reflection.Emit;
 using Antlr4.Runtime;
 using Tiger.Semantics;
 using Tiger.CodeGeneration;
+using System.Linq;
 
 namespace Tiger.AST
 {
@@ -10,7 +11,7 @@ namespace Tiger.AST
     {
         public AssignNode(ParserRuleContext context) : base(context) { }
 
-        public AssignNode(int line, int column): base(line, column) { }
+        public AssignNode(int line, int column) : base(line, column) { }
 
         public LValueNode LValue
         {
@@ -26,10 +27,8 @@ namespace Tiger.AST
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
-            foreach (var node in Children)
-                node.CheckSemantics(scope, errors);
-
-            if (errors.Count > 0) return;
+            Children.ForEach(n => n.CheckSemantics(scope, errors));
+            if (errors.Any()) return;
 
             if (Expression.Type == Types.Void)
                 errors.Add(new SemanticError
@@ -41,7 +40,7 @@ namespace Tiger.AST
             else if (LValue.Type != Expression.Type)
                 errors.Add(new SemanticError
                 {
-                    Message = "Incompatible types for assignation",
+                    Message = $"Incompatible types '{LValue.Type}' and '{Expression.Type}' for assignation",
                     Node = this
                 });
         }
@@ -50,7 +49,7 @@ namespace Tiger.AST
         {
             LValue.Generate(generator);
             Expression.Generate(generator);
-            generator.Generator.Emit(OpCodes.Stobj, generator.Types[LValue.Type]);          
+            generator.Generator.Emit(OpCodes.Stobj, generator.Types[LValue.Type]);
         }
     }
 }

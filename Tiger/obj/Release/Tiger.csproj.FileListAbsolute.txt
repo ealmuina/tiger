@@ -1,0 +1,6 @@
+D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\bin\Release\tiger.exe.config
+D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\bin\Release\tiger.exe
+D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\bin\Release\tiger.pdb
+D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\bin\Release\Antlr4.Runtime.Standard.dll
+D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\obj\Release\tiger.exe
+D:\Zchool\Computer Science\4º\VII Semestre\Complementos de Compilación\Tiger\Tiger\obj\Release\tiger.pdb

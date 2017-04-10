@@ -62,7 +62,7 @@ namespace Tiger.AST
         {
             Children.ForEach(n => n.CheckSemantics(scope, errors));
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             TypeInfo = scope.GetItem<Semantics.TypeInfo>(Name);
 
@@ -80,7 +80,7 @@ namespace Tiger.AST
         }
 
         /// <summary>
-        /// If it's record declaration, then defines it with the generator
+        /// If it's a record declaration, then define it with the generator
         /// </summary>
         public void Define(CodeGenerator generator)
         {

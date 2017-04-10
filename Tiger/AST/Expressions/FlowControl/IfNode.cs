@@ -31,7 +31,7 @@ namespace Tiger.AST
             foreach (var expr in Children.Where(e => e != null))
                 expr.CheckSemantics(scope, errors);
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             if (IfExpression.Type != Types.Int)
                 errors.Add(new SemanticError
@@ -49,30 +49,10 @@ namespace Tiger.AST
 
             bool visibleType = true;
 
-            //if (!scope.IsDefined<TypeInfo>(ThenExpression.Type))
-            //{
-            //    errors.Add(new SemanticError
-            //    {
-            //        Message = $"Value returned by the 'then' expression has a type {ThenExpression.Type} that isn't visible in the outer scope",
-            //        Node = ThenExpression
-            //    });
-            //    visibleType = false;
-            //}
-
-            //if (ElseExpression != null && !scope.IsDefined<TypeInfo>(ElseExpression.Type))
-            //{
-            //    errors.Add(new SemanticError
-            //    {
-            //        Message = $"Value returned by the 'else' expression has a type {ElseExpression.Type} that isn't visible in the outer scope",
-            //        Node = ElseExpression
-            //    });
-            //    visibleType = false;
-            //}
-
             if (visibleType && ElseExpression != null && ThenExpression.Type != ElseExpression.Type) //if-then-else
                 errors.Add(new SemanticError
                 {
-                    Message = "The return types of the expressions of the 'if-then-else' statement are not the same",
+                    Message = "The return types of the 'then' and 'else' expressions are not the same",
                     Node = this
                 });
 

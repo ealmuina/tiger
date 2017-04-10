@@ -28,18 +28,11 @@ namespace Tiger.AST
             foreach (var expr in Children)
             {
                 expr.CheckSemantics(scope, errors);
-
-                if (errors.Count > 0) return;
-
-                //if (!scope.IsDefined<TypeInfo>(expr.Type.Name) || scope.GetItem<TypeInfo>(expr.Type.Name) != expr.Type)
-                //    errors.Add(new SemanticError
-                //    {
-                //        Message = $"Type '{expr.Type}' returned by the expression isn't visible in its context",
-                //        Node = expr
-                //    });
+                if (errors.Any()) return;
             }
 
-            if (Children.Count > 0 && !(InLoop && MayCauseBreak(this)))
+            // Set return type according with Clarification/Modification 8
+            if (Children.Any() && !(InLoop && MayCauseBreak(this)))
                 Type = Children.Last().Type;
             else
                 Type = Types.Void;
@@ -50,6 +43,7 @@ namespace Tiger.AST
             foreach (var expr in Children)
             {
                 expr.Generate(generator);
+
                 if (expr.Type != Types.Void && (expr != Children.Last() || (expr == Children.Last() && Type == Types.Void)))
                     generator.Generator.Emit(OpCodes.Pop);
             }

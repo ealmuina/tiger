@@ -39,7 +39,7 @@ namespace Tiger.AST
                         Node = this
                     });
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             Types = TypesNames.Select(t => scope.GetItem<Semantics.TypeInfo>(t)).ToArray();
         }

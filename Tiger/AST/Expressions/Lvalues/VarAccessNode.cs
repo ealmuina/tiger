@@ -43,10 +43,10 @@ namespace Tiger.AST
             {
                 var info = scope.GetItem<VariableInfo>(Name);
 
-                if (info.IsReadOnly && !ByValue)
+                if (info.IsReadOnly && !ByValue) // Getting address of readonly variables isn't allowed
                     errors.Add(new SemanticError
                     {
-                        Message = $"Invalid use of assignment to a readonly variable",
+                        Message = "Invalid use of assignment to a readonly variable",
                         Node = this
                     });
 
@@ -59,6 +59,7 @@ namespace Tiger.AST
         {
             ILGenerator il = generator.Generator;
 
+            // Load variable address
             if (Info.IsForeign)
                 il.Emit(OpCodes.Ldarg, generator.ParamIndex[Name]);
             else
@@ -66,6 +67,7 @@ namespace Tiger.AST
 
             if (ByValue)
             {
+                // Let its value instead
                 il.Emit(OpCodes.Ldobj, generator.Types[Type]);
             }
         }

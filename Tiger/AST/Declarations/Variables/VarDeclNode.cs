@@ -37,7 +37,7 @@ namespace Tiger.AST
             foreach (var node in Children.Where(n => n != null))
                 node.CheckSemantics(scope, errors);
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             if (scope.Stdl.Where(n => n.Name == Name).Count() > 0)
                 errors.Add(new SemanticError
@@ -53,7 +53,7 @@ namespace Tiger.AST
                     Node = this
                 });
 
-            if (Children[1] == null && Expression.Type.Equals( Types.Nil))
+            if (Children[1] == null && Expression.Type.Equals(Types.Nil))
                 errors.Add(new SemanticError
                 {
                     Message = "Variable type cannot be infered from an expression which returns nil",
@@ -71,10 +71,10 @@ namespace Tiger.AST
                 else
                 {
                     Type = scope.GetItem<TypeInfo>((Children[1] as IdNode).Name);
-                    if (!Expression.Type.Equals(Types.Nil) && Type != Expression.Type)
+                    if (Type != Expression.Type)
                         errors.Add(new SemanticError
                         {
-                            Message = "Variable declared type doesn't match with the expression assigned to it",
+                            Message = $"Variable declared type '{Type}' doesn't match with '{Expression.Type}' of the expression assigned to it",
                             Node = this
                         });
                 }

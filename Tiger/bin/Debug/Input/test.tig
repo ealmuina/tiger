@@ -1,14 +1,83 @@
-/* Este programa es vÃ¡lido. Este programa imprime los nÃºmeros del 1 al 20. */
 let
-	type ComplexArray = array of SimpleArray
-	type SimpleArray = array of int
-	var val := 0
-	var x := ComplexArray[4] of SimpleArray[5] of (val := val + 1 ; val)
-in
-	for i := 0 to 3 do
+	type arrayInt = array of int
+	var N := 0
+	var values : arrayInt := nil
+	
+	function to_num(s:string) : int = (
+			let
+				var char := ""
+				var res := 0
+				var s_size := size(s)
+				var temp := 0
+				var minus := 0
+			in
+				for i := 0 to s_size - 1 do (
+					char := substring(s, 0, 1);
+					if char = "-" then 
+						minus :=  if minus = 0 then 1 else 0
+					else (
+						temp := ord(s);
+						temp := temp - 48;
+						res := res * 10 + temp
+					);
+					s := substring(s, 1, s_size - 1 - i)
+				);
+				if minus then -res else res
+			end
+		)
+
+	function quick_sort(A : arrayInt) =
 		let
-			var temp := x[i]
+			function lte(i : int, j : int) : int =
+				A[i] <= A[j]
+				
+			function gt(i : int, j : int) : int =
+				A[i] > A[j]
+
+			function partition(i : int, j : int) : int =
+				let
+					var k := i
+					
+					function exchange(x : int, y : int) =
+						let 
+							var tmp := A[x] 
+						in (
+							A[x] := A[y]; 
+							A[y] := tmp
+						) end
+				in
+					while i < j do (
+						while lte(i, k) & i < j do 
+							i := i + 1;
+						while  gt(j, k) & j >= i do 
+							j := j - 1;
+						if i < j then 
+							exchange(i, j)
+					);
+					exchange(k, j);
+					j
+				end
+
+			function qsort(lb : int, ub : int) =
+				if lb < ub then
+					let 
+						var k := partition(lb, ub) 
+					in
+						qsort(lb, k - 1); 
+						qsort(k + 1, ub)
+					end
 		in
-			for j := 0 to 4 do (printi(temp[j]) ; printline(""))
+			qsort(0, N - 1)
 		end
+
+in
+	N := to_num(getline());
+	values := arrayInt[N] of 0;
+	for i := 0 to N - 1 do
+		values[i] := to_num(getline());
+	quick_sort(values);
+	printline("Sorted Array: ");
+	for i := 0 to N - 1 do(
+		printiline(values[i])
+	)
 end

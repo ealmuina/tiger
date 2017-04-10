@@ -10,7 +10,15 @@ namespace Tiger.AST
     {
         public LetNode(ParserRuleContext context) : base(context) { }
 
-        public LetNode(int line, int column) : base(line, column) { }
+        public DeclarationListNode DeclarationList
+        {
+            get => Children[0] as DeclarationListNode;
+        }
+
+        public ExpressionSeqNode ExpressionSeq
+        {
+            get => Children[1] as ExpressionSeqNode;
+        }
 
         public override void CheckSemantics(Scope scope, List<SemanticError> errors)
         {
@@ -18,7 +26,7 @@ namespace Tiger.AST
             scope = new Scope(scope);
 
             Children.ForEach(n => n.CheckSemantics(scope, errors));
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
             Type = Children.Last().Type;
 
@@ -27,7 +35,7 @@ namespace Tiger.AST
                 {
                     Message = $"'let' block return type '{Type}' is not visible in the outer scope",
                     Node = this
-                });                
+                });
         }
 
         public override void Generate(CodeGenerator generator)

@@ -44,10 +44,6 @@ namespace Tiger.AST
                     FixArrayType(type, generator);
             }
 
-            ////Store real type for aliases
-            //foreach (var type in Children.Cast<TypeDeclNode>().Where(t => !(t.TypeInfo is ArrayInfo)))
-            //    generator.Types[type.TypeInfo] = generator.Types[type.TypeInfo];
-
             // Fix arrays
             while (generator.Types.ContainsValue(null))
                 foreach (var type in Children.Cast<TypeDeclNode>().Where(t => t.TypeInfo is ArrayInfo))

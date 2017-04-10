@@ -27,7 +27,7 @@ namespace Tiger.AST
         {
             Arguments.ForEach(a => a.CheckSemantics(scope, errors));
 
-            if (errors.Count > 0)
+            if (errors.Any())
                 return;
 
             if (scope.IsDefined<VariableInfo>(Name))

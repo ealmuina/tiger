@@ -12,6 +12,11 @@ namespace Tiger.AST
     {
         public FieldAccessNode(ParserRuleContext context) : base(context) { }
 
+        public LValueNode LValue
+        {
+            get => Children[0] as LValueNode;
+        }
+
         public string FieldName
         {
             get => (Children[1] as IdNode).Name;
@@ -24,15 +29,15 @@ namespace Tiger.AST
             foreach (var node in Children)
                 node.CheckSemantics(scope, errors);
 
-            if (errors.Count > 0) return;
+            if (errors.Any()) return;
 
-            var info = Children[0].Type;
+            var info = LValue.Type;
 
             if (!(info is RecordInfo recInfo))
                 errors.Add(new SemanticError
                 {
                     Message = $"Type '{info.Name}' isn't a record type",
-                    Node = Children[1]
+                    Node = this
                 });
             else
             {
@@ -42,7 +47,7 @@ namespace Tiger.AST
                     errors.Add(new SemanticError
                     {
                         Message = $"Type '{RecordInfo.Name}' doesn't have a field named '{FieldName}'",
-                        Node = Children[1]
+                        Node = this
                     });
                 else
                     Type = RecordInfo.FieldTypes[Array.IndexOf(RecordInfo.FieldNames, FieldName)];
@@ -54,7 +59,7 @@ namespace Tiger.AST
             ILGenerator il = generator.Generator;
             FieldBuilder field = generator.Fields[RecordInfo][FieldName];
 
-            Children[0].Generate(generator);
+            LValue.Generate(generator);
 
             if (ByValue)
                 il.Emit(OpCodes.Ldfld, field);
